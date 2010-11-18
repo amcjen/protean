@@ -37,6 +37,11 @@ abstract class PFCommand {
 		$app = PFRequest::getCurrentURLApplication();
 		$cmd = PFRequest::getCurrentURLCommand();
 		$appCmd = $app . '.' . $cmd;
+		$appUrl = $app . '.' . $this->getURLName();
+		
+		if ($appCmd != 'registration.login') {
+			PFSession::getInstance()->register('pf.redirect_url', $appCmd);
+		}
 
 		$this->assignDefaults($request);
 
@@ -173,6 +178,36 @@ abstract class PFCommand {
 		return true;
 	}
 
+	protected function redirectTo($url, $clearSessionRedirect=false) {
+		$url = str_replace(PF_URL, '', $url);
+		$url = str_replace(PF_URL_SECURE, '', $url);
+
+		if(strpos($url, '/') == 0){
+			$url = '/'.ltrim($url,'/');
+		}
+		if ($clearSessionRedirect == true) {
+			PFSession::getInstance()->unregister('pf.redirect_url');
+		}
+		header('Location: '.$url);
+		exit();
+	}
+	
+	protected function redirectToSessionUrl() {
+		
+		$url = PFSession::getInstance()->get('pf.session_redirect_url');
+		
+		$url = str_replace(PF_URL, '', $url);
+		$url = str_replace(PF_URL_SECURE, '', $url);
+
+		if(strpos($url, '/') == 0){
+			$url = '/'.ltrim($url,'/');
+		}
+		PFSession::getInstance()->unregister('pf.session_redirect_url');
+
+		header('Location: '.$url);
+		exit();
+	}
+	
 	abstract function assignDefaults(PFRequest $request);
 	abstract function doExecute(PFRequest $request);
 }

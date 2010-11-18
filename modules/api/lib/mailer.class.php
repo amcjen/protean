@@ -43,7 +43,11 @@ class PFMailer extends PHPMailer {
 			$this->Subject = "DEV: " . $this->Subject;
 		}
 		
-		if (parent::send()) {		
+		if (parent::send()) {
+			if ($this->debug) {
+				$this->logDebug("Successfully sent message:\n");
+			}
+				
 			return true;
 		}
 		
@@ -60,6 +64,19 @@ class PFMailer extends PHPMailer {
 		if ($this->Mailer == 'smtp' && count($this->smtp->error) > 0) {
 			$e = new PFException('', printRBuffered($this->smtp->error), E_USER_WARNING);
 			$e->logException();
+		}
+	}
+	
+	public function logDebug($msg) {
+		
+		if (@touch(PF_EMAIL_DEBUG_LOG) && is_writable(PF_EMAIL_DEBUG_LOG)) {
+			
+			$message = '[' . date('D M j H:i:s Y') . '] ' . $msg;
+			$message .= $this->createHeader();
+			$message .= $this->createBody();
+			$message .= "--END--\n\n";
+			
+			error_log($message, 3, PF_EMAIL_DEBUG_LOG);
 		}
 	}
 	
