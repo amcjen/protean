@@ -1,1 +1,16 @@
 *.un~
+build/test/*.xml
+build/build.properties
+config.php
+modules/db/conf/protean-conf.php
+modules/db/sql/sqldb.map
+modules/list/misc/
+modules/db/lib/om
+modules/db/lib/map
+build/runtime-conf.xml
+build/schema-transformed.xml
+build/schema.xml
+build/tests
+build/hudson.war
+build/hudson/logs
+*.tmproj
