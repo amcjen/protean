@@ -1,0 +1,47 @@
+/*
+ * SimpleModal Contact Form
+ * http://www.ericmmartin.com/projects/simplemodal/
+ * http://code.google.com/p/simplemodal/
+ *
+ * Copyright (c) 2008 Eric Martin - http://ericmmartin.com
+ *
+ * Licensed under the MIT license:
+ *   http://www.opensource.org/licenses/mit-license.php
+ *
+ * Revision: $Id: contact.css 164 2008-12-02 23:31:54Z emartin24 $
+ *
+ */
+
+body {padding:0; margin:0; height:100%; width:100%;}
+
+/* Overlay */
+#contact-overlay {background-color:#000; cursor:wait;}
+
+/* Container */
+#contact-container {width:450px; font-family:'Trebuchet MS', Verdana, Arial; font-size:16px; text-align:left;}
+#contact-container .contact-content {background-color:#333; color:#ddd; height:40px;}
+#contact-container h1 {color:#d76300; margin:0; padding:0 0 6px 12px; font-size:1.2em; text-align:left;}
+#contact-container .contact-loading {position:absolute; background:url(../img/contact/loading.gif) no-repeat; z-index:8000; height:55px; width:54px; margin:-14px 0 0 170px; padding:0;}
+#contact-container .contact-message {text-align:center;}
+#contact-container .contact-error {width:92%; font-size:.8em; background:#000; border:2px solid #ccc; font-size:0.8em; font-weight:bold; margin:0 auto; padding:2px;}
+#contact-container br {clear:both;}
+#contact-container form {padding:0; margin:0;}
+#contact-container label {clear:left; display:block; width:100px; float:left; text-align:right; padding-right:4px; font-weight:bold;}
+#contact-container .contact-input {font-family:'Trebuchet MS', Verdana, Arial; float:left; padding:2px; margin:2px; background:#eee; border:1px solid #fff; width:300px;}
+#contact-container textarea {height:114px; font-size:.9em;}
+#contact-container .contact-cc {font-size:.9em; cursor:default;}
+#contact-container .contact-top {height:13px; background:url(../img/contact/form_top.gif) no-repeat; padding:0; margin:0;}
+#contact-container .contact-bottom {height:13px; background:url(../img/contact/form_bottom.gif) no-repeat; font-size:.7em; text-align:center;}
+#contact-container .contact-bottom a,
+#contact-container .contact-bottom a:link,
+#contact-container .contact-bottom a:active,
+#contact-container .contact-bottom a:visited {position:relative; top:-4px; text-decoration:none; color:#666;}
+#contact-container .contact-bottom a:hover {color:#888;}
+#contact-container .contact-button {margin:4px 0 0 4px; cursor:pointer; height:24px; border:0; font-size:1em; font-weight:bold; color:#fff; text-align:center; vertical-align:middle;}
+#contact-container .contact-send {width:50px; background:url(../img/contact/send.png) no-repeat;}
+#contact-container .contact-cancel {width:65px; background:url(../img/contact/cancel.png) no-repeat;}
+#contact-container a.modalCloseX,
+#contact-container a.modalCloseX:link,
+#contact-container a.modalCloseX:active,
+#contact-container a.modalCloseX:visited {text-decoration:none; font-weight:bold; font-size:1.2em; position:absolute; top:-4px; right:6px; color:#999;}
+#contact-container a.modalCloseX:hover {color:#9bb3b3;}

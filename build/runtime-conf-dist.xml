@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<config>
+	<!-- Uncomment this if you have PEAR Log installed -->
+	<log>
+		<type>file</type>
+		<name>%%PHING_PROTEAN_DATABASE_LOG_PATH%%/pf_propel.log</name>
+		<ident>propel</ident>
+		<level>7</level>
+		<conf></conf>
+	</log>
+	<propel>
+		<datasources default="%%PHING_PROTEAN_DATABASE_NAME%%">
+			<datasource id="%%PHING_PROTEAN_DATABASE_NAME%%"> <!-- this ID must match <database name=""> in schema.xml -->
+				<adapter>%%PHING_PROTEAN_DATABASE_TYPE%%</adapter>
+				<connection>
+					<dsn>%%PHING_PROTEAN_DATABASE_DSN%%</dsn>
+					<user>%%PHING_PROTEAN_DATABASE_USER%%</user>
+					<password>%%PHING_PROTEAN_DATABASE_PASSWORD%%</password>
+					<classname>DebugPDO</classname>
+					<!-- <classname>PropelPDO</classname> -->
+				</connection>
+			</datasource>
+		</datasources>
+	</propel>
+</config>

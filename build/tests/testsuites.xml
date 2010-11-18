@@ -1,0 +1,83 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<testsuites>
+  <testsuite name="Phing Batchtest" tests="46" assertions="62" failures="0" errors="0" time="0.460477">
+    <testsuite name="ApplicationControllerTest" file="/www/protean/htdocs/modules/api/test/unit/ApplicationControllerTest.class.php" tests="10" assertions="12" failures="0" errors="0" time="0.059089">
+      <testcase name="testGetView" class="ApplicationControllerTest" file="/www/protean/htdocs/modules/api/test/unit/ApplicationControllerTest.class.php" line="40" assertions="1" time="0.020362"/>
+      <testcase name="testGetViewApplication" class="ApplicationControllerTest" file="/www/protean/htdocs/modules/api/test/unit/ApplicationControllerTest.class.php" line="46" assertions="1" time="0.003801"/>
+      <testcase name="testGetViewHeader" class="ApplicationControllerTest" file="/www/protean/htdocs/modules/api/test/unit/ApplicationControllerTest.class.php" line="52" assertions="1" time="0.003927"/>
+      <testcase name="testGetViewHeaderApplication" class="ApplicationControllerTest" file="/www/protean/htdocs/modules/api/test/unit/ApplicationControllerTest.class.php" line="58" assertions="1" time="0.003588"/>
+      <testcase name="testGetViewFooter" class="ApplicationControllerTest" file="/www/protean/htdocs/modules/api/test/unit/ApplicationControllerTest.class.php" line="64" assertions="1" time="0.003850"/>
+      <testcase name="testGetViewFooterApplication" class="ApplicationControllerTest" file="/www/protean/htdocs/modules/api/test/unit/ApplicationControllerTest.class.php" line="70" assertions="1" time="0.003581"/>
+      <testcase name="testGetCommand" class="ApplicationControllerTest" file="/www/protean/htdocs/modules/api/test/unit/ApplicationControllerTest.class.php" line="76" assertions="1" time="0.004247"/>
+      <testcase name="testGetLogin" class="ApplicationControllerTest" file="/www/protean/htdocs/modules/api/test/unit/ApplicationControllerTest.class.php" line="84" assertions="1" time="0.005324"/>
+      <testcase name="testGetPermissions" class="ApplicationControllerTest" file="/www/protean/htdocs/modules/api/test/unit/ApplicationControllerTest.class.php" line="95" assertions="3" time="0.006334"/>
+      <testcase name="testGetTheme" class="ApplicationControllerTest" file="/www/protean/htdocs/modules/api/test/unit/ApplicationControllerTest.class.php" line="111" assertions="1" time="0.004075"/>
+    </testsuite>
+    <testsuite name="ApplicationHelperTest" file="/www/protean/htdocs/modules/api/test/unit/ApplicationHelperTest.class.php" tests="2" assertions="2" failures="0" errors="0" time="0.008257">
+      <testcase name="testControllerMapCreation" class="ApplicationHelperTest" file="/www/protean/htdocs/modules/api/test/unit/ApplicationHelperTest.class.php" line="29" assertions="1" time="0.004235"/>
+      <testcase name="testAppControllerCreation" class="ApplicationHelperTest" file="/www/protean/htdocs/modules/api/test/unit/ApplicationHelperTest.class.php" line="37" assertions="1" time="0.004022"/>
+    </testsuite>
+    <testsuite name="CacheAPCTest" file="/www/protean/htdocs/modules/api/test/unit/CacheAPCTest.class.php" tests="2" assertions="0" failures="0" errors="0" time="0.004957">
+      <testcase name="testStoreFetch" class="CacheAPCTest" file="/www/protean/htdocs/modules/api/test/unit/CacheAPCTest.class.php" line="23" assertions="0" time="0.002731"/>
+      <testcase name="testDelete" class="CacheAPCTest" file="/www/protean/htdocs/modules/api/test/unit/CacheAPCTest.class.php" line="33" assertions="0" time="0.002226"/>
+    </testsuite>
+    <testsuite name="ControllerMapTest" file="/www/protean/htdocs/modules/api/test/unit/ControllerMapTest.class.php" tests="8" assertions="24" failures="0" errors="0" time="0.033468">
+      <testcase name="testGetClassRoot" class="ControllerMapTest" file="/www/protean/htdocs/modules/api/test/unit/ControllerMapTest.class.php" line="28" assertions="2" time="0.003335"/>
+      <testcase name="testGetView" class="ControllerMapTest" file="/www/protean/htdocs/modules/api/test/unit/ControllerMapTest.class.php" line="40" assertions="4" time="0.003707"/>
+      <testcase name="testGetViewHeader" class="ControllerMapTest" file="/www/protean/htdocs/modules/api/test/unit/ControllerMapTest.class.php" line="60" assertions="4" time="0.003516"/>
+      <testcase name="testGetViewFooter" class="ControllerMapTest" file="/www/protean/htdocs/modules/api/test/unit/ControllerMapTest.class.php" line="80" assertions="4" time="0.004833"/>
+      <testcase name="testGetForward" class="ControllerMapTest" file="/www/protean/htdocs/modules/api/test/unit/ControllerMapTest.class.php" line="100" assertions="4" time="0.004572"/>
+      <testcase name="testGetLogin" class="ControllerMapTest" file="/www/protean/htdocs/modules/api/test/unit/ControllerMapTest.class.php" line="120" assertions="2" time="0.003393"/>
+      <testcase name="testGetPermissions" class="ControllerMapTest" file="/www/protean/htdocs/modules/api/test/unit/ControllerMapTest.class.php" line="132" assertions="2" time="0.004788"/>
+      <testcase name="testGetTheme" class="ControllerMapTest" file="/www/protean/htdocs/modules/api/test/unit/ControllerMapTest.class.php" line="144" assertions="2" time="0.005324"/>
+    </testsuite>
+    <testsuite name="ControllerTest" file="/www/protean/htdocs/modules/api/test/unit/ControllerTest.class.php" tests="1" assertions="2" failures="0" errors="0" time="0.265715">
+      <testcase name="testOutput" class="ControllerTest" file="/www/protean/htdocs/modules/api/test/unit/ControllerTest.class.php" line="28" assertions="2" time="0.265715"/>
+    </testsuite>
+    <testsuite name="ErrorStackTest" file="/www/protean/htdocs/modules/api/test/unit/ErrorstackTest.class.php" tests="3" assertions="3" failures="0" errors="0" time="0.018862">
+      <testcase name="testAppend" class="ErrorStackTest" file="/www/protean/htdocs/modules/api/test/unit/ErrorstackTest.class.php" line="34" assertions="1" time="0.006859"/>
+      <testcase name="testGetErrorStack" class="ErrorStackTest" file="/www/protean/htdocs/modules/api/test/unit/ErrorstackTest.class.php" line="43" assertions="1" time="0.005746"/>
+      <testcase name="testClearErrorStack" class="ErrorStackTest" file="/www/protean/htdocs/modules/api/test/unit/ErrorstackTest.class.php" line="53" assertions="1" time="0.006257"/>
+    </testsuite>
+    <testsuite name="ExceptionTest" file="/www/protean/htdocs/modules/api/test/unit/ExceptionTest.class.php" tests="1" assertions="2" failures="0" errors="0" time="0.006213">
+      <testcase name="testErrorCode" class="ExceptionTest" file="/www/protean/htdocs/modules/api/test/unit/ExceptionTest.class.php" line="30" assertions="2" time="0.006213"/>
+    </testsuite>
+    <testsuite name="FactoryTest" file="/www/protean/htdocs/modules/api/test/unit/FactoryTest.class.php" tests="2" assertions="2" failures="0" errors="0" time="0.006381">
+      <testcase name="testCreateObject" class="FactoryTest" file="/www/protean/htdocs/modules/api/test/unit/FactoryTest.class.php" line="29" assertions="1" time="0.003384"/>
+      <testcase name="testCreateCommandObject" class="FactoryTest" file="/www/protean/htdocs/modules/api/test/unit/FactoryTest.class.php" line="37" assertions="1" time="0.002997"/>
+    </testsuite>
+    <testsuite name="FormTest" file="/www/protean/htdocs/modules/api/test/unit/FormTest.class.php" tests="1" assertions="0" failures="0" errors="0" time="0.002320">
+      <testcase name="testFormObject" class="FormTest" file="/www/protean/htdocs/modules/api/test/unit/FormTest.class.php" line="27" assertions="0" time="0.002320"/>
+    </testsuite>
+    <testsuite name="ImageFileTest" file="/www/protean/htdocs/modules/api/test/unit/ImageFileTest.class.php" tests="2" assertions="0" failures="0" errors="0" time="0.004738">
+      <testcase name="testCreateImage" class="ImageFileTest" file="/www/protean/htdocs/modules/api/test/unit/ImageFileTest.class.php" line="25" assertions="0" time="0.002229"/>
+      <testcase name="testReadImage" class="ImageFileTest" file="/www/protean/htdocs/modules/api/test/unit/ImageFileTest.class.php" line="31" assertions="0" time="0.002509"/>
+    </testsuite>
+    <testsuite name="LanguageTest" file="/www/protean/htdocs/modules/api/test/unit/LanguageTest.class.php" tests="3" assertions="4" failures="0" errors="0" time="0.007971">
+      <testcase name="testAvailableLocales" class="LanguageTest" file="/www/protean/htdocs/modules/api/test/unit/LanguageTest.class.php" line="30" assertions="1" time="0.002421"/>
+      <testcase name="testAvailableLanguages" class="LanguageTest" file="/www/protean/htdocs/modules/api/test/unit/LanguageTest.class.php" line="37" assertions="1" time="0.002420"/>
+      <testcase name="testTranslation" class="LanguageTest" file="/www/protean/htdocs/modules/api/test/unit/LanguageTest.class.php" line="44" assertions="2" time="0.003130"/>
+    </testsuite>
+    <testsuite name="ProfilerTest" file="/www/protean/htdocs/modules/api/test/unit/ProfilerTest.class.php" tests="1" assertions="1" failures="0" errors="0" time="0.013563">
+      <testcase name="testTime" class="ProfilerTest" file="/www/protean/htdocs/modules/api/test/unit/ProfilerTest.class.php" line="27" assertions="1" time="0.013563"/>
+    </testsuite>
+    <testsuite name="RegistryTest" file="/www/protean/htdocs/modules/api/test/unit/RegistryTest.class.php" tests="4" assertions="4" failures="0" errors="0" time="0.011315">
+      <testcase name="testSetGet" class="RegistryTest" file="/www/protean/htdocs/modules/api/test/unit/RegistryTest.class.php" line="27" assertions="1" time="0.002560"/>
+      <testcase name="testIsValueSet" class="RegistryTest" file="/www/protean/htdocs/modules/api/test/unit/RegistryTest.class.php" line="35" assertions="1" time="0.002391"/>
+      <testcase name="testSetControllerMap" class="RegistryTest" file="/www/protean/htdocs/modules/api/test/unit/RegistryTest.class.php" line="42" assertions="1" time="0.002596"/>
+      <testcase name="testSetPage" class="RegistryTest" file="/www/protean/htdocs/modules/api/test/unit/RegistryTest.class.php" line="52" assertions="1" time="0.003768"/>
+    </testsuite>
+    <testsuite name="RequestTest" file="/www/protean/htdocs/modules/api/test/unit/RequestTest.class.php" tests="1" assertions="1" failures="0" errors="0" time="0.002847">
+      <testcase name="testGetProperty" class="RequestTest" file="/www/protean/htdocs/modules/api/test/unit/RequestTest.class.php" line="29" assertions="1" time="0.002847"/>
+    </testsuite>
+    <testsuite name="SessionTest" file="/www/protean/htdocs/modules/api/test/unit/SessionTest.class.php" tests="3" assertions="3" failures="0" errors="0" time="0.007477">
+      <testcase name="testRegister" class="SessionTest" file="/www/protean/htdocs/modules/api/test/unit/SessionTest.class.php" line="27" assertions="1" time="0.002590"/>
+      <testcase name="testUnregister" class="SessionTest" file="/www/protean/htdocs/modules/api/test/unit/SessionTest.class.php" line="35" assertions="1" time="0.002414"/>
+      <testcase name="testIsRegistered" class="SessionTest" file="/www/protean/htdocs/modules/api/test/unit/SessionTest.class.php" line="44" assertions="1" time="0.002473"/>
+    </testsuite>
+    <testsuite name="TemplateTest" file="/www/protean/htdocs/modules/api/test/unit/TemplateTest.class.php" tests="2" assertions="2" failures="0" errors="0" time="0.007304">
+      <testcase name="testAssign" class="TemplateTest" file="/www/protean/htdocs/modules/api/test/unit/TemplateTest.class.php" line="28" assertions="1" time="0.003898"/>
+      <testcase name="testDirectories" class="TemplateTest" file="/www/protean/htdocs/modules/api/test/unit/TemplateTest.class.php" line="37" assertions="1" time="0.003406"/>
+    </testsuite>
+  </testsuite>
+</testsuites>

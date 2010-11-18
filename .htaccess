@@ -1,0 +1,27 @@
+#
+# Set 
+#
+# AllowOverride FileInfo
+# 
+# to enable parsing off this file
+# This is needed for UTF-8 support.
+#
+# AddDefaultCharset Off
+
+## If the Files bit below doesn't work, use the following:
+# Options +FollowSymlinks
+# RewriteEngine on
+# RewriteBase /
+# RewriteRule ^main/(.*) /index.php/$1 [NC,L]
+
+<Files main>
+	ForceType application/x-httpd-php
+</Files>
+
+AddDefaultCharset UTF-8
+ErrorDocument 404 /main/en/content/404
+
+RewriteEngine on
+RewriteBase /
+
+RewriteRule ^content/(.*)$ /main/en/content/$1

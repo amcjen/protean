@@ -1,0 +1,35 @@
+/////////
+//
+//  Stone PHP SafeCrypt how-to-learn file
+//
+
+/////////
+//
+//  Becoming adept at cryptography:
+//  ------------------------------
+//
+//  This library does not, and cannot, substitute for a good working knowledge of encryption.
+//  The defaults are sensible and secure, but in ten years, things will have changed, as they
+//  always do in the field of encryption.  Ideally, read Bruce Schneier's excellent "Applied
+//  Cryptography," and if you enjoy the work, later also Ferguson's "Practical Cryptography"
+//  and Mao's "Modern Cryptography."
+//
+//    first:
+//      http://sc.tri-bit.com/Applied_Cryptography
+//
+//    then:
+//      http://sc.tri-bit.com/Practical_Cryptography
+//      http://sc.tri-bit.com/Modern_Cryptography
+//
+//  If, after time, you find you really enjoy the subject, a somewhat more difficult but
+//  rather more in-depth tome is Menezes' "Handbook of Applied Cryptography," which is only
+//  recommended if you've already read Schneier and have a good foundation in algorithms
+//  as you'd get from reading Knuth's "The Art of Computer Programming" volumes 1 and 2, or
+//  Corman et al's  "Introduction to Algorithms."
+//
+//    eventually:
+//      http://sc.tri-bit.com/Handbook_of_Applied_Cryptography
+//
+//    and as support:
+//      http://sc.tri-bit.com/The_Art_of_Computer_Programming
+//      http://sc.tri-bit.com/Introduction_to_Algorithms

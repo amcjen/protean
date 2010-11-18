@@ -1,0 +1,40 @@
+// ******************  ENGLISH CONTENT TRANSLATION FILE  ****************
+
+// Navigation
+PROTEAN_FRAMEWORK=Protean Framework
+NAVIGATION=Navigation
+HOME=Home
+SEARCH=Search
+CONTACT=Contact
+DEVELOPED_BY=developed by
+EXECUTION_TIME=Execution time
+SECONDS=sec.
+LOGIN=Login
+LOGOUT=Logout
+ACCOUNT=My Account
+ORDERS=My Orders
+BACKOFFICE=Backoffice
+WELCOME=Welcome
+USERNAME=Username
+EMAIL=E-mail
+PASSWORD=Password
+
+// Contentpages
+TEST_INFORMATION=Test Information
+TEST_COPY=This is some test copy.
+CONTACT_US=Contact Us
+GET_DIRECTIONS=Get Directions
+
+// Insufficient data messages
+ID_NOT_FOUND=No ID given
+USERNAME_NOT_FOUND=No username given
+PASSWORD_NOT_FOUND=No password given
+INVALID_LOGIN=Username and/or password not found
+
+// Error Messages
+
+// Notice Messages
+YOU_HAVE_BEEN_LOGGED_OUT=You have been logged out
+
+
+ERROR_SAVING_TO_DATABASE=There was an error attempting to save to the database table %s

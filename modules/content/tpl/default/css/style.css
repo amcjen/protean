@@ -1,0 +1,86 @@
+/**************************************************************************\
+* Protean Framework                                                        *
+* https://github.com/erictj/protean                                        *
+* Copyright (c) 2006-2010, Loopshot Inc.  All rights reserved.             *
+* ------------------------------------------------------------------------ *
+*  This program is free software; you can redistribute it and/or modify it *
+*  under the terms of the BSD License as described in license.txt.         *
+\**************************************************************************/
+
+/* @group Universal Selectors */
+/* @end */
+
+/* @group Element Selectors */
+strong {
+	font-weight: bold;
+}
+em {
+	font-style: italic;
+}
+a:visited {
+	color: #660000;
+}
+a:hover {
+	color: #CC0000;
+}
+a:active {
+	color: #660000;
+}
+a:link {
+	color: #660000;
+}
+input, option, select, textarea {
+	font-family:Verdana, Arial, Helvetica, sans-serif; 
+	font-size: 10px;
+	margin: 3px;
+}
+label {
+	color: #333333;
+}
+/* @end */
+
+/* @group Class, Attribute, and Pseudo Selectors */
+.disabled {
+	color: #999999;
+}
+.enabled {
+	color: #ff6f00;
+	font-weight: bold;
+}
+.yes {
+	color: #00ad11;
+}
+.no {
+	color: #990000;
+}
+.error {
+	color: #F00;
+	font-weight: bold;
+}
+.errorfield {
+	background: #ffb47d;
+	color: #333333;
+}
+.required {
+	color: #ff6f00;
+	font-weight: bold;
+}
+/* @end */
+
+/* @group ID Selectors */
+#errorstack {
+	color: #F00;
+	font-weight: bold;
+	padding-bottom: 5px;
+}
+#doc { }
+#hd {
+	padding: 10px;
+	background: #ebf9ff;
+	clear: both;
+}
+#ft {
+	padding-top: 10px;
+	background-color: white;
+}
+/* @end */

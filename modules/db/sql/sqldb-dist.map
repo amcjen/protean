@@ -1,0 +1,4 @@
+# Sqlfile -> Database map
+schema.sql=%%PHING_PROTEAN_DATABASE_NAME%%
+locale.sql=%%PHING_PROTEAN_DATABASE_NAME%%
+users.sql=%%PHING_PROTEAN_DATABASE_NAME%%
