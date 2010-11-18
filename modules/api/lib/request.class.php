@@ -22,7 +22,7 @@ class PFRequest {
 		$this->exceptions = array();
 		$this->command = NULL;
 		$this->queryString = NULL;
-		$this->Init();
+		$this->init();
 	}
 	
 	public function init() {
@@ -50,16 +50,27 @@ class PFRequest {
 	}
 	
 	public function getProperty($key) {
-		return @$this->properties[$key];
+		return @html_entity_decode($this->properties[$key], ENT_QUOTES, 'UTF-8');
 	}
 	
 	public function get($key) {
 		return $this->getProperty($key);
 	}
 	
-	public function setProperty($key, $value) {		
-		$this->properties[$key] = $value;
-		$_REQUEST[$key] = $value;
+	public function setProperty($key, $value) {	
+		if (is_array($value)) {
+			$data = array();
+			foreach ($value as $valueElement) {
+				$data[] = htmlentities($valueElement, ENT_QUOTES, 'UTF-8');
+			}
+			
+			$this->properties[$key] = $data;
+			$_REQUEST[$key] = $data;
+			
+		} else {
+			$this->properties[$key] = htmlentities($value, ENT_QUOTES, 'UTF-8');
+			$_REQUEST[$key] = htmlentities($value, ENT_QUOTES, 'UTF-8');
+		}
 	}
 	
 	public function set($key, $value) {
