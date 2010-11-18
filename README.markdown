@@ -4,11 +4,12 @@ Protean is a PHP5 framework that I began developing in 2005 while flying back fr
 
 I took the initial base ideas of the framework from Matt Zandstra (now at Yahoo!), who wrote an excellent book on making clean, testable PHP5 code.  I had additional requirements, such as one-line testability, support for continuous integration, multi-lingual support, and easy templating for front-end developers.
 
+
 HOW IT WORKS:
 ============
 It's quite simple at it's core--Protean is an MVC-based, inversion-of-control framework.  There are several modules. Each module can live alone or with others. Each is self-contained, meaning it has all information within it to handle all routing of controllers, view template rendering, and model support--which includes both ORM and domain-object mapping.
 
-*Note* - The simplicity of the examples here hopefully do not imply a simplicity or lack of knowledge of PHP5.  There is some pretty cool black magic going on in the internals of Protean to automatically show the proper templates, call the proper controller class, auto-load the domain/ORM object classes, as well as instantiate the page flow.  PHP5's Reflection classes and variable variables are used to great extent to allow the code a development team has to write day in and day out to be as simple as shown in the examples here.
+*Note* - The simplicity of the examples here hopefully do not imply a simplicity or lack of power of PHP5 or of the Protean framework itself.  There is some pretty cool black magic going on in the internals of Protean to automatically show the proper templates, call the proper controller class, auto-load the domain/ORM object classes, as well as instantiate the page flow.  PHP5's Reflection classes and variable variables are used to great extent to allow the code a development team has to write day in and day out to be as simple as shown in the examples here.
 
 How Protean routes: command.xml
 -------------------------------
@@ -71,6 +72,7 @@ And while Protean supports any level of helper/domain-object classes that a team
 		}
 	}
 	?>
+
 
 FUTURE DIRECTION:
 ================
