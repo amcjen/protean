@@ -12,21 +12,65 @@ It's quite simple at it's core--Protean is an MVC-based, inversion-of-control fr
 
 How Protean routes: command.xml
 -------------------------------
-	<!-- simple route that exposes the /content/hello URI.  The <command> name attribute defines
-	what controller is called.  The view tags describe what header/footer and body views will be 
-	rendered.  This gives a lot of flexibility as you can reuse views while having them handled by 
-	different controllers if desired.  This is essentially an implementation of Martin Fowler's 
-	Front Controller design pattern from his Patterns of Enterprise Application Architecture book. 
-	-->
+Very simply!  Here is a simple route that exposes the /content/hello URI.  The <command> name attribute defines what controller is called.  The view tags describe what header/footer and body views will be rendered.  This gives a lot of flexibility as you can reuse views while having them handled by different controllers if desired.  This is essentially an implementation of Martin Fowler's Front Controller design pattern from his seminal Patterns of Enterprise Application Architecture book. 
 
 	<control>
-		<!-- /content/hello controller/view -->	
+		<!-- /content/hello URL handler -->	
 		<command name="content.hello">
 			<viewheader>content.header</viewheader>
 			<viewfooter>content.footer</viewfooter>
 			<view>content.hello</view>
 		</command>
 	</control>
+
+The controller: hello.class.php
+-------------------------------
+Here is the controller for /content/hello.  We always extend the default command, which handles some basic initialization for us.  We grab the $page template instance and set a Smarty variable to the user's first name.
+
+	<?php
+
+	class PFHelloCommand extends PFDefaultCommand { 
+
+		public function doExecute(PFRequest $request) {	
+			parent::doExecute($request);
+
+			$user = PFFactory::getInstance()->createObject('content.userhelper');
+			$page = PFRegistry::getInstance()->getPage();
+			$page->assign('FIRSTNAME', $user->getFirstName());
+		}
+	}
+	?>
+	
+The view: hello.tpl
+-------------------
+This is a Smarty template file that Protean will auto-render.  The PF_HEADER and PF_FOOTER vars will automatically get replaced by whatever header/footer is defined within the command.xml file above.  If a site needs different header/footer files for sub-sections of the site, easy-peasy, just change the command.xml.  No mucking around with template files.
+
+	{$PF_HEADER}
+
+		<div id="bd"> 
+			<h1>
+				Hello {$FIRSTNAME}!
+			</h1>
+		</div>
+			
+	{$PF_FOOTER}
+	
+The model: userhelper.class.php
+--------------------------------
+Protean allows you a lot of flexibility in how closely you wish to couple your controller and your model.  You could call raw SQL directly from your controller class above if you wish.  However, a best practice recommendation is to create a simple domain object that your controller class can call to get its data.
+
+And while Protean supports any level of helper/domain-object classes that a team wishes to use, we'll stick to a simple example.  Here, we have a domain object class which abstracts the ORM calls for us.  This makes it easy to migrate  model storage from one database type to another, or a mix-and-match of both.  You'll also notice in this example Protean uses Propel's ORM for clean, fast database calls.  Protean leverages existing PHP libraries as much as possible.  Other libraries are extremely simple to add as well, so you're not locked into any back-end library you don't like.  Want to install Doctrine ORM instead?  Totally doable.  Just call your Doctrine code from the domain object.
+
+	<?php
+
+	class PFUserHelper { 
+		public static function getUser($userId) {
+			return UserQuery::create()
+				->filterByUserId($userId)
+				->findOne();
+		}
+	}
+	?>
 
 FUTURE DIRECTION:
 ================
