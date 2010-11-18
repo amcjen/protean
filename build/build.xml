@@ -136,22 +136,16 @@
 		<include name="modules/api/lib/*.php"/>
 		<include name="modules/content/lib/*.php"/>
 		<include name="modules/db/lib/*.php"/>
-		<include name="modules/registration/lib/*.class.php"/>
-		<include name="modules/shop/lib/*.php"/>
 	</fileset>
 
 	<fileset dir="." id="unittests">
 		<include name="modules/api/test/unit/*Test.class.php"/>
 		<include name="modules/content/test/unit/*Test.class.php"/>
-		<include name="modules/registration/test/unit/*Test.class.php"/>
-		<include name="modules/shop/test/unit/*Test.class.php"/>
 	</fileset>
 
 	<fileset dir="." id="functionaltests">
 		<include name="modules/api/test/functional/*Test.class.php"/>
 		<include name="modules/content/test/functional/*Test.class.php"/>
-		<include name="modules/registration/test/functional/*Test.class.php"/>
-		<include name="modules/shop/test/functional/*Test.class.php"/>
 	</fileset>
 
 	<!-- DATABASE MIGRATE TARGET -->
@@ -270,32 +264,6 @@
 				<fileset dir=".">
 					<include name="modules/content/test/unit/*Test.class.php"/>
 					<include name="modules/content/test/functional/*Test.class.php"/>					
-				</fileset>
-			</batchtest>
-			<formatter type="plain" usefile="false"/>
-		</phpunit>
-	</target>
-
-	<target name="test-registration">
-		<echo msg="... running registration tests" />
-		<phpunit haltonfailure="true" printsummary="true">
-			<batchtest>
-				<fileset dir=".">
-					<include name="modules/registration/test/unit/*Test.class.php"/>
-					<include name="modules/registration/test/functional/*Test.class.php"/>					
-				</fileset>
-			</batchtest>
-			<formatter type="plain" usefile="false"/>
-		</phpunit>
-	</target>
-
-	<target name="test-shop">
-		<echo msg="... running shop tests" />
-		<phpunit haltonfailure="true" printsummary="true">
-			<batchtest>
-				<fileset dir=".">
-					<include name="modules/shop/test/unit/*Test.class.php"/>
-					<include name="modules/shop/test/functional/*Test.class.php"/>					
 				</fileset>
 			</batchtest>
 			<formatter type="plain" usefile="false"/>
