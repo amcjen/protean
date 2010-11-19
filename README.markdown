@@ -37,7 +37,7 @@ Here is the controller for /content/hello.  We always extend the default command
 
 			$user = PFFactory::getInstance()->createObject('content.userhelper');
 			$page = PFRegistry::getInstance()->getPage();
-			$page->assign('FIRSTNAME', $user->getFirstName());
+			$page->assign('FIRSTNAME', $user->getUser(1)->getFirstName());
 		}
 	}
 	?>
