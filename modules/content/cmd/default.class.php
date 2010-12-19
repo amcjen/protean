@@ -11,8 +11,7 @@
 class PFDefaultCommand extends PFCommand { 
 	
 	public function doExecute(PFRequest $request) {	
-		$page = PFRegistry::getInstance()->getPage();		
-		self::assignHeaderPaths($page);
+		self::assignHeaderPaths();
 	}
 	
 	public function assignDefaults(PFRequest $request) {
@@ -22,11 +21,11 @@ class PFDefaultCommand extends PFCommand {
 		PFTemplateHelper::getInstance()->assign('PF_BASE_JAVASCRIPT_PATH', PFSession::getInstance()->getJSPath('content'));	
 		PFTemplateHelper::getInstance()->assign('PF_VERSION', PF_VERSION);
 		PFTemplateHelper::getInstance()->assign('PF_SERVER_NAME', @$_SERVER['SERVER_NAME']);
-	
 		PFTemplateHelper::getInstance()->assign('PF_CONTENT_IMAGE_PATH', PFSession::getInstance()->getImagePath('content'));
 	}
 	
-	public static function assignHeaderPaths($page) {
+	public static function assignHeaderPaths() {
+		$page = PFRegistry::getInstance()->getPage();	
 		PFTemplateHelper::getInstance()->assignCSSIncludes($page);
 		PFTemplateHelper::getInstance()->assignJavascriptIncludes($page);
 	}

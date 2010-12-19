@@ -12,7 +12,6 @@
 @package api
 */
 interface PFFormCommand {
-
 	public function initializeForm(PFRequest $request);
 	public function populateForm(PFRequest $request, PFForm $form);
 	public function handleSubmittedForm(PFRequest $request, PFForm $form);
@@ -22,7 +21,6 @@ interface PFFormCommand {
 @package api
 */
 interface PFMultiFormCommand {
-
 	public function initializeForms(PFRequest $request);
 	public function populateForms(PFRequest $request, array $formArray);
 	public function handleSubmittedForm(PFRequest $request, array $formArray);
@@ -32,11 +30,23 @@ interface PFMultiFormCommand {
 @package api
 */
 interface PFRestfulCommand {
-
 	public function handleGet(PFRequest $request);
 	public function handlePost(PFRequest $request);
 	public function handlePut(PFRequest $request);
 	public function handleDelete(PFRequest $request);
+}
+
+/**
+@package api
+*/
+interface PFResourcefulCommand {
+	abstract public function index(PFRequest $request);
+	abstract public function new(PFRequest $request);
+	abstract public function create(PFRequest $request);
+	abstract public function show(PFRequest $request);
+	abstract public function edit(PFRequest $request);
+	abstract public function update(PFRequest $request);
+	abstract public function destroy(PFRequest $request);
 }
 
 ?>

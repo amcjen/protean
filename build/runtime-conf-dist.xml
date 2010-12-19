@@ -16,8 +16,8 @@
 					<dsn>%%PHING_PROTEAN_DATABASE_DSN%%</dsn>
 					<user>%%PHING_PROTEAN_DATABASE_USER%%</user>
 					<password>%%PHING_PROTEAN_DATABASE_PASSWORD%%</password>
-					<classname>DebugPDO</classname>
-					<!-- <classname>PropelPDO</classname> -->
+					<classname>%%PHING_PROTEAN_DATABASE_CLASSNAME%%</classname>
+					<!-- <classname>DebugPDO|PropelPDO</classname> -->
 				</connection>
 			</datasource>
 		</datasources>

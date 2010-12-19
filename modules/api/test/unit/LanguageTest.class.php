@@ -47,7 +47,7 @@ class LanguageTest extends PHPUnit_Framework_TestCase {
 		
 		$prot = $this->language->getTranslation('api', PROTEAN_FRAMEWORK);
 		
-		$this->assertEquals('Protean Framework', $prot, '$language->GetTranslation() failed:');
+		$this->assertEquals('Protean Framework', $prot, '$language->getTranslation() failed:');
 	}
 }
 

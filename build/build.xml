@@ -59,6 +59,8 @@
 		<echo>Creating miscellaneous directories...</echo>
 		<mkdir dir="../tmp"/>
 		<exec command="chmod 777 ../tmp" />
+		<mkdir dir="../tmp/upload"/>
+		<exec command="chmod 777 ../tmp/upload" />
 		<mkdir dir="../logs"/>
 		<exec command="chmod 777 ../logs" />
 	</target>
@@ -66,6 +68,38 @@
 	<target name="dist" depends="dirmake">
 		<echo message="Starting project build..." />
 		<phingcall target="propel"/>
+	</target>
+
+	<target name="makemodule">
+		<echo>Creating new module...</echo>
+		<input propertyname="protean.modulename">Name of module to create: </input>
+		<available file="modules/${protean.modulename}" property="moduleexists" value="true"/>
+		<fail if="moduleexists" message="A module by that name already exists" />
+		<mkdir dir="modules/${protean.modulename}"/>
+		<mkdir dir="modules/${protean.modulename}/cmd"/>
+		<mkdir dir="modules/${protean.modulename}/lib"/>
+		<mkdir dir="modules/${protean.modulename}/test"/>
+		<mkdir dir="modules/${protean.modulename}/test/fake"/>
+		<mkdir dir="modules/${protean.modulename}/test/unit"/>
+		<mkdir dir="modules/${protean.modulename}/misc"/>
+		<mkdir dir="modules/${protean.modulename}/lang"/>
+		<mkdir dir="modules/${protean.modulename}/tpl"/>
+		<mkdir dir="modules/${protean.modulename}/tpl/default"/>
+		<mkdir dir="modules/${protean.modulename}/tpl/default/html"/>
+		<mkdir dir="modules/${protean.modulename}/tpl/default/css"/>
+		<mkdir dir="modules/${protean.modulename}/tpl/default/images"/>
+		<mkdir dir="modules/${protean.modulename}/tpl/default/js"/>
+		<exec command="touch .placeholder" dir="modules/${protean.modulename}/cmd" />
+		<exec command="touch .placeholder" dir="modules/${protean.modulename}/lib" />
+		<exec command="touch .placeholder" dir="modules/${protean.modulename}/test/fake" />
+		<exec command="touch .placeholder" dir="modules/${protean.modulename}/test/unit" />
+		<exec command="touch .placeholder" dir="modules/${protean.modulename}/misc" />
+		<exec command="touch .placeholder" dir="modules/${protean.modulename}/lang" />
+		<exec command="touch .placeholder" dir="modules/${protean.modulename}/tpl/default/html" />
+		<exec command="touch .placeholder" dir="modules/${protean.modulename}/tpl/default/css" />
+		<exec command="touch .placeholder" dir="modules/${protean.modulename}/tpl/default/images" />
+		<exec command="touch .placeholder" dir="modules/${protean.modulename}/tpl/default/js" />
+		<echo>Enjoy your new module!</echo>
 	</target>
 
 	<!-- PROPEL TARGETS -->
@@ -93,6 +127,7 @@
 					<token key="PHING_PROTEAN_DATABASE_TYPE" value="${propel.database}"/>
 					<token key="PHING_PROTEAN_DATABASE_USER" value="${propel.database.user}"/>
 					<token key="PHING_PROTEAN_DATABASE_PASSWORD" value="${propel.database.password}"/>
+					<token key="PHING_PROTEAN_DATABASE_CLASSNAME" value="${propel.database.classname}"/>
 				</replacetokens>
 			</filterchain>	
 		</copy>
@@ -149,9 +184,11 @@
 	</fileset>
 
 	<!-- DATABASE MIGRATE TARGET -->
-	<target name="db-migrate">
-		<echo msg="Running database migration script" />
-		<exec command="php modules/db/migration/migrate.php" dir="modules/db/migration" />
+	<target name="db-migrate" depends="propel-insert">
+    <echo message="Running ETL from old database" />
+    <echo message="This assumes we're using mysql." />
+    <echo message="It also assumes there are build properties called protean.migration.database and protean.migration.images..." />
+		<exec command="php modules/db/migration/migrate.php ${propel.database.host} ${propel.database.user} ${propel.database.password} ${protean.migration.database} ${protean.migration.images}" />
 	</target>
 
 	<!-- PHPUNIT REPORT TARGETS -->
@@ -200,53 +237,56 @@
 		</coverage-report>
 	</target> 
 
-	<!-- UNIT TEST TARGETS -->
-	<target name="clean-unit-tests">
+	<!-- CLEAN UP BEFORE RUNNING TESTS -->
+	<target name="clean-tests">
 		<delete dir="build/tests" />
 	</target>
 
-	<target name="prepare-unit-tests">
+	<target name="prepare-tests">
 		<mkdir dir="build/tests"/>
 	</target>
 
-	<target name="unit-test" depends="clean-unit-tests, prepare-unit-tests">
+	<!-- UNIT TEST TARGETS -->
+	<target name="test-unit" depends="clean-tests, prepare-tests">
 		<echo msg="Running unit tests" />
-		<phpunit haltonfailure="true" printsummary="true">
-			<formatter todir="build/tests" type="xml"/>
+		<phpunit haltonerror="true" haltonfailure="true" printsummary="true">
 			<batchtest>
 				<fileset refid="unittests"/>
 			</batchtest>
+			<formatter todir="build/tests" type="xml"/>
+			<formatter type="plain" usefile="false"/>
 		</phpunit>
 	</target>
 
 	<!-- FUNCTIONAL TEST TARGETS -->
-	<target name="clean-functional-tests">
-		<delete dir="build/tests" />
-	</target>
-
-	<target name="prepare-functional-tests">
-		<mkdir dir="build/tests"/>
-	</target>
-
-	<target name="functional-test" depends="clean-functional-tests, prepare-functional-tests">
+	<target name="test-functional" depends="clean-tests, prepare-tests">
 		<echo msg="Running functional tests" />
-		<phpunit haltonfailure="true" printsummary="true">
-			<formatter todir="build                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                               /tests" type="xml"/>
+		<phpunit haltonerror="true" haltonfailure="true" printsummary="true">
 			<batchtest>
 				<fileset refid="functionaltests"/>
 			</batchtest>
+			<formatter todir="build/tests" type="xml"/>
+			<formatter type="plain" usefile="false"/>
 		</phpunit>
 	</target>
 
 	<!-- ALL TESTS TARGET -->
-	<target name="test" depends="unit-test, functional-test">
+	<target name="test" depends="clean-tests, prepare-tests">
 		<echo msg="Running all unit and functional tests" />
+		<phpunit haltonerror="true" haltonfailure="true" printsummary="true">
+			<batchtest>
+				<fileset refid="unittests"/>
+				<fileset refid="functionaltests"/>
+			</batchtest>
+			<formatter todir="build/tests" type="xml"/>
+			<formatter type="plain" usefile="false"/>
+		</phpunit>
 	</target>
 
 	<!-- MODULES SPECIFIC TESTS TARGET -->
 	<target name="test-api">
 		<echo msg="... running api tests" />
-		<phpunit haltonfailure="true" printsummary="true">
+		<phpunit haltonerror="true" haltonfailure="true" printsummary="true">
 			<batchtest>
 				<fileset dir=".">
 					<include name="modules/api/test/unit/*Test.class.php"/>
@@ -259,7 +299,7 @@
 
 	<target name="test-content">
 		<echo msg="... running content tests" />
-		<phpunit haltonfailure="true" printsummary="true">
+		<phpunit haltonerror="true" haltonfailure="true" printsummary="true">
 			<batchtest>
 				<fileset dir=".">
 					<include name="modules/content/test/unit/*Test.class.php"/>
@@ -272,10 +312,10 @@
 
 	<target name="dev">
 		<echo msg="developing a feature" />
-		<phpunit haltonfailure="true" printsummary="true">
+		<phpunit haltonerror="true" haltonfailure="true" printsummary="true">
 			<batchtest>
 				<fileset dir=".">
-					<include name="modules/api/test/*Test.class.php"/>
+					<include name="modules/content/test/unit/*Test.class.php"/>
 				</fileset>
 			</batchtest>
 			<formatter type="plain" usefile="false"/>

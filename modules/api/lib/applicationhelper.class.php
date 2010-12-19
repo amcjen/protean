@@ -14,27 +14,22 @@ class PFApplicationHelper {
 	private static $instance;
 
 	private function __construct() {
-
 		$this->currentLoadedApp = '';
 	}
 
 	static function getInstance() {
-
 		if (!self::$instance) {
-
 			self::$instance = new self();
 		}
-
+		
 		return self::$instance;
 	}
 
 	public function init() {
-
 		$this->loadControllerMap();
 	}
 
 	public function appController() {
-
 		$map = PFRegistry::getControllerMap();
 
 		if (!is_object($map)) {
@@ -45,7 +40,6 @@ class PFApplicationHelper {
 	}
 
 	public function loadControllerMap($app='', $configFileOverride='') {
-
 		if ($app == '') {	
 			$app = PFRequest::getCurrentURLApplication();
 		}
@@ -64,19 +58,16 @@ class PFApplicationHelper {
 
 		if (!file_exists($configFile)) {
 			$default = explode('.', PF_DEFAULT_COMMAND);
-
 			$configFile = PF_BASE . '/modules/' . $default[0] . '/cmd/command.xml';
 		}
 
 		if (PF_CACHE_ENABLED == true && PF_CACHE_CONTROLLER_MAP == true) {
-
 			PFFactory::getInstance()->initObject('api.controllermap');
 			PFFactory::getInstance()->initObject('api.cacheapc');
 
 			$map = PFCacheAPC::getInstance()->fetch($configFile);
 
 			if ($map instanceof PFControllerMap) {
-
 				if (PF_APP_CONTROLLER_DEBUG == true) {
 					PFDebugStack::append('Reading controller map ' . $configFile . ' from cache', __FILE__, __LINE__);
 				}
@@ -87,7 +78,7 @@ class PFApplicationHelper {
 		}
 
 		$options = @SimpleXml_load_file($configFile);
-
+		
 		if (!$options instanceof SimpleXMLElement) {
 			throw new PFException('api', array('COMMAND_FILE_NOT_RESOLVABLE', $configFile), E_USER_ERROR);
 		}
@@ -95,21 +86,18 @@ class PFApplicationHelper {
 		$map = PFFactory::getInstance()->createObject('api.controllermap');
 
 		foreach ($options->view as $defaultView) {
-
 			$statusString = trim($defaultView['status']);
 			$status = PFCommand::statuses($statusString);
 			$map->addView(PF_DEFAULT_COMMAND, $status, (string)$defaultView);
 		}
 
 		foreach ($options->viewheader as $defaultViewHeader) {
-
 			$statusString = trim($defaultViewHeader['status']);
 			$status = PFCommand::statuses($statusString);
 			$map->addViewHeader(PF_DEFAULT_COMMAND, $status, (string)$defaultViewHeader);
 		}
 
 		foreach ($options->viewfooter as $defaultViewFooter) {
-
 			$statusString = trim($defaultViewFooter['status']);
 			$status = PFCommand::statuses($statusString);
 			$map->addViewFooter(PF_DEFAULT_COMMAND, $status, (string)$defaultViewFooter);

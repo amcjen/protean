@@ -149,25 +149,19 @@ class PFImageFile {
 		if ($returnValue == 0) {
 
 			switch ($mime[1]) {
-				case 'image/jpeg':
-				return IMAGETYPE_JPEG;
-				break;
-				case 'image/gif':
-				return IMAGETYPE_GIF;
-				break;
-				case 'image/png':
-				return IMAGETYPE_PNG;
-				break;
-				case 'image/x-ms-bmp':
-				case 'image/bmp':
-				return IMAGETYPE_BMP;
-				break;
-				case 'image/tiff':
-				return IMAGETYPE_TIFF_II;
-				break;
+				case 'image/jpeg;':
+					return IMAGETYPE_JPEG;
+				case 'image/gif;':
+					return IMAGETYPE_GIF;
+				case 'image/png;':
+					return IMAGETYPE_PNG;
+				case 'image/x-ms-bmp;':
+				case 'image/bmp;':
+					return IMAGETYPE_BMP;
+				case 'image/tiff;':
+					return IMAGETYPE_TIFF_II;
 				default:
-				return 0;
-				break;
+					return 0;
 			}
 		} else {
 			throw new PFException('api', 'ATTEMPT_TO_CONVERT_UNSUPPORTED_IMAGE_TYPE_FAILED', E_USER_WARNING);
