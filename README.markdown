@@ -80,4 +80,18 @@ There are so many great frameworks and platforms available five years later, it'
 
 Having done so much architecture in my past, I always keep a back-burner going in my mind regarding performance.  PHP5 is probably one of the most tried-and-true platforms for scaling web applications of all that are available.  Facebook runs PHP5, both interpreted and compiled, as well as very large amounts of optimizations throughout.  Facebook itself is a testament to how well a PHP5 architecture not only performs, but also how well it integrates very cleanly with other systems when it's time to scale out sub-components such as databases or caching/middleware.
 
-I don't know the total number of sites that Protean powers, but I am aware of a dozen or so that I've been involved with, including some at over 1,000,000 registered users.  Updates will likely include migrating to the Smarty 3 templating engine, introducing namespacing to the modules, as well as writing new endpoint adapters for more recent NoSQL engines such as Cassandra, Mongo, and Couch.
+I don't know the total number of sites that Protean powers, but I am aware of a dozen or so that I've been involved with, including some at over 1,000,000 registered users.  Updates will likely include migrating to the Smarty 3 templating engine, introducing namespacing to the modules, as well as writing new endpoint adapters for more recent NoSQL engines such as Redis, Mongo, and Couch.
+
+
+REQUIREMENTS:
+=============
+Here are the requirements for building and testing Protean:
+
+- Phing 2.4.2:
+http://phing.info
+
+- Propel 1.5.6:
+http://propelorm.org
+
+- PHPUnit 3.4.15:
+http://phpunit.de
