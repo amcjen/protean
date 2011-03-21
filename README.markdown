@@ -93,14 +93,12 @@ Log
 	pear install Log
 
 Phing 2.4.2:
-http://phing.info
 -------------------
 
 	pear channel-discover pear.phing.info
 	sudo pear install -a phing/phing-2.4.2
 
 Propel 1.5.6:
-http://propelorm.org
 -------------------
 
 	pear channel-discover pear.propelorm.org
@@ -108,7 +106,6 @@ http://propelorm.org
 	sudo pear install -a propel/propel_runtime-1.5.6
 
 PHPUnit 3.4.15:
-http://phpunit.de
 -------------------
 
 	pear channel-discover pear.phpunit.de
