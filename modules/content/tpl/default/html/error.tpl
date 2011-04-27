@@ -1,4 +1,4 @@
-{$PF_HEADER}
+{include file=$PF_HEADER}
 
 			<div id="errorcontent">
 				<p class="error">
@@ -6,4 +6,4 @@
 				</p>
 			</div> 
 	
-{$PF_FOOTER}
+{include file=$PF_FOOTER}

@@ -26,15 +26,16 @@ CONTACT_US=Contact Us
 GET_DIRECTIONS=Get Directions
 
 // Insufficient data messages
-ID_NOT_FOUND=No ID given
-USERNAME_NOT_FOUND=No username given
-PASSWORD_NOT_FOUND=No password given
-INVALID_LOGIN=Username and/or password not found
+ID_NOT_FOUND=ID %s not found
+USERNAME_NOT_FOUND=Invalid username or password
+PASSWORD_NOT_FOUND=Invalid username or password
+PASSWORDS_DONT_MATCH=Passwords do not match
+INVALID_PASSWORD=Invalid username or password
+INVALID_LOGIN=Invalid username or password
+USERNAME_EXISTS=This e-mail address already exists. Please try another.
 
 // Error Messages
 
 // Notice Messages
 YOU_HAVE_BEEN_LOGGED_OUT=You have been logged out
-
-
 ERROR_SAVING_TO_DATABASE=There was an error attempting to save to the database table %s

@@ -1,31 +1,24 @@
 <control>
 
+	<command>content.default</command>
 	<viewheader>content.header</viewheader>
 	<viewfooter>content.footer</viewfooter>
 	<view>content.index</view>
 	<view status="CMD_ERROR">content.error</view>
 	<view status="CMD_INSUFFICIENT_DATA">content.error</view>
 	
-	
-	<command name="content.contact">
-		<classroot>content.static</classroot>
-		<viewheader>content.header</viewheader>
-		<viewfooter>content.footer</viewfooter>
-		<view>content.contact</view>
-	</command>
-	
-	<command name="content.404">
-		<classroot>content.static</classroot>
+	<uri name="/content/notfound">
+		<command>content.static</command>
 		<viewheader>content.header</viewheader>
 		<viewfooter>content.footer</viewfooter>
 		<view>content.404</view>
-	</command>
+	</uri>
 	
-	<command name="content.error">
-		<classroot>content.static</classroot>
+	<uri name="/content/error">
+		<command>content.static</command>
 		<viewheader>content.header</viewheader>
 		<viewfooter>content.footer</viewfooter>
 		<view>content.error</view>
-	</command>
+	</uri>
 	
 </control>

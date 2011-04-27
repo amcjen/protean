@@ -1,4 +1,4 @@
-{$PF_HEADER}
+{include file=$PF_HEADER}
 
 <div id="bd" class="grid_16 alpha">
 	<div class="grid_14 alpha prefix_1 suffix_1">
@@ -6,4 +6,4 @@
 	</div>
 </div>		
 
-{$PF_FOOTER}
+{include file=$PF_FOOTER}
