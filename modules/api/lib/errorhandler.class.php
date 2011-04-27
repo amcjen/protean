@@ -2,12 +2,14 @@
 /**************************************************************************\
 * Protean Framework                                                        *
 * https://github.com/erictj/protean                                        *
-* Copyright (c) 2006-2010, Loopshot Inc.  All rights reserved.             *
+* Copyright (c) 2006-2011, Loopshot Inc.  All rights reserved.             *
 * ------------------------------------------------------------------------ *
 *  This program is free software; you can redistribute it and/or modify it *
 *  under the terms of the BSD License as described in license.txt.         *
 \**************************************************************************/
-
+/**
+@package api
+*/
 final class PFErrorHandler { 
 
 	protected static $errorCount = 0;

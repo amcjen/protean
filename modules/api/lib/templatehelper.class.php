@@ -2,12 +2,14 @@
 /**************************************************************************\
 * Protean Framework                                                        *
 * https://github.com/erictj/protean                                        *
-* Copyright (c) 2006-2010, Loopshot Inc.  All rights reserved.             *
+* Copyright (c) 2006-2011, Loopshot Inc.  All rights reserved.             *
 * ------------------------------------------------------------------------ *
 *  This program is free software; you can redistribute it and/or modify it *
 *  under the terms of the BSD License as described in license.txt.         *
 \**************************************************************************/
-
+/**
+@package api
+*/
 class PFTemplateHelper { 
 
 	static protected $instance;
@@ -36,34 +38,51 @@ class PFTemplateHelper {
 	public function append($key, $value) {
 		if (isset($this->data[$key])) {		
 			$this->data[$key] = $this->data[$key] . $value;
-		} else {		
+		} else {
+			
 			$this->data[$key] = $value;
 		}
 	}
-
-	public function addJavascriptInclude($filepath) {
+	
+	public function addJavascriptInclude($filepath, $browserCheck='') {
+		if ($browserCheck != '') {
+			$filepath .= '|' . $browserCheck;
+		}
 		if (array_search($filepath, $this->javascriptIncludes, true) === false) {
 			$this->javascriptIncludes[] = $filepath;
 		}
 	}
 
 	public function assignJavascriptIncludes($page=false) {
+	
 		$jsPath = '';
 
 		foreach ($this->javascriptIncludes as $value) {
-			$jsPath .= '<script type="text/javascript" src="' . $value. '"></script>' . "\n";			
+			
+			$jsValue = explode('|', $value);
+			
+			if (count($jsValue) > 1) {
+				$jsPath .= "\t" . '<!--[if ' . $jsValue[1] . ']>' . "\n";
+				$jsPath .= '<script type="text/javascript" src="' . $jsValue[0]. '?' . @filemtime(PF_BASE . $jsValue[0]) . '"></script>' . "\n";
+				$jsPath .= "\t<![endif]-->\n";
+			} else {
+				$jsPath .= '<script type="text/javascript" src="' . $jsValue[0]. '?' . @filemtime(PF_BASE . $jsValue[0]) . '"></script>' . "\n";
+			}			
 		}
-
-		if ($page == false) {		
+		
+		if ($page == false) {
+		
 			PFTemplateHelper::getInstance()->assign('PF_JAVASCRIPT_INCLUDES', $jsPath);
-		} else {		
+		} else {
+		
 			$page->assign('PF_JAVASCRIPT_INCLUDES', $jsPath);
 		}
 	}
 
-	public function addCSSInclude($filepath, $browserCheck='') {	
+	public function addCSSInclude($filepath, $browserCheck='') {
+	
 		if ($browserCheck != '') {
-			$filepath .= ':' . $browserCheck;
+			$filepath .= '|' . $browserCheck;
 		}
 		if (array_search($filepath, $this->cssIncludes, true) === false) {
 			$this->cssIncludes[] = $filepath;
@@ -71,23 +90,27 @@ class PFTemplateHelper {
 	}
 
 	public function assignCSSIncludes($page=false) {
+	
 		$cssPath = '';
-
-		foreach ($this->cssIncludes as $value) {	
-			$cssValue = explode(':', $value);
+		
+		foreach ($this->cssIncludes as $value) {
+			
+			$cssValue = explode('|', $value);
 
 			if (count($cssValue) > 1) {
-				$cssPath .= "\t\t" . '<!--[if lte ' . $cssValue[1] . ']>' . "\n";
-				$cssPath .= "\t\t" . '<link rel="stylesheet" type="text/css" media="all" href="' . $cssValue[0]. '" />' . "\n";
-				$cssPath .= "\t\t<![endif]-->\n";
+				$cssPath .= "\t" . '<!--[if ' . $cssValue[1] . ']>' . "\n";
+				$cssPath .= "\t" . '<link rel="stylesheet" type="text/css" media="all" charset="utf-8" href="' . $cssValue[0]. '?' . filemtime(PF_BASE . $cssValue[0]) . '" />' . "\n";
+				$cssPath .= "\t<![endif]-->\n";
 			} else {
-				$cssPath .= "\t\t" . '<link rel="stylesheet" type="text/css" media="all" href="' . $cssValue[0]. '" />' . "\n";
+				$cssPath .= "\t" . '<link rel="stylesheet" type="text/css" media="all" charset="utf-8" href="' . $cssValue[0]. '?' . filemtime(PF_BASE . $cssValue[0]) . '" />' . "\n";
 			}
 		}
-
-		if ($page == false) {		
+		
+		if ($page == false) {
+		
 			PFTemplateHelper::getInstance()->assign('PF_HEAD_CSS_INCLUDES', $cssPath);
-		} else {	
+		} else {
+		
 			$page->assign('PF_HEAD_CSS_INCLUDES', $cssPath);
 		}
 	}

@@ -2,12 +2,14 @@
 /**************************************************************************\
 * Protean Framework                                                        *
 * https://github.com/erictj/protean                                        *
-* Copyright (c) 2006-2010, Loopshot Inc.  All rights reserved.             *
+* Copyright (c) 2006-2011, Loopshot Inc.  All rights reserved.             *
 * ------------------------------------------------------------------------ *
 *  This program is free software; you can redistribute it and/or modify it *
 *  under the terms of the BSD License as described in license.txt.         *
 \**************************************************************************/
-	
+/**
+@package api
+*/	
 class PFRequest { 
 
 	protected $properties;
@@ -30,7 +32,7 @@ class PFRequest {
 			foreach ($_SERVER['argv'] as $arg) {
 				if (strpos($arg, '=')) {	
 					list($key, $value) = explode('=', $arg);
-					$this->setProperty($key, $value);
+					$this->set($key, $value);
 				}
 			}
 			
@@ -38,15 +40,12 @@ class PFRequest {
 		}
 
 		foreach ($_REQUEST as $requestKey => $requestVar) {
-			$this->setProperty($requestKey, $requestVar);
+			$this->set($requestKey, $requestVar);
 		}
 		
-		$this->initQueryString();
-		$this->setProperty('lang', PFRequest::getCurrentURLLanguage());
-		$this->setProperty('app',  PFRequest::getCurrentURLApplication());	
-		$this->setProperty('cmd', PFRequest::getCurrentURLCommand());
+		$this->set('pf.uri', PFRequestHelper::getCurrentURIPattern() . '|' . PFRequestHelper::getHTTPVerb());
 
-		PFRegistry::getInstance()->set('APPNAME', $this->getProperty('app')); 
+		PFRegistry::getInstance()->set('APPNAME', $this->get('app')); 
 	}
 	
 	public function getProperty($key) {
@@ -84,37 +83,31 @@ class PFRequest {
 		unset($_GET[$key]);
 	}
 	
-	public function __unset($key) {
-		$this->unsetProperty($key);
-	}
-
 	public function isPropertySet($key){
 		return (isset($_REQUEST[$key]) || isset($_POST[$key]) || isset($_GET[$key]));
 	}
 	
-	public function __isset($key) {
-		return $this->isPropertySet($key);
-	}
+	// public function getLastApplicationRun() {
+	// 	return PFRequestHelper::getCurrentURIApplication();
+	// 	return $this->command->getApplicationName();
+	// }
+	// 
+	// public function getLastCommandURLNameRun() {
+	// 	return PFRequestHelper::getCurrentURICommand();
+	// 	return $this->command->getURLName();
+	// }
 	
-	public function getLastApplicationRun() {
-		return $this->command->getApplicationName();
-	}
-
-	public function getLastCommandURLNameRun() {
-		return $this->command->getURLName();
+	public function setCommand(PFCommand $command) {
+		$this->command = $command;
 	}
 	
 	public function getLastCommandRun() {
 		return $this->command;
 	}
 
-	public function getLastAppCmdRun() {
-		return $this->getLastApplicationRun() . '.' . $this->getLastCommandURLNameRun();
-	}
-	
-	public function setCommand(PFCommand $command) {	
-		$this->command = $command;
-	}
+	// public function getLastAppCmdRun() {
+	// 	return $this->getLastApplicationRun() . '.' . $this->getLastCommandURLNameRun();
+	// }
 	
 	public function addFeedback($app, $message, $status) {
 		$fullMessage = $message;
@@ -184,91 +177,6 @@ class PFRequest {
 
 	public function getFeedbackString($separator='\n') {
 		return implode($separator, $this->feedback);
-	}
-	
-	public function initQueryString() {
-		$qString = array();
-		$qStringArray = explode('&', @$_SERVER['QUERY_STRING']);
-		
-		foreach ($qStringArray as $element) {		
-			$el = explode('=', $element);			 
-			if (array_key_exists(1, $el)) {		
-				$qString[$el[0]] = $el[1];
-			}
-		}
-		
-		PFRegistry::getInstance()->set('pf_query_string', $qString);
-	}
-	
-	static public function getCurrentURLLanguage() {
-		$uriArray = explode('/', @$_SERVER['REQUEST_URI']); 
-		if (PF_SHORT_URLS == true) {
-			return PFLanguage::getInstance()->getDefaultLocale();
-		} else {
-			if (@$uriArray[2]) {
-				return $uriArray[2];
-			} else {
-				return PFLanguage::getInstance()->getDefaultLocale();
-			}
-		}
-	}
-	
-	static public function getCurrentURLApplication() {
-		$uriArray = explode('/', @$_SERVER['REQUEST_URI']); 
-			
-		if (PF_SHORT_URLS == true) {
-			$index = 1;
-		} else {
-			$index = 3;
-		}
-
-		if (@$uriArray[$index+2] && is_dir(PF_BASE . '/modules/' . $uriArray[$index+2])) {
-			return $uriArray[$index+2];
-		} elseif (@$uriArray[$index]) {
-			return $uriArray[$index];
-		} else {
-			list($app, $cmd) = explode('.', PF_DEFAULT_COMMAND);
-			return $app;
-		}
-	}
-		
-	static public function getCurrentURLCommand() {
-		$uriArray = explode('/', @$_SERVER['REQUEST_URI']); 
-		if (PF_SHORT_URLS == true) {
-			$index = 2;
-		} else {
-			$index = 4;
-		}
-
-		if (@$uriArray[$index+2] && is_dir(PF_BASE . '/modules/' . $uriArray[$index+1])) {
-			$cmd = explode('?', $uriArray[$index+2]);
-			return $cmd[0];		
-		} elseif (@$uriArray[$index]) {
-			$cmd = explode('?', $uriArray[$index]);
-			return $cmd[0];
-		} else {
-			list($app, $cmd) = explode('.', PF_DEFAULT_COMMAND);
-			return $cmd;
-		}
-	}
-
-	static public function explodeURI() {
-		$uriArray = explode('/', @$_SERVER['PHP_SELF']);
-
-		return $uriArray;
-	}
-	
-	static public function getRESTSlot($indexOffset) {
-		$uriArray = explode('/', @$_SERVER['REQUEST_URI']); 
-
-		if (PF_SHORT_URLS == true) {
-			$index = 2;
-		} else {
-			$index = 4;
-		}
-		
-		$uriArray = explode('?', @$uriArray[$index + $indexOffset]); 
-		return @$uriArray[0];
 	}
 }
 

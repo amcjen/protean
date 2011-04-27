@@ -2,20 +2,20 @@
 /**************************************************************************\
 * Protean Framework                                                        *
 * https://github.com/erictj/protean                                        *
-* Copyright (c) 2006-2010, Loopshot Inc.  All rights reserved.             *
+* Copyright (c) 2006-2011, Loopshot Inc.  All rights reserved.             *
 * ------------------------------------------------------------------------ *
 *  This program is free software; you can redistribute it and/or modify it *
 *  under the terms of the BSD License as described in license.txt.         *
 \**************************************************************************/
-
+/**
+@package api
+*/
 class PFRestHelper { 
 
-	public static function processRequest() { 
-
+	public static function processRequest($request) { 
 		$requestMethod = strtolower($_SERVER['REQUEST_METHOD']);
 		$returnObject	= PFFactory::getInstance()->createObject('api.restrequest');
 		$data	= array();
-
 		switch ($requestMethod) {
 			case 'get':
 			$data = $_GET;
@@ -31,6 +31,7 @@ class PFRestHelper {
 
 		$returnObject->setMethod($requestMethod);
 		$returnObject->setRequestVars($data);
+		$returnObject->populateRequest($request);
 
 		if (isset($data['data'])) {
 			$returnObject->setData(json_decode($data['data']));
@@ -41,7 +42,7 @@ class PFRestHelper {
 	public static function sendResponse($status=200, $content='', $contentType='text/html') { 		
 		$statusHeader = 'HTTP/1.1 ' . $status . ' ' . PFRestHelper::getStatusCodeMessage($status);
 		header($statusHeader);
-		header('Content-type: ' . $contentType);
+		header('Content-type: ' . $contentType . '; charset=utf-8');
 
 		if ($contentType != 'text/html') {
 			echo $content;
@@ -70,7 +71,7 @@ class PFRestHelper {
 
 			$signature = ($_SERVER['SERVER_SIGNATURE'] == '') ? $_SERVER['SERVER_SOFTWARE'] . ' Server at ' . $_SERVER['SERVER_NAME'] . ' Port ' . $_SERVER['SERVER_PORT'] : $_SERVER['SERVER_SIGNATURE'];
 
-			$body = '<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01//EN" "http://www.w3.org/TR/html4/strict.dtd">
+			$body = '<!DOCTYPE html>
 			<html>
 				<head>
 				<meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1">
@@ -88,6 +89,18 @@ class PFRestHelper {
 			echo $body;
 			exit;
 		}	
+	}
+
+	public static function makeJSONResponse($status, $code, $message) {
+		$m = explode(' ', microtime());
+	  $utime = $m[1] . (int)round($m[0]*1000,3);
+	
+		$json->status = $status;
+		$json->code = $code;
+		$json->message = $message;
+		$json->timestamp = $utime;
+		
+		return json_encode($json);
 	}
 
 	public static function getStatusCodeMessage($status) {

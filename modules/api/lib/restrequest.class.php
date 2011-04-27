@@ -2,12 +2,14 @@
 /**************************************************************************\
 * Protean Framework                                                        *
 * https://github.com/erictj/protean                                        *
-* Copyright (c) 2006-2010, Loopshot Inc.  All rights reserved.             *
+* Copyright (c) 2006-2011, Loopshot Inc.  All rights reserved.             *
 * ------------------------------------------------------------------------ *
 *  This program is free software; you can redistribute it and/or modify it *
 *  under the terms of the BSD License as described in license.txt.         *
 \**************************************************************************/
-
+/**
+@package api
+*/
 class PFRestRequest { 
 
 	private $requestVars;
@@ -32,6 +34,12 @@ class PFRestRequest {
 
 	public function setRequestVars($requestVars) {
 		$this->requestVars = $requestVars;
+	}
+
+	public function populateRequest(PFRequest $request) {
+		foreach ($this->requestVars as $key => $val) {
+			$request->set($key, $val);
+		}
 	}
 
 	public function getData() {

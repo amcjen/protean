@@ -2,23 +2,27 @@
 /**************************************************************************\
 * Protean Framework                                                        *
 * https://github.com/erictj/protean                                        *
-* Copyright (c) 2006-2010, Loopshot Inc.  All rights reserved.             *
+* Copyright (c) 2006-2011, Loopshot Inc.  All rights reserved.             *
 * ------------------------------------------------------------------------ *
 *  This program is free software; you can redistribute it and/or modify it *
 *  under the terms of the BSD License as described in license.txt.         *
 \**************************************************************************/
-
+/**
+@package api
+*/
 final class PFRegistry {
 
 	static private $instance;
 	private $data;
 	private $map;
 	private $page;
+	private $appController;
 	
 	private function __construct() {
 		$this->data = array();
 		$this->map = NULL;
 		$this->page = NULL;
+		$this->appController = NULL;
 	}
 	
 	static public function getInstance() {
@@ -70,20 +74,28 @@ final class PFRegistry {
 		return $this->isValueSet($key);
 	}
 	
-	public function setControllerMap($map) {	
+	public function setControllerMap(PFControllerMap $map) {
 		$this->map = $map;
 	}
 	
 	static public function getControllerMap() {
-		return self::$instance->map;
+		return @self::$instance->map;
 	}
 	
-	public function setPage($page) {
+	public function setPage(PFTemplate $page) {
 		$this->page = $page;
 	}
 	
 	static public function getPage() {
 		return self::$instance->page;
+	}
+	
+	public function setAppController(PFApplicationController $appController) {
+		$this->appController = $appController;
+	}
+	
+	static public function getAppController() {
+		return self::$instance->appController;
 	}
 }
 

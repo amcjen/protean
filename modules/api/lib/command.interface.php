@@ -2,7 +2,7 @@
 /**************************************************************************\
 * Protean Framework                                                        *
 * https://github.com/erictj/protean                                        *
-* Copyright (c) 2006-2010, Loopshot Inc.  All rights reserved.             *
+* Copyright (c) 2006-2011, Loopshot Inc.  All rights reserved.             *
 * ------------------------------------------------------------------------ *
 *  This program is free software; you can redistribute it and/or modify it *
 *  under the terms of the BSD License as described in license.txt.         *
@@ -35,18 +35,4 @@ interface PFRestfulCommand {
 	public function handlePut(PFRequest $request);
 	public function handleDelete(PFRequest $request);
 }
-
-/**
-@package api
-*/
-interface PFResourcefulCommand {
-	abstract public function index(PFRequest $request);
-	abstract public function new(PFRequest $request);
-	abstract public function create(PFRequest $request);
-	abstract public function show(PFRequest $request);
-	abstract public function edit(PFRequest $request);
-	abstract public function update(PFRequest $request);
-	abstract public function destroy(PFRequest $request);
-}
-
 ?>

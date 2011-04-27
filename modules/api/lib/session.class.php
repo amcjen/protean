@@ -2,12 +2,14 @@
 /**************************************************************************\
 * Protean Framework                                                        *
 * https://github.com/erictj/protean                                        *
-* Copyright (c) 2006-2010, Loopshot Inc.  All rights reserved.             *
+* Copyright (c) 2006-2011, Loopshot Inc.  All rights reserved.             *
 * ------------------------------------------------------------------------ *
 *  This program is free software; you can redistribute it and/or modify it *
 *  under the terms of the BSD License as described in license.txt.         *
 \**************************************************************************/
-
+/**
+@package api
+*/
 class PFSession {
 
 	static private $instance;
@@ -18,11 +20,19 @@ class PFSession {
 		$this->formVariables = array();
 
 		try {
+			
+			if (PF_SESSION_STORE == 'memcache') {			
+				ini_set('session.save_handler', 'memcache');
+				ini_set('session.save_path', PF_SESSION_PATH);
+			} else {
+				ini_set('session.save_handler', 'files');
+				
 			if (defined('PF_SESSION_PATH') && PF_SESSION_PATH != '') {
 				if (!is_dir(PF_SESSION_PATH . '/sessions') && is_writable(PF_SESSION_PATH)) {
 					mkdir(PF_SESSION_PATH . '/sessions', 0770);
 				}
 				session_save_path(PF_SESSION_PATH . '/sessions');
+			}
 			}
 
 			if ($session_expire != '') {
@@ -43,10 +53,9 @@ class PFSession {
 				session_name(PF_SESSION_NAME);
 			}
 
-			ini_set('session.save_handler', 'files');
-
 			if (php_sapi_name() != 'cli') {
 				session_start();
+				
 			}
 
 			$fingerprint = PF_SESSION_UNIQUE_KEY . @$_SERVER['HTTP_USER_AGENT'];
@@ -55,8 +64,8 @@ class PFSession {
 				$this->register('auth_fingerprint', md5($fingerprint . session_id()));
 			} elseif ($this->retrieve('auth_fingerprint') != md5($fingerprint . session_id()))  {
 				// We comment this out b/c some Yahoo! user agents change during the session
-				// $this->Logout();
-				// $this->Destroy();
+				// $this->logout();
+				// $this->destroy();
 				//throw new PFException('', 'You have been logged out.  Please log in again.', E_USER_WARNING);
 			}
 
@@ -204,6 +213,14 @@ class PFSession {
 		return setcookie($name, '', time() - 3600);
 	}
 
+	public function getSessionId() {
+		return session_id();
+	}
+	
+	public function setSessionId($sessionId) {
+		return session_id($sessionId);
+	}
+	
 	public function isLoggedIn() {
 		return $this->isRegistered('auth_valid_login');
 	}
@@ -234,59 +251,30 @@ class PFSession {
 		return isset($_SESSION['form-' . $formName]) && trim($_SESSION['form-' . $formName]) != '';
 	}
 
-	public function getURL($text, $ssl='', $lang='') {		
-		if ($ssl === true) {
+	public function getURL($text, $ssl='', $lang='') {
+		if ($ssl === true || isset($_SERVER['HTTPS'])) {
 			$fullpath = PF_URL_SECURE;
-		} else if ($ssl === false) {
-			$fullpath = PF_URL;
 		} else {
-			if (isset($_SERVER['HTTPS'])) {
-				$fullpath = PF_URL_SECURE;
-			} else {
-				$fullpath = PF_URL;
-			}
+			$fullpath = PF_URL;
 		}
-
-		if ($lang == '') {
-			$lang = PFLanguage::getInstance()->getCurrentLanguage();
+		
+		$text = explode('?', $text);
+		$text = $text[0];
+		
+		if (substr($text, 0, 1) == '/') {
+			$text = substr($text, 1, strlen($text));
 		}
-
-		if (count($_COOKIE) < 1) {
-			if (strpos($text, '?')) {
-				$delim = '&';
-			}
-			else {
-				$delim = '?';
-			}
-
-			if (php_sapi_name() == 'cli') {			
-				if (PF_SHORT_URLS) {
-					return $fullpath . '/' . $text;
-				} else {
-					return $fullpath . '/main/' . $lang . '/' . $text;
-				}
-
-			} else {	
-				if (PF_SHORT_URLS) {
-					return $fullpath . '/' . $text;
-				} else {
-					return $fullpath . '/main/' . $lang . '/' . $text;
-				}
-			}
-
-		}
-		else {
-			return $fullpath . '/' . $text;
-		}
+		
+		return $fullpath . '/' . $text;
 	}
 
 	public function getSelfURL($ssl=false, $lang='') {
-		$text = PFRequest::getCurrentURLApplication() . '/' . PFRequest::getCurrentURLCommand();
+		$text = PFRequestHelper::getCurrentURIApplication() . '/' . PFRequestHelper::getCurrentURICommand();
 		return $this->getURL($text, $ssl, $lang);
 	}
 
 	public function getSelfURLWithVars($ssl=false, $lang='') {
-		$text = PFRequest::getCurrentURLApplication() . '/' . PFRequest::getCurrentURLCommand() . '?' . $_SERVER["QUERY_STRING"];
+		$text = PFRequestHelper::getCurrentURIApplication() . '/' . PFRequestHelper::getCurrentURICommand() . '?' . $_SERVER["QUERY_STRING"];
 		return $this->getURL($text, $ssl, $lang);
 	}
 

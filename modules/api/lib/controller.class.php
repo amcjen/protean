@@ -2,12 +2,14 @@
 /**************************************************************************\
 * Protean Framework                                                        *
 * https://github.com/erictj/protean                                        *
-* Copyright (c) 2006-2010, Loopshot Inc.  All rights reserved.             *
+* Copyright (c) 2006-2011, Loopshot Inc.  All rights reserved.             *
 * ------------------------------------------------------------------------ *
 *  This program is free software; you can redistribute it and/or modify it *
 *  under the terms of the BSD License as described in license.txt.         *
 \**************************************************************************/
-
+/**
+@package api
+*/
 class PFController { 
 
 	private static $instance;
@@ -37,7 +39,6 @@ class PFController {
 
 	protected function handleRequest() {
 		try {
-			PFProfiler::getInstance()->setMark('Starting PFController->HandleRequest()');
 
 			$request = PFFactory::getInstance()->createObject('api.request');
 			$appController = PFApplicationHelper::getInstance()->appController();
@@ -52,7 +53,7 @@ class PFController {
 
 			if ($request->isPropertySet('theme') || PFSession::getInstance()->isRegistered('pf.theme')) {				
 				if ($request->isPropertySet('theme')) {
-					$theme = $request->getProperty('theme');
+					$theme = $request->get('theme');
 				} else {
 					$theme = PFSession::getInstance()->retrieve('pf.theme');
 				}
@@ -66,14 +67,16 @@ class PFController {
 			$app = $appController->getViewApplication($request);
 			PFRegistry::getInstance()->setPage(PFFactory::getInstance()->createObject('api.template', $app));
 
-			PFProfiler::getInstance()->setMark('Starting GetCommand() loop in HandleRequest()');
-
 			while ($cmd = $appController->getCommand($request)) {
 				$cmd->execute($request);
-			}	
-			PFProfiler::getInstance()->setMark('Finished GetCommand() loop in HandleRequest()');
+			}
+			
+			if ($request->get('pf.uri') == '/content/notfound|get') {
+				header('HTTP/1.1 404 Not Found');
+				header('Content-type: text/html; charset=utf-8');
+			}
+			
 			$this->invokeView($appController, $request);
-			PFProfiler::getInstance()->setMark('Finished InvokeView() in HandleRequest()');
 
 		} catch (PFException $e) {
 			$e->handleException();
@@ -81,7 +84,7 @@ class PFController {
 	}
 
 	private function invokeView($appController, $request) {
-		$page = PFRegistry::getInstance()->getPage();	
+		$page = PFRegistry::getInstance()->getPage();
 		PFTemplateHelper::getInstance()->assignDefaults($page);
 
 		$headerApp = $appController->getViewHeaderApplication($request);
@@ -91,23 +94,8 @@ class PFController {
 		$viewApp = $appController->getViewApplication($request);
 		$view = $appController->getView($request);
 
-		if (PF_PROFILER) {
-			$page->assign('PF_PROFILE_TIME', PFProfiler::getInstance()->getTime());
-		}
-		if (PF_PROFILER_MARKS) {
-			PFDebugStack::append(PFProfiler::getInstance()->displayMarks(), __FILE__, __LINE__);
-		}
-
-		if (PF_DEBUG_VERBOSE == true) {
-			PFHTMLLogger::format($page);
-			$debugDiv = $page->Fetch('content', 'logger.tpl');
-			$page->assign('PF_HTML_LOGGER', $debugDiv);
-		}
-
-		$throwAwayVar = $page->fetch($viewApp, $view);
 		$page->setHeader($headerApp, $header);
 		$page->setFooter($footerApp, $footer);
-
 		$page->display($viewApp, $view);
 	}
 }

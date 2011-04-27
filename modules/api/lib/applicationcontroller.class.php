@@ -2,12 +2,14 @@
 /**************************************************************************\
 * Protean Framework                                                        *
 * https://github.com/erictj/protean                                        *
-* Copyright (c) 2006-2010, Loopshot Inc.  All rights reserved.             *
+* Copyright (c) 2006-2011, Loopshot Inc.  All rights reserved.             *
 * ------------------------------------------------------------------------ *
 *  This program is free software; you can redistribute it and/or modify it *
 *  under the terms of the BSD License as described in license.txt.         *
 \**************************************************************************/
-
+/**
+@package api
+*/
 class PFApplicationController { 
 
 	private static $STATUS_STRINGS = array (
@@ -20,7 +22,7 @@ class PFApplicationController {
 		);
 
 	protected static $baseCommand;
-	protected $controllerMap;
+	protected $controllerMap = array();
 	protected $invoked = array();
 
 	protected $debug;
@@ -28,19 +30,35 @@ class PFApplicationController {
 	public function __construct(PFControllerMap $map) {
 
 		$this->debug = PF_APP_CONTROLLER_DEBUG;
-
-		$this->controllerMap = $map;
-		list($defaultApp, $defaultCmd) = explode('.', PF_DEFAULT_COMMAND);
-
+		$defaultApp = PFRequestHelper::getDefaultURIApplication();
+		$this->controllerMap[$defaultApp] = $map;
+		
+		list($defaultApp, $defaultCmd) = explode('.', $this->controllerMap[$defaultApp]->getCommand(PF_DEFAULT_URI . '|get'));
 
 		if (!self::$baseCommand) {	
 			self::$baseCommand = new ReflectionClass('PFCommand');
-			PFFactory::getInstance()->initCommandObject($defaultApp .  '.default');	
+			PFFactory::getInstance()->initCommandObject($defaultApp . '.' . $defaultCmd);	
 		}
+	}
+	
+	public function addControllerMap($app) {
+
+		if (array_key_exists($app, $this->controllerMap)) {
+			return;
+		}
+		
+		$map = PFApplicationHelper::getInstance()->loadControllerMap($app);
+		$this->controllerMap[$app] = $map;
+	}
+	
+	public function getControllerMap($app) {
+		if (!array_key_exists($app, $this->controllerMap)) {
+			$this->addControllerMap($app);
+		}
+		return $this->controllerMap[$app];
 	}
 
 	public function getView(PFRequest $request) {
-
 		list($app, $tpl) = explode('.', $this->getResource($request, 'View'));
 		if (!empty($tpl)) {
 			return $tpl . '.tpl';
@@ -51,8 +69,8 @@ class PFApplicationController {
 
 	public function getViewApplication(PFRequest $request) {
 
-		@list ($appname, $view) = explode('.', $this->getResource($request, 'View'));
-		return $appname;
+		@list($app, $tpl) = explode('.', $this->getResource($request, 'View'));
+		return $app;
 	}
 
 	public function getViewHeader(PFRequest $request) {
@@ -68,8 +86,8 @@ class PFApplicationController {
 
 	public function getViewHeaderApplication(PFRequest $request) {
 
-		@list ($appname, $view) = explode('.', $this->getResource($request, 'ViewHeader'));
-		return $appname;
+		@list($app, $tpl) = explode('.', $this->getResource($request, 'ViewHeader'));
+		return $app;
 	}
 
 	public function getViewFooter(PFRequest $request) {
@@ -84,41 +102,43 @@ class PFApplicationController {
 
 	public function getViewFooterApplication(PFRequest $request) {
 
-		@list ($appname, $view) = explode('.', $this->getResource($request, 'ViewFooter'));
-		return $appname;
+		@list($app, $tpl) = explode('.', $this->getResource($request, 'ViewFooter'));
+		return $app;
 	}
 
 	public function getForward(PFRequest $request) {
-
-		$forward = $this->getResource($request, 'Forward');
-		return $forward;
+		return $this->getResource($request, 'Forward');
 	}
 
 	public function getLogin(PFRequest $request) {
-
-		$login = $this->getResource($request, 'Login');
-		return $login;
+		return $this->getResource($request, 'Login');
 	}
 
 	public function getPermissions(PFRequest $request) {
-
-		$roles = $this->getResource($request, 'Permissions');
-		return $roles;
+		return $this->getResource($request, 'Permissions');
 	}
 
 	public function getTheme(PFRequest $request) {
-
-		$theme = $this->getResource($request, 'Theme');
-		return $theme;
+		return $this->getResource($request, 'Theme');
 	}
 
 	private function getResource(PFRequest $request, $resource) {
 
-		$app = $request->getProperty('app');
-		$cmd = $request->getProperty('cmd');
-
-		$cmdString = $app . '.' . $cmd;
+		$uri = PFRequestHelper::getURIPattern($request->get('pf.uri'));
+		$verb = PFRequestHelper::getHTTPVerbForURIPattern($request->get('pf.uri'));
+		$app = PFRequestHelper::getURIApplication($uri, $verb);
+		$cmd = PFRequestHelper::getURICommand($uri, $verb);
+		$this->addControllerMap($app);
+	
+		$cmdString = $uri . '|' . $verb;
 		$previous = $request->getLastCommandRun();
+
+		// printr('resource: ' . $resource);
+		// printr('pf.uri: ' . $request->get('pf.uri'));
+		// printr('uri: ' . $uri);
+		// printr('verb: ' . $verb);
+		// printr('app: ' . $app);
+		// printr('cmd: ' . $cmd);	
 
 		if (is_object($previous)) {
 			$status = $previous->getStatus();
@@ -128,25 +148,26 @@ class PFApplicationController {
 			$status = 0;
 		}
 
-		$acquire = 'get' . $resource;
+		$acquire = 'get' . $resource; 
+		// printr('acquire: ' . $acquire);
+		// printr($cmdString);
+		// printr($request);
+		// printr($this->controllerMap);
 
-		PFApplicationHelper::getInstance()->loadControllerMap($app);
-		$this->controllerMap = PFRegistry::getInstance()->getControllerMap();
-
-		$res = $this->controllerMap->$acquire($cmdString, $status);
-
+		$res = $this->controllerMap[$app]->$acquire($cmdString, $status);
+		
 		if (!$res) {
-			$res = $this->controllerMap->$acquire($cmdString, 0);
+			$res = $this->controllerMap[$app]->$acquire($cmdString, 0);
 		}
 		if (!$res) {
-			$res = $this->controllerMap->$acquire(PF_DEFAULT_COMMAND, $status);
+			$res = $this->controllerMap[$app]->$acquire(PF_DEFAULT_URI . '|get', $status);
 		}
 		if (!$res) {
-			$res = $this->controllerMap->$acquire(PF_DEFAULT_COMMAND, 0);
+			$res = $this->controllerMap[$app]->$acquire(PF_DEFAULT_URI . '|get', 0);
 		}
 
-		if ($this->debug) {				
-			PFDebugStack::append($acquire . '(' . $cmdString . ') -> ' . $res, __FILE__, __LINE__);	
+		if ($this->debug) {	
+			printr('appController::getResource:  ' . $acquire . '(' . $cmdString . ', ' . $status . ') -> ' . $res);	
 		}
 
 		return $res;
@@ -155,44 +176,45 @@ class PFApplicationController {
 	public function getCommand(PFRequest $request) {
 
 		$previous = $request->getLastCommandRun();
-		$commandType = 'Running';
+
+		$app = PFRequestHelper::getCurrentURIApplication();
+		$cmd = PFRequestHelper::getCurrentURICommand();
+		$this->addControllerMap($app);
 
 		if (!$previous) {
-			$app = $request->getProperty('app');
-			$cmd = $request->getProperty('cmd');
+			$commandType = 'Running';			
+			$uri = PFRequestHelper::getCurrentURIPattern();
+			$verb = PFRequestHelper::getHTTPVerb();
 
-		} else {		
+		} else {
 			$commandType = 'Forwarded to';
-			$command = $this->getForward($request);
-
-			if (!$command) {
+			$uri = $this->getForward($request);
+			$verb = PFRequestHelper::getHTTPVerbForURIPattern($uri);
+		
+			if (!$uri) {
 				return NULL;
 			}
-
-			list($app, $cmd) = explode('.', $command);
-			$request->setProperty('app', $app);
-			$request->setProperty('cmd', $cmd);
 		}
+		
+		$request->set('pf.uri', $uri . '|' . $verb);
 
 		if ($this->debug) {
-			PFDebugStack::append('-- ' . $commandType . ' command ' . $app . '.' . $cmd, __FILE__, __LINE__);
+			$cmd = PFRequestHelper::getURICommand($uri, $verb);
+			printr('-- ' . $commandType . ' command ' . $uri . '|' . $verb);
 		}
 
-		$cmdObject = $this->resolveCommand($app, $cmd);
+		$cmdObject = $this->resolveCommand($uri, $verb);
 
 		if (!$cmdObject) {
-
-			PFApplicationHelper::getInstance()->loadControllerMap($app);
-			$this->controllerMap = PFRegistry::getInstance()->getControllerMap();
-			$cmdObject = $this->resolveCommand($app, $cmd);
-
+			
+			$cmdObject = $this->resolveCommand($uri, $verb);
 			if (!$cmdObject) {
 				if ($this->debug) {
-					PFDebugStack::append('-- ' . $commandType . ' command ' . 'content' . '.' . '404', __FILE__, __LINE__);
+					printr('-- ' . $commandType . ' command ' . 'content' . '.' . 'notfound');
 				}
-				$cmdObject = $this->resolveCommand('content', '404');
-				$request->setProperty('app', 'content');
-				$request->setProperty('cmd', '404');
+
+				$cmdObject = $this->resolveCommand('/content/notfound', 'get');
+				$request->set('pf.uri', '/content/notfound|get');
 			}
 		}
 
@@ -210,20 +232,17 @@ class PFApplicationController {
 		return $cmdObject;
 	}
 
-	protected function resolveCommand($app, $command) {
-
-		$app = str_replace(array('.','/'), '', $app);
-		$command = str_replace(array('.','/'), '', $command);
-
-		$classroot = $this->controllerMap->getClassroot($app . '.' . $command);
-
-		$newroot = explode('.', $classroot);
-
-		$app = $newroot[0];
-		$command = $newroot[1];
-
-		$filepath = PF_BASE . '/modules/' . $app . '/cmd/' . $command . '.class.php';
-		$classname = 'PF' . ucfirst($command) . 'Command';
+	protected function resolveCommand($uri, $verb) {
+		
+		if ($uri == '') {
+			$uri = PF_DEFAULT_URI;
+		}
+		
+		$app = PFRequestHelper::getURIApplication($uri, $verb);
+		$cmd = PFRequestHelper::getURICommand($uri, $verb);
+	
+		$filepath = PF_BASE . '/modules/' . $app . '/cmd/' . $cmd . '.class.php';
+		$classname = 'PF' . ucfirst($cmd) . 'Command';
 
 		if (file_exists($filepath)) {
 

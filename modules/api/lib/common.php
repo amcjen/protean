@@ -2,16 +2,11 @@
 /**************************************************************************\
 * Protean Framework                                                        *
 * https://github.com/erictj/protean                                        *
-* Copyright (c) 2006-2010, Loopshot Inc.  All rights reserved.             *
+* Copyright (c) 2006-2011, Loopshot Inc.  All rights reserved.             *
 * ------------------------------------------------------------------------ *
 *  This program is free software; you can redistribute it and/or modify it *
 *  under the terms of the BSD License as described in license.txt.         *
 \**************************************************************************/
-
-// for profiling
-if (PF_PROFILER) {
-	$startTime = microtime(true);
-}
 
 // set timezone for PHP 5.3 and greater
 date_default_timezone_set(PF_TIMEZONE);
@@ -24,10 +19,13 @@ header('Content-Type: text/html; charset=UTF-8');
 // set script timeout to our config setting
 set_time_limit(PF_SCRIPT_TIMEOUT);
 
+// set timeout for sessions
+ini_set('session.gc_maxlifetime', PF_SESSION_EXPIRE);
+
 // The built-in PHP5 reflection class defines this error code (-1).  we define it here.
 define('E_PHP5_ERROR', -1);
 
-// Unknown error, usually from an SQL Exception from Creole/Propel.  we define it here.
+// Unknown error, usually from an SQL Exception from Propel.  we define it here.
 define('E_UNKNOWN_ERROR', 0);
 
 // Added an invalid data error code.  We put it high so it won't interfere w/ PHP's built-in error codes
@@ -43,21 +41,26 @@ require_once $filename;
 $ds = DIRECTORY_SEPARATOR;
 $ps = PATH_SEPARATOR;
 
-// load 3rd-party paths into "include_path". (If run from command line, 
+// load 3rd-party paths into "include_path". (If run from command line,
 	// we're probably running unit tests, so manually determine the full path
 	// from __FILE__.
 	if (php_sapi_name() == 'cli') {
 		$explodedPath = explode($ds . 'modules', __FILE__);
-		$pf_root = $explodedPath[0];
+		$pfRoot = $explodedPath[0];
 	} else {
-		$pf_root = PF_ROOT_DIRECTORY;
+		$pfRoot = $_SERVER['DOCUMENT_ROOT'];
 	}
 
 	// we save the root in a define, for use elsewhere
-	define('PF_BASE', $pf_root);
+	define('PF_BASE', $pfRoot);
 
 	ini_set('include_path', PF_BASE . $ps . ini_get('include_path'));
 
+	if (PF_PROFILER) {
+		require_once 'modules/api/lib/profiler.class.php';
+		PFProfiler::getInstance()->start();
+	}
+	
 	// require all interfaces here
 	require_once 'modules' . $ds . 'api' . $ds . 'lib' . $ds . 'cache.interface.php';
 	require_once 'modules' . $ds . 'api' . $ds . 'lib' . $ds . 'command.interface.php';
@@ -65,41 +68,40 @@ $ps = PATH_SEPARATOR;
 	require_once 'modules' . $ds . 'api' . $ds . 'lib' . $ds . 'observer.interface.php';
 
 	// base classes required all over the place
+	require_once 'modules' . $ds . 'api' . $ds . 'lib' . $ds . 'controllermap.class.php';
 	require_once 'modules' . $ds . 'api' . $ds . 'lib' . $ds . 'exception.class.php';
 	require_once 'modules' . $ds . 'api' . $ds . 'lib' . $ds . 'errorhandler.class.php';
 	require_once 'modules' . $ds . 'api' . $ds . 'lib' . $ds . 'debugstack.class.php';
 	require_once 'modules' . $ds . 'api' . $ds . 'lib' . $ds . 'factory.class.php';
 	require_once 'modules' . $ds . 'api' . $ds . 'lib' . $ds . 'command.class.php';
-	require_once 'modules' . $ds . 'api' . $ds . 'lib' . $ds . 'htmllogger.class.php';
 	require_once 'modules' . $ds . 'api' . $ds . 'lib' . $ds . 'mailer.class.php';
-	require_once 'modules' . $ds . 'registration' . $ds . 'lib' . $ds . 'user.class.php';
+	require_once 'modules' . $ds . 'api' . $ds . 'lib' . $ds . 'smstexter.class.php';
+	require_once 'modules' . $ds . 'api' . $ds . 'lib' . $ds . 'restcommand.class.php';
+	require_once 'modules' . $ds . 'api' . $ds . 'lib' . $ds . 'resourcecommand.class.php';
+	require_once 'modules' . $ds . 'api' . $ds . 'lib' . $ds . 'template.class.php';
+	require_once 'modules' . $ds . 'registration' . $ds . 'lib' . $ds . 'userhelper.class.php';
 
 	// set error handling overrides
 	$pf_handler = new PFErrorHandler();
-	// set_error_handler(array($pf_handler, 'ErrorHandler'), E_ALL | E_STRICT); // (turn on strict when PEAR is PHP5'ed)
 	set_error_handler(array($pf_handler, 'errorHandler'), E_ALL);
 	set_exception_handler(array($pf_handler, 'exceptionHandler'));
 	ini_set('display_errors', false);
 	ini_set('html_errors', false);
 
-	// set up observers here
-	PFDebugStack::getInstance()->attach(new PFHTMLLogger());
-
 	// require all singletons here
-	require_once 'modules' . $ds . 'api' . $ds . 'lib' . $ds . 'language.class.php';  
-	require_once 'modules' . $ds . 'api' . $ds . 'lib' . $ds . 'session.class.php';  
-	require_once 'modules' . $ds . 'api' . $ds . 'lib' . $ds . 'registry.class.php'; 
-	require_once 'modules' . $ds . 'api' . $ds . 'lib' . $ds . 'controller.class.php'; 
-	require_once 'modules' . $ds . 'api' . $ds . 'lib' . $ds . 'applicationhelper.class.php'; 
-	require_once 'modules' . $ds . 'api' . $ds . 'lib' . $ds . 'templatehelper.class.php'; 
-	require_once 'modules' . $ds . 'api' . $ds . 'lib' . $ds . 'profiler.class.php'; 
-	require_once 'modules' . $ds . 'api' . $ds . 'lib' . $ds . 'imagefile.class.php'; 
-	require_once 'modules' . $ds . 'api' . $ds . 'lib' . $ds . 'resthelper.class.php'; 
-	require_once 'modules' . $ds . 'thirdparty' . $ds . 'patForms' . $ds . 'patForms' . $ds . 'Datasource' . $ds . 'Propel.php'; 
+	require_once 'modules' . $ds . 'api' . $ds . 'lib' . $ds . 'language.class.php';
+	require_once 'modules' . $ds . 'api' . $ds . 'lib' . $ds . 'session.class.php';
+	require_once 'modules' . $ds . 'api' . $ds . 'lib' . $ds . 'registry.class.php';
+	require_once 'modules' . $ds . 'api' . $ds . 'lib' . $ds . 'controller.class.php';
+	require_once 'modules' . $ds . 'api' . $ds . 'lib' . $ds . 'applicationhelper.class.php';
+	require_once 'modules' . $ds . 'api' . $ds . 'lib' . $ds . 'templatehelper.class.php';
+	require_once 'modules' . $ds . 'api' . $ds . 'lib' . $ds . 'requesthelper.class.php';
+	require_once 'modules' . $ds . 'api' . $ds . 'lib' . $ds . 'imagefile.class.php';
+	require_once 'modules' . $ds . 'api' . $ds . 'lib' . $ds . 'resthelper.class.php';
+	require_once 'modules' . $ds . 'thirdparty' . $ds . 'patForms' . $ds . 'patForms' . $ds . 'Datasource' . $ds . 'Propel.php';
 
-	if (PF_CMS_ENABLED == true) {	
-		require_once 'modules' . $ds . 'api' . $ds . 'lib' . $ds . 'cmshelper.class.php'; 
-		//include('modules' . $ds . 'thirdparty' . $ds . 'spaw2' . $ds . 'spaw.inc.php');
+	if (PF_CMS_ENABLED == true) {
+		require_once 'modules' . $ds . 'api' . $ds . 'lib' . $ds . 'cmshelper.class.php';
 	}
 
 	if (file_exists(PF_BASE . $ds . 'modules' . $ds . 'shop' . $ds . 'lib' . $ds . 'cart.class.php')) {
@@ -115,14 +117,14 @@ $ps = PATH_SEPARATOR;
 
 	// add any additional third-party library include paths below
 	$pf_inc .= PF_BASE . $ds . 'modules' . $ds . 'thirdparty' . $ds . 'smarty' . $ps;
-	$pf_inc .= PF_BASE . $ds . 'modules' . $ds . 'thirdparty' . $ds . 'fpdf' . $ps;
 	$pf_inc .= PF_BASE . $ds . 'modules' . $ds . 'thirdparty' . $ds . 'patError' . $ps;
 	$pf_inc .= PF_BASE . $ds . 'modules' . $ds . 'thirdparty' . $ds . 'patForms' . $ps;
 	$pf_inc .= PF_BASE . $ds . 'modules' . $ds . 'thirdparty' . $ds . 'patForms' . $ds . 'patForms' . $ps;
+	$pf_inc .= PF_BASE . $ds . 'modules' . $ds . 'thirdparty' . $ds . 'fpdf' . $ps;
+
 	$pf_inc .= PF_BASE . $ds . 'modules' . $ds . 'db' . $ps;
 	ini_set('include_path', $pf_inc . $ps . ini_get('include_path'));
 
-	PFProfiler::getInstance()->setMark('Starting Propel Loads');
 	try {
 		require_once 'propel' . $ds . 'Propel.php';
 		require_once 'propel' . $ds . 'om' . $ds . 'BaseObject.php';
@@ -145,16 +147,14 @@ $ps = PATH_SEPARATOR;
 		$e->handleException();
 	} catch (Exception $e) {
 		PFException::handleVanillaException($e->getMessage(), $e->getCode(), $e->getFile(), $e->getLine());
-	} 
+	}
 
-	//** Memcache Support
+	// Memcache Support
 	if (PF_CACHE_ENABLED) {
 
 		try {
-
 			PFFactory::getInstance()->initObject('api.cachememcache');
 
-			// Add Memcache servers here
 			if (PF_CACHE_MEMCACHE_SERVER_HOST_1 != false)
 				PFCacheMemcache::getInstance()->addServer(PF_CACHE_MEMCACHE_SERVER_HOST_1);
 
@@ -171,53 +171,35 @@ $ps = PATH_SEPARATOR;
 			$e->HandleException();
 		} catch (Exception $e) {
 			PFException::HandleVanillaException($e->getMessage(), $e->getCode(), $e->getFile(), $e->getLine());
-		} 
+		}
 	}
 
-
-	//** Multilanguage Support 
 	try {
+		PFLanguage::getInstance();
+		$request = PFFactory::getInstance()->createObject('api.request');
 
-		PFLanguage::GetInstance();
-		$request = PFFactory::GetInstance()->CreateObject('api.request');
-
-		$lang = $request->GetProperty('lang');
-		$app = $request->GetProperty('app');
+		$lang = $request->get('lang');
+		$app = $request->get('app');
 
 		if (isset($lang)) {
-			PFLanguage::GetInstance()->SetCurrentLocale($lang);
+			PFLanguage::getInstance()->setCurrentLocale($lang);
 		}
 
 		if (!isset($app)) {
 			$app = 'content';
 		}
 	} catch (PFException $e) {
-		$e->HandleException();
+		$e->handleException();
 	}
 
 	try {
-
-		// load default API global language table for error messages
-		PFLanguage::GetInstance()->LoadTranslationTable('api', 'global');
-
-		// load default static global language table for navigation/content messages
-		//PFLanguage::GetInstance()->LoadTranslationTable('content', 'global');
-
-		// load other application's language tables
-		PFLanguage::GetInstance()->LoadTranslationTable($app, 'global');
+		PFLanguage::getInstance()->loadTranslationTable('api', 'global');
+		PFLanguage::getInstance()->loadTranslationTable($app, 'global');
 	} catch (PFException $e) {
-		$e->HandleException();
-	}
-
-	// if we're profiling, let's initialize it here.
-	if (PF_PROFILER) {
-		require_once 'modules' . $ds . 'api' . $ds . 'lib' . $ds . 'profiler.class.php';
-		PFProfiler::GetInstance()->SetStartTime($startTime);
-		PFProfiler::GetInstance()->SaveMarks(true);
+		$e->handleException();
 	}
 
 	function printr($arr, $buffered=false) {
-
 		if (php_sapi_name() != 'cli') {
 			echo '<pre>';
 			$newLine = '<br />';
@@ -236,5 +218,43 @@ $ps = PATH_SEPARATOR;
 	function printrBuffered($arr) {
 		return (printr($arr, true));
 	}
+
+	// arrayToXML($array, $rootNodeName, $xml)
+	//
+	// Take a multi dimensional array and convert it to a simple XML string.
+	// Not the most advanced method to do this, but works for fairly basic XML documents.
+	// Also allows us to keep the code cleaner instead of having XML Strings everywhere.
+	function arrayToXML($array, $rootNodeName='data', $xml=null){
+		if (is_null($xml)){
+			$xml = simplexml_load_string("<?xml version='1.0' encoding='utf-8'?><$rootNodeName />");
+		}
+
+		// loop through the data passed in.
+		foreach($array as $key => $value){
+			// no numeric keys in our xml please!
+			if (is_numeric($key)){
+				$key = "unknownNode_". (string) $key;
+			}
+
+			// delete any char not allowed in XML element names
+			$key = preg_replace('/[^a-z0-9\-\_\.\:]/i', '', $key);
+
+			// if there is another array found recrusively call this function
+			if (is_array($value)){
+				$node = $xml->addChild($key);
+				// recrusive call.
+				arrayToXML($value, $rootNodeName, $node);
+			}
+			else {
+				// add single node.
+				$value = htmlentities($value);
+				$xml->addChild($key,$value);
+			}
+		}
+
+		// pass back as string. or simple xml object if you want!
+		return $xml->asXML();
+	}
+
 
 	?>

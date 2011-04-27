@@ -2,17 +2,28 @@
 /**************************************************************************\
 * Protean Framework                                                        *
 * https://github.com/erictj/protean                                        *
-* Copyright (c) 2006-2010, Loopshot Inc.  All rights reserved.             *
+* Copyright (c) 2006-2011, Loopshot Inc.  All rights reserved.             *
 * ------------------------------------------------------------------------ *
 *  This program is free software; you can redistribute it and/or modify it *
 *  under the terms of the BSD License as described in license.txt.         *
 \**************************************************************************/
-	
+/**
+@package api
+*/
 require_once 'modules/thirdparty/phpmailer/class.phpmailer.php';
 
 class PFMailer extends PHPMailer { 
 
+	protected $debug;
+	
 	function __construct() {
+	
+		if (PF_EMAIL_DEBUG) {
+			$this->debug = true;
+		} else {
+			$this->debug = false;
+		}
+		
 		if (PF_EMAIL_USE_SMTP) {
 			$this->isSMTP();
 			$this->SMTPAuth = true;
@@ -37,11 +48,17 @@ class PFMailer extends PHPMailer {
 	}
 	
 	public function send() {
-		if (PF_EMAIL_REDIRECT != 'PF_EMAIL_REDIRECT' && PF_EMAIL_REDIRECT != '') {
-			parent::clearAllRecipients();
-			parent::addAddress(PF_EMAIL_REDIRECT);
-			$this->Subject = "DEV: " . $this->Subject;
+	
+		if ($this->debug) {
+			$this->logDebug("Attempting to send message:\n");
 		}
+		
+		// override the email addresses if it's for dev, PF_EMAIL_REDIRECT
+		// if (PF_EMAIL_REDIRECT != 'PF_EMAIL_REDIRECT' && PF_EMAIL_REDIRECT != '') {
+		// 		parent::clearAllRecipients();
+		// 		parent::addAddress(PF_EMAIL_REDIRECT);
+		// 		$this->Subject = "DEV: " . $this->Subject;
+		// 	}
 		
 		if (parent::send()) {
 			if ($this->debug) {

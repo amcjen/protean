@@ -1,5 +1,6 @@
 <control>
 
+	<command>content.default</command>
 	<viewheader>content.header</viewheader>
 	<viewfooter>content.footer</viewfooter>
 	<view>content.index</view>
@@ -7,50 +8,54 @@
 	<view status="CMD_INSUFFICIENT_DATA">content.error</view>
 	<view status="CMD_UNAUTHORIZED">content.error</view>
 	
-	<command name="content.defaultadmin">
+	<uri name="/content/defaultadmin" verb="post">
+		<command>content.default</command>
 		<viewheader>content.header</viewheader>
 		<viewfooter>content.footer</viewfooter>
 		<view>content.index</view>
-	</command>
+	</uri>
 	
-	<command name="content.classroot">
-		<classroot>content.static</classroot>
+	<uri name="/content/staticpage">
+		<command>content.static</command>
 		<viewheader>content.header</viewheader>
 		<viewfooter>content.footer</viewfooter>
-		<view>content.classrootview</view>
-	</command>
+		<view>content.staticpage</view>
+	</uri>
 	
-	<command name="content.login">
+	<uri name="/content/login">
+		<command>content.login</command>
 		<viewheader>content.header</viewheader>
 		<viewfooter>content.footer</viewfooter>
 		<view>content.login</view>
 		<status value="CMD_UNAUTHORIZED">
-			<forward>content.login</forward>
+			<forward>/content/login</forward>
 		</status>
 		<status value="CMD_OK">
-			<forward>content.index</forward>
+			<forward>/content/index</forward>
 		</status>
 		<view status="CMD_ERROR">content.login</view>
-	</command>
+	</uri>
 
-	<command name="content.logout">
+	<uri name="/content/logout">
+		<command>content.logout</command>
 		<viewheader>content.header</viewheader>
 		<viewfooter>content.footer</viewfooter>
 		<view>content.index</view>
 		<status value="CMD_OK">
-			<forward>content.index</forward>
+			<forward>/content/default</forward>
 		</status>
-	</command>
+	</uri>
 
-	<command name="content.forgotpassword">
-		<classroot>registration.forgotpassword</classroot>
+	<uri name="/content/forgotpassword">
+		<command>content.forgotpassword</command>
 		<viewheader>content.header</viewheader>
 		<viewfooter>content.footer</viewfooter>
 		<view>content.account-forgotpassword</view>
 		<theme>sometheme</theme>
-	</command>
+	</uri>
 
-	<command name="content.changepassword">
+	<uri name="/content/changepassword">
+		<command>content.changepassword</command>
 		<viewheader>content.header</viewheader>
 		<viewfooter>content.footer</viewfooter>
 		<view>content.changepassword</view>
@@ -58,10 +63,10 @@
 		<view status="CMD_INSUFFICIENT_DATA">content.changepassword</view>
 		<view status="CMD_ERROR">content.changepassword</view>
 		<view status="CMD_OK">content.modifyaccountthankyou</view>
-	</command>
+	</uri>
 
-	<command name="content.addressbook">
-		<classroot>content.addressbook</classroot>
+	<uri name="/content/addressbook">
+		<command>content.addressbook</command>
 		<viewheader>content.header</viewheader>
 		<viewfooter>content.footer</viewfooter>
 		<view>content.account-addresses</view>
@@ -70,11 +75,20 @@
 			<role>shop.user</role>	
 			<role>shop.admin</role>	
 		</permissions>
-		<status value="CMD_OK">
-			<forward>content.addressbook</forward>
+		<status value="CMD_DEFAULT">
+			<forward>/content/account</forward>
 		</status>
 		<view status="CMD_INSUFFICIENT_DATA">content.account-addressupdate</view>
 		<view status="CMD_ERROR">content.account-addressupdate</view>
-	</command>
+	</uri>
 	
+	<uri name="/content/addressbook/:integer:">
+		<command>content.addressbook</command>
+		<viewheader>content.header</viewheader>
+		<viewfooter>content.footer</viewfooter>
+		<view>content.account-addresses</view>
+		<status value="CMD_DEFAULT">
+			<forward>/content/addressbook/:integer:/edit</forward>
+		</status>
+	</uri>
 </control>

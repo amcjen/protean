@@ -2,12 +2,14 @@
 /**************************************************************************\
 * Protean Framework                                                        *
 * https://github.com/erictj/protean                                        *
-* Copyright (c) 2006-2010, Loopshot Inc.  All rights reserved.             *
+* Copyright (c) 2006-2011, Loopshot Inc.  All rights reserved.             *
 * ------------------------------------------------------------------------ *
 *  This program is free software; you can redistribute it and/or modify it *
 *  under the terms of the BSD License as described in license.txt.         *
 \**************************************************************************/
-
+/**
+@package api
+*/
 require_once 'modules/api/lib/errorstack.class.php';
 
 class PFException extends Exception {
@@ -149,41 +151,41 @@ class PFException extends Exception {
 				);
 		} else {
 			$this->errortype = array (
-				E_PHP5_ERROR 				=> PFLanguage::GetInstance()->GetTranslation('api','ERROR'),
-				E_UNKNOWN_ERROR 		=> PFLanguage::GetInstance()->GetTranslation('api','ERROR'),
-				E_INSUFFICIENT_DATA	=> PFLanguage::GetInstance()->GetTranslation('api','INSUFFICIENT_DATA'),
-				E_ERROR           	=> PFLanguage::GetInstance()->GetTranslation('api','ERROR'),
-				E_WARNING         	=> PFLanguage::GetInstance()->GetTranslation('api','WARNING'),
-				E_PARSE           	=> PFLanguage::GetInstance()->GetTranslation('api','ERROR'),
-				E_NOTICE          	=> PFLanguage::GetInstance()->GetTranslation('api','WARNING'),
-				E_CORE_ERROR      	=> PFLanguage::GetInstance()->GetTranslation('api','ERROR'),
-				E_CORE_WARNING    	=> PFLanguage::GetInstance()->GetTranslation('api','WARNING'),
-				E_COMPILE_ERROR   	=> PFLanguage::GetInstance()->GetTranslation('api','ERROR'),
-				E_COMPILE_WARNING 	=> PFLanguage::GetInstance()->GetTranslation('api','WARNING'),
-				E_USER_FATAL      	=> PFLanguage::GetInstance()->GetTranslation('api','FATAL'),
-				E_USER_ERROR      	=> PFLanguage::GetInstance()->GetTranslation('api','ERROR'),
-				E_USER_WARNING    	=> PFLanguage::GetInstance()->GetTranslation('api','WARNING'),
-				E_USER_NOTICE     	=> PFLanguage::GetInstance()->GetTranslation('api','NOTICE'),
-				E_STRICT          	=> PFLanguage::GetInstance()->GetTranslation('api','NOTICE')
+				E_PHP5_ERROR 				=> PFLanguage::getInstance()->getTranslation('api','ERROR'),
+				E_UNKNOWN_ERROR 		=> PFLanguage::getInstance()->getTranslation('api','ERROR'),
+				E_INSUFFICIENT_DATA	=> PFLanguage::getInstance()->getTranslation('api','INSUFFICIENT_DATA'),
+				E_ERROR           	=> PFLanguage::getInstance()->getTranslation('api','ERROR'),
+				E_WARNING         	=> PFLanguage::getInstance()->getTranslation('api','WARNING'),
+				E_PARSE           	=> PFLanguage::getInstance()->getTranslation('api','ERROR'),
+				E_NOTICE          	=> PFLanguage::getInstance()->getTranslation('api','WARNING'),
+				E_CORE_ERROR      	=> PFLanguage::getInstance()->getTranslation('api','ERROR'),
+				E_CORE_WARNING    	=> PFLanguage::getInstance()->getTranslation('api','WARNING'),
+				E_COMPILE_ERROR   	=> PFLanguage::getInstance()->getTranslation('api','ERROR'),
+				E_COMPILE_WARNING 	=> PFLanguage::getInstance()->getTranslation('api','WARNING'),
+				E_USER_FATAL      	=> PFLanguage::getInstance()->getTranslation('api','FATAL'),
+				E_USER_ERROR      	=> PFLanguage::getInstance()->getTranslation('api','ERROR'),
+				E_USER_WARNING    	=> PFLanguage::getInstance()->getTranslation('api','WARNING'),
+				E_USER_NOTICE     	=> PFLanguage::getInstance()->getTranslation('api','NOTICE'),
+				E_STRICT          	=> PFLanguage::getInstance()->getTranslation('api','NOTICE')
 				);
 
 			$this->verbose_errortype = array (
-				E_PHP5_ERROR	 			=> PFLanguage::GetInstance()->GetTranslation('api','ERROR'),
-				E_UNKNOWN_ERROR 		=> PFLanguage::GetInstance()->GetTranslation('api','UNKNOWN_ERROR'),
-				E_INSUFFICIENT_DATA	=> PFLanguage::GetInstance()->GetTranslation('api','INSUFFICIENT_DATA'),
-				E_ERROR           	=> PFLanguage::GetInstance()->GetTranslation('api','ERROR'),
-				E_WARNING         	=> PFLanguage::GetInstance()->GetTranslation('api','WARNING'),
-				E_PARSE           	=> PFLanguage::GetInstance()->GetTranslation('api','PARSING_ERROR'),
-				E_NOTICE          	=> PFLanguage::GetInstance()->GetTranslation('api','NOTICE'),
-				E_CORE_ERROR      	=> PFLanguage::GetInstance()->GetTranslation('api','CORE_ERROR'),
-				E_CORE_WARNING    	=> PFLanguage::GetInstance()->GetTranslation('api','CORE_WARNING'),
-				E_COMPILE_ERROR   	=> PFLanguage::GetInstance()->GetTranslation('api','COMPILE_ERROR'),
-				E_COMPILE_WARNING 	=> PFLanguage::GetInstance()->GetTranslation('api','COMPILE_WARNING'),
-				E_USER_FATAL      	=> PFLanguage::GetInstance()->GetTranslation('api','USER_FATAL'),
-				E_USER_ERROR      	=> PFLanguage::GetInstance()->GetTranslation('api','USER_ERROR'),
-				E_USER_WARNING    	=> PFLanguage::GetInstance()->GetTranslation('api','USER_WARNING'),
-				E_USER_NOTICE     	=> PFLanguage::GetInstance()->GetTranslation('api','USER_NOTICE'),
-				E_STRICT          	=> PFLanguage::GetInstance()->GetTranslation('api','RUNTIME_NOTICE')
+				E_PHP5_ERROR	 			=> PFLanguage::getInstance()->getTranslation('api','ERROR'),
+				E_UNKNOWN_ERROR 		=> PFLanguage::getInstance()->getTranslation('api','UNKNOWN_ERROR'),
+				E_INSUFFICIENT_DATA	=> PFLanguage::getInstance()->getTranslation('api','INSUFFICIENT_DATA'),
+				E_ERROR           	=> PFLanguage::getInstance()->getTranslation('api','ERROR'),
+				E_WARNING         	=> PFLanguage::getInstance()->getTranslation('api','WARNING'),
+				E_PARSE           	=> PFLanguage::getInstance()->getTranslation('api','PARSING_ERROR'),
+				E_NOTICE          	=> PFLanguage::getInstance()->getTranslation('api','NOTICE'),
+				E_CORE_ERROR      	=> PFLanguage::getInstance()->getTranslation('api','CORE_ERROR'),
+				E_CORE_WARNING    	=> PFLanguage::getInstance()->getTranslation('api','CORE_WARNING'),
+				E_COMPILE_ERROR   	=> PFLanguage::getInstance()->getTranslation('api','COMPILE_ERROR'),
+				E_COMPILE_WARNING 	=> PFLanguage::getInstance()->getTranslation('api','COMPILE_WARNING'),
+				E_USER_FATAL      	=> PFLanguage::getInstance()->getTranslation('api','USER_FATAL'),
+				E_USER_ERROR      	=> PFLanguage::getInstance()->getTranslation('api','USER_ERROR'),
+				E_USER_WARNING    	=> PFLanguage::getInstance()->getTranslation('api','USER_WARNING'),
+				E_USER_NOTICE     	=> PFLanguage::getInstance()->getTranslation('api','USER_NOTICE'),
+				E_STRICT          	=> PFLanguage::getInstance()->getTranslation('api','RUNTIME_NOTICE')
 				);
 		}
 	}
@@ -254,7 +256,7 @@ class PFException extends Exception {
 		if ($code == E_USER_ERROR || $code == E_ERROR || $code == E_CORE_ERROR || $code == E_COMPILE_ERROR || $code == E_PHP5_ERROR) {	
 			$this->displayException();
 		} else {
-			PFErrorstack::Append($this);
+			PFErrorstack::append($this);
 		}
 	}
 
@@ -293,11 +295,12 @@ class PFException extends Exception {
 			$trace = ob_get_contents();
 			ob_end_clean();
 			printr($trace);
-
 			exit;
 		}
 
-		$cmd = PFFactory::createCommandObject(PF_DEFAULT_COMMAND);
+		$defaultApp = PFRequestHelper::getDefaultURIApplication();
+		$controllerMap = PFApplicationHelper::getInstance()->appController()->getControllerMap($defaultApp);
+		$cmd = PFFactory::createCommandObject($controllerMap->getCommand(PF_DEFAULT_URI . '|get'));
 		$request = PFFactory::getInstance()->createObject('api.request');
 		$cmd->assignDefaults($request);
 		$cmd->assignHeaderPaths(PFRegistry::getInstance()->getPage());
@@ -309,31 +312,38 @@ class PFException extends Exception {
 		}
 	}
 
-	public function handleRestException() {
+	public function handleRestException($type='application/json') {
+		
+		if ($type == 'application/json') {
+			$json = PFRestHelper::makeJSONResponse('error', $this->getCode(), $this->getMessage());
+			PFRestHelper::sendResponse(500, $json, $type);
+		} else {
 		PFRestHelper::sendResponse(500, $this->getSlimError());
+		}
+		
 		$this->logException();
 	}
 
 	protected function displayException() {
 		try {	
-			list($defaultApp, $defaultCmd) = explode('.', PF_DEFAULT_COMMAND);
+			
+			$defaultApp = PFRequestHelper::getDefaultURIApplication();
+			$defaultCmd = PFRequestHelper::getDefaultURICommand();
 
 			$page = PFFactory::getInstance()->createObject('api.template', $defaultApp);
 			$page->assign('ERROR', $this->__toString());
 			$page->assign('STACK', $this->xml_error);
 
-			$cmd = PFFactory::createCommandObject(PF_DEFAULT_COMMAND);
+			$controllerMap = PFApplicationHelper::getInstance()->appController()->getControllerMap($app);
+			$cmd = PFFactory::createCommandObject($controllerMap->getCommand(PF_DEFAULT_URI . '|get'));
+
 			$request = PFFactory::getInstance()->createObject('api.request');
 			$cmd->assignDefaults($request);
 			$cmd->assignHeaderPaths($page);
 			PFTemplateHelper::getInstance()->assignDefaults($page);
 
-			if (PF_PROFILER) {
-				$page->assign('PF_PROFILE_TIME', PFProfiler::getInstance()->getTime());
-			}
 			$page->display($defaultApp, 'error.tpl');
 		} catch (PFException $e) {
-
 			echo $e;
 			echo '<br /><pre>';
 			echo $e->getXMLError();
@@ -349,6 +359,9 @@ class PFException extends Exception {
 	}
 }
 
+/**
+@package api
+*/
 class PFValidationException extends Exception {
 	protected $ormObject;
 
@@ -366,7 +379,10 @@ class PFValidationException extends Exception {
 	}
 
 	public function handleRestException() {
-		PFRestHelper::sendResponse(400, nl2br($this->handleException()));
+		$json = array('status' => 'error',	
+									'message' => $this->getSlimError()
+									);
+		PFRestHelper::sendResponse(400, json_encode($json), 'application/json');
 	}
 }
 ?>

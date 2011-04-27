@@ -2,7 +2,7 @@
 /**************************************************************************\
 * Protean Framework                                                        *
 * https://github.com/erictj/protean                                        *
-* Copyright (c) 2006-2010, Loopshot Inc.  All rights reserved.             *
+* Copyright (c) 2006-2011, Loopshot Inc.  All rights reserved.             *
 * ------------------------------------------------------------------------ *
 *  This program is free software; you can redistribute it and/or modify it *
 *  under the terms of the BSD License as described in license.txt.         *
@@ -21,25 +21,30 @@ class TemplateTest extends PHPUnit_Framework_TestCase {
 		$this->template = PFFactory::getInstance()->createObject('api.template', 'content');
 	}
 	
-	public function tearDown() {
+	public function tearDown() { }
 	
-	}
-	
-	public function testAssign() {
-	
+	public function testAssign() {	
 		$this->template->assign('test', 12321);
-
-		$var = $this->template->get_template_vars('test');
-		
+		$var = $this->template->getVariable('test')->value;	
 		$this->assertEquals(12321, $var);
 	}
 	
-	public function testDirectories() {
+	public function testTemplateDirectories() {
+		foreach ($this->template->getTemplateDirs() as $dir) {
+			$this->assertTrue(is_dir($dir));
+		}
+	}
 	
-		$this->assertTrue(is_dir($this->template->getTemplateDir()) && 
-											is_dir($this->template->getCompileDir()) &&
-											is_dir($this->template->getConfigDir()) && 
-											is_dir($this->template->getCacheDir()));
+	public function testCompileDirectory() {		
+		$this->assertTrue(is_dir($this->template->getCompileDir()));
+	}
+	
+	public function testConfigDirectory() {	
+		$this->assertTrue(is_dir($this->template->getConfigDir()));
+	}
+	
+	public function testCacheDirectory() {	
+		$this->assertTrue(is_dir($this->template->getCacheDir()));
 	}
 }
 

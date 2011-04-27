@@ -2,12 +2,14 @@
 /**************************************************************************\
 * Protean Framework                                                        *
 * https://github.com/erictj/protean                                        *
-* Copyright (c) 2006-2010, Loopshot Inc.  All rights reserved.             *
+* Copyright (c) 2006-2011, Loopshot Inc.  All rights reserved.             *
 * ------------------------------------------------------------------------ *
 *  This program is free software; you can redistribute it and/or modify it *
 *  under the terms of the BSD License as described in license.txt.         *
 \**************************************************************************/
-
+/**
+@package api
+*/
 // load up patForms classes
 require_once 'modules/thirdparty/patForms/patForms.php';
 require_once 'modules/thirdparty/patForms/patForms/Parser.php';
@@ -51,20 +53,19 @@ class PFForm {
 				);
 
 			$errAtt =& patForms::createObserver('ErrorAttributes');
-			$errAtt->setAttributes( $errorAttributes );
-			$this->form->attachObserver( $errAtt, PATFORMS_OBSERVER_ATTACH_TO_ELEMENTS );
-
+			$errAtt->setAttributes($errorAttributes);
+			$this->form->attachObserver($errAtt, PATFORMS_OBSERVER_ATTACH_TO_ELEMENTS);
 		}
+
 		$this->form->setAutoValidate($submitName);
 		$this->form->setRenderer($this->parser);
-
 	}
 
 	public function reportErrors() {
 		$errors = $this->form->getValidationErrors();
 
 		if ($errors) {	
-			$app = $this->request->getCurrentURLApplication();
+			$app = PFRequestHelper::getCurrentURIApplication();
 			$errString = '';
 
 			foreach ($errors as $elementName => $elementErrors) {
@@ -85,6 +86,7 @@ class PFForm {
 				}
 			}
 
+			$errString = substr($errString, 0, -6);
 			$this->request->addFeedback('', $errString, 'INSUFFICIENT_DATA');
 			return true;
 		}
@@ -110,7 +112,7 @@ class PFForm {
 			$fileName = $this->writeFormToTempDirectory();	
 			list ($appName, $formName) = explode('.', $this->formTemplate);
 			$formPage = PFFactory::getInstance()->createObject('api.template', $appName);
-			$vars = PFRegistry::getInstance()->getPage()->get_template_vars();
+			$vars = PFRegistry::getInstance()->getPage()->tpl_vars;
 
 			foreach ($vars as $key => $val) {
 				$formPage->assign($key, $val);
@@ -126,6 +128,15 @@ class PFForm {
 
 	public function getFormObject() {	
 		return $this->form;
+	}
+
+	public function isSubmitted() {
+		PFRequestHelper::resetHTTPVerb();
+		if ($this->form->isSubmitted()) {
+			$this->form->setSubmitted(false);
+			return true;
+		}
+		return false;
 	}
 
 	public function setReadOnlyOnPartialErrors() {

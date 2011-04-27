@@ -2,7 +2,7 @@
 /**************************************************************************\
 * Protean Framework                                                        *
 * https://github.com/erictj/protean                                        *
-* Copyright (c) 2006-2010, Loopshot Inc.  All rights reserved.             *
+* Copyright (c) 2006-2011, Loopshot Inc.  All rights reserved.             *
 * ------------------------------------------------------------------------ *
 *  This program is free software; you can redistribute it and/or modify it *
 *  under the terms of the BSD License as described in license.txt.         *
@@ -14,7 +14,6 @@ require_once 'modules/api/lib/applicationcontroller.class.php';
 require_once 'modules/api/lib/applicationhelper.class.php';
 require_once 'modules/content/cmd/default.class.php';
 
-
 class ApplicationControllerTest extends PHPUnit_Framework_TestCase {
 
 	private $appHelper;
@@ -22,13 +21,10 @@ class ApplicationControllerTest extends PHPUnit_Framework_TestCase {
 	private $request;
 	
 	public function setUp() {
-	
-		$_SERVER['argv'][] = 'lang=en';
-		$_SERVER['argv'][] = 'app=content';
-		$_SERVER['argv'][] = 'cmd=default';
+		$_SERVER['argv'][] = 'pf.uri=/content/default';
 		
 		$this->appHelper = PFApplicationHelper::getInstance();
-		$this->appHelper->loadControllerMap('content', PF_BASE . '/modules/api/test/fake/command.xml');
+		$this->appHelper->init(PF_BASE . '/modules/api/test/fake/command.xml');
 		$this->appController = $this->appHelper->appController();
 		$this->request = PFFactory::getInstance()->createObject('api.request');
 	}
@@ -77,8 +73,8 @@ class ApplicationControllerTest extends PHPUnit_Framework_TestCase {
 	
 		$cmd = $this->appController->getCommand($this->request);
 		$defaultCommand = new ReflectionClass('PFDefaultCommand');
-		$this->assertTrue($defaultCommand->isInstance($cmd), 'DefaultCommand not instantiated correctly.');
 
+		$this->assertTrue($defaultCommand->isInstance($cmd), 'DefaultCommand not instantiated correctly.');
 	}
 	
 	public function testGetLogin() {
@@ -86,10 +82,21 @@ class ApplicationControllerTest extends PHPUnit_Framework_TestCase {
 		$this->assertFalse((bool)$this->appController->getLogin($this->request));
 		
 		$request = PFFactory::getInstance()->createObject('api.request');
-		$request->setProperty('app', 'content');
-		$request->setProperty('cmd', 'changepassword');
+		$request->set('pf.uri', '/content/changepassword');
 		
-		//$this->assertTrue((bool)$this->appController->GetLogin($request));
+		$this->assertTrue((bool)$this->appController->getLogin($request));
+	}
+	
+	public function testGetForward() {
+		
+		$this->assertFalse((bool)$this->appController->getForward($this->request));
+		
+		$request = PFFactory::getInstance()->createObject('api.request');
+		$request->set('pf.uri', '/content/addressbook');
+		$this->assertEquals('/content/account', $this->appController->getForward($request));
+		
+		$request->set('pf.uri', '/content/addressbook/1');
+		$this->assertEquals('/content/addressbook/:integer:/edit', $this->appController->getForward($request));
 	}
 
 	public function testGetPermissions() {
@@ -100,10 +107,10 @@ class ApplicationControllerTest extends PHPUnit_Framework_TestCase {
 		
 		// try a command statement with a couple of permissions set.  Make sure all of them are included
 		$request = PFFactory::getInstance()->createObject('api.request');
-		$request->setProperty('app', 'content');
-		$request->setProperty('cmd', 'addressbook');
+		$request->set('pf.uri', '/content/addressbook');
 
 		$permissions = $this->appController->getPermissions($request);
+
 		$this->assertTrue(in_array('shop.user', $permissions));
 		$this->assertTrue(in_array('shop.admin', $permissions));
 	}
@@ -111,8 +118,7 @@ class ApplicationControllerTest extends PHPUnit_Framework_TestCase {
 	public function testGetTheme() {
 	
 		$request = PFFactory::getInstance()->createObject('api.request');
-		$request->setProperty('app', 'content');
-		$request->setProperty('cmd', 'forgotpassword');
+		$request->set('pf.uri', '/content/forgotpassword');
 		
 		$theme = $this->appController->getTheme($request);
 		$this->assertEquals('sometheme', $theme);
