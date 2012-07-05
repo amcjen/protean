@@ -119,8 +119,8 @@ Some basic final post-install things to do to get your "hello world" page showin
 
 - make a new MySQL database for this Protean install.  Here's how I do it
 	- mysqladmin -u root -p create protean
-        - mysql -u root -p
-        - mysql> grant all on protean.* to protean@localhost identified by 'protean';
+	- mysql -u root -p
+	- mysql> grant all on protean.* to protean@localhost identified by 'protean';
 - cd into the build/ directory, copy build-dist.properties to build.properties
 - Edit this file, changing the various paths and datbase settings to suit your install
 - While still in the build/ directory, run the following phing commands
