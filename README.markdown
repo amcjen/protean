@@ -102,8 +102,8 @@ Propel 1.5.6
 -------------------
 
 	pear channel-discover pear.propelorm.org
-	sudo pear install -a propel/propel_generator-1.5.6
-	sudo pear install -a propel/propel_runtime-1.5.6
+	sudo pear install -a propel/propel_generator-1.6.2
+	sudo pear install -a propel/propel_runtime-1.6.2
 
 PHPUnit 3.4.15
 -------------------
