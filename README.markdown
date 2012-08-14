@@ -98,7 +98,7 @@ Phing 2.4.2
 	pear channel-discover pear.phing.info
 	sudo pear install -a phing/phing-2.4.2
 
-Propel 1.5.6
+Propel 1.6.2
 -------------------
 
 	pear channel-discover pear.propelorm.org
