@@ -2,324 +2,449 @@
 
 <project name="protean" default="dist" basedir="..">
 
-	<if><isset property="usetestdb"/><then>
-		<property name="propel.database.runningname" value="${propel.database.name}-test" />
-	</then><else>
-		<property name="propel.database.runningname" value="${propel.database.name}" />
-	</else></if>
+  <if><isset property="usetestdb"/><then>
+    <property name="propel.database.runningname" value="${propel.database.name}-test" />
+  </then><else>
+    <property name="propel.database.runningname" value="${propel.database.name}" />
+  </else></if>
 
-	<property file="build/build.properties"/>
+  <property file="build/build.properties"/>
+  <tstamp/>
 
-	<property name="propel.project" value="protean" />
-	<property name="propel.database.url" value="${propel.database}:host=${propel.database.host};dbname=${propel.database.runningname}" /> 
-	<property name="propel.targetPackage" value="lib" />
-	<property name="propel.output.dir" value="${project.basedir}" />
-	<property name="propel.php.dir" value="${propel.output.dir}/modules/db" />
-	<property name="propel.phpconf.dir" value="${propel.output.dir}/modules/db/conf" />
-	<property name="propel.sql.dir" value="${propel.output.dir}/modules/db/sql" />
+  <property name="propel.project" value="protean" />
+  <property name="propel.database.url" value="${propel.database}:host=${propel.database.host};dbname=${propel.database.runningname}" />
+  <property name="propel.targetPackage" value="lib" />
+  <property name="propel.php.dir" value="${project.basedir}/modules/db" />
+  <property name="propel.phpconf.dir" value="${project.basedir}/modules/db/conf" />
+  <property name="propel.sql.dir" value="${project.basedir}/modules/db/sql" />
+  <property name="propel.deltas.dir" value="${project.basedir}/modules/db/deltas" />
 
-	<target name="configfile">
-		<echo msg="Creating configuration file 'config.php'..." />
-		<delete file="config.php"/>
-		<copy file="config-dist.php" toFile="config.php">
-			<filterchain>
-				<replacetokens begintoken="%%" endtoken="%%">    
-					<token key="PHING_PROTEAN_LONGNAME" value="${protean.longname}"/>
-					<token key="PHING_PROTEAN_DATABASE_NAME" value="${propel.database.runningname}"/>
-					<token key="PHING_PROTEAN_URL" value="${protean.url}"/>
-					<token key="PHING_PROTEAN_SECUREURL" value="${protean.secureurl}"/>
-					<token key="PHING_PROTEAN_BASEDIR" value="${protean.projectdir}"/>
-					<token key="PHING_PROTEAN_DEBUG_EMAIL" value="${protean.debugemail}"/>
-				</replacetokens>
-			</filterchain>	
-		</copy>
+  <!-- CONFIG TARGETS -->
+  <target name="config">
+    <echo msg="Creating configuration file 'config.php'..." />
+    <delete file="config.php"/>
+    <copy file="config-dist.php" toFile="config.php">
+      <filterchain>
+        <replacetokens begintoken="%%" endtoken="%%">
+          <token key="PHING_PROTEAN_LONGNAME" value="${protean.longname}"/>
+          <token key="PHING_PROTEAN_DATABASE_NAME" value="${propel.database.runningname}"/>
+          <token key="PHING_PROTEAN_URL" value="${protean.url}"/>
+          <token key="PHING_PROTEAN_SECUREURL" value="${protean.secureurl}"/>
+          <token key="PHING_PROTEAN_BASEDIR" value="${protean.projectdir}"/>
+          <token key="PHING_PROTEAN_DEBUG_EMAIL" value="${protean.debugemail}"/>
+        </replacetokens>
+      </filterchain>
+    </copy>
 
-		<echo msg="Creating apache configuration file '${protean.shortname}.conf'..." />
-		<delete file="${protean.shortname}.conf"/>
-		<copy file="build/apache.conf" toFile="build/${protean.shortname}.conf">
-			<filterchain>
-				<replacetokens begintoken="%%" endtoken="%%">    
-					<token key="PHING_PROTEAN_URL" value="${protean.url}"/>
-					<token key="PHING_PROTEAN_DEBUG_EMAIL" value="${protean.debugemail}"/>
-					<token key="PHING_PROTEAN_BASEDIR" value="${protean.projectdir}"/>
-				</replacetokens>
-			</filterchain>	
-		</copy>
-	</target>
+    <echo msg="Creating apache configuration file '${protean.shortname}.conf'..." />
+    <delete file="${protean.shortname}.conf"/>
+    <copy file="build/apache.conf" toFile="build/${protean.shortname}.conf">
+      <filterchain>
+        <replacetokens begintoken="%%" endtoken="%%">
+          <token key="PHING_PROTEAN_URL" value="${protean.url}"/>
+          <token key="PHING_PROTEAN_DEBUG_EMAIL" value="${protean.debugemail}"/>
+          <token key="PHING_PROTEAN_BASEDIR" value="${protean.projectdir}"/>
+        </replacetokens>
+      </filterchain>
+    </copy>
+  </target>
 
-	<target name="clean">
-		<delete file="config.php"/>
-		<delete file="build/runtime-conf.xml"/>
-		<delete file="build/schema.xml"/>
-		<delete file="modules/db/conf/protean-conf.php"/>
-		<delete file="modules/db/sql/sqldb.map.php"/>
-	</target>
+  <target name="clean">
+    <delete file="config.php"/>
+    <delete file="build/runtime-conf.xml"/>
+    <delete file="build/schema.xml"/>
+    <delete file="modules/db/conf/protean-conf.php"/>
+    <delete file="${propel.sql.dir}/sqldb.map.php"/>
+    </target>
 
-	<target name="dirmake" depends="configfile">
-		<echo>Creating miscellaneous directories...</echo>
-		<mkdir dir="../tmp"/>
-		<exec command="chmod 777 ../tmp" />
-		<mkdir dir="../tmp/upload"/>
-		<exec command="chmod 777 ../tmp/upload" />
-		<mkdir dir="../logs"/>
-		<exec command="chmod 777 ../logs" />
-	</target>
+  <target name="cleantmp">
+      <exec command="rm -rf ../tmp/*" />
+      <phingcall target="dirmake" />
+  </target>
 
-	<target name="dist" depends="dirmake">
-		<echo message="Starting project build..." />
-		<phingcall target="propel"/>
-	</target>
+  <target name="dirmake" depends="config">
+    <echo>Creating miscellaneous directories...</echo>
+    <mkdir dir="../tmp"/>
+    <exec command="chmod 7777 ../tmp" />
+    <mkdir dir="../tmp/upload"/>
+        <exec command="chmod 7777 ../tmp/upload" />
+        <mkdir dir="../tmp/sessions"/>
+        <exec command="chmod 7777 ../tmp/sessions" />
+    <mkdir dir="../tmp/tpl_cch"/>
+        <exec command="chmod 7777 ../tmp/tpl_cch" />
+    <mkdir dir="../tmp/tpl_cfg"/>
+        <exec command="chmod 7777 ../tmp/tpl_cfg" />
+    <mkdir dir="../tmp/tpl_cmp"/>
+        <exec command="chmod 7777 ../tmp/tpl_cmp" />
+    <mkdir dir="../logs"/>
+    <exec command="chmod 7777 ../logs" />
+  </target>
 
-	<target name="makemodule">
-		<echo>Creating new module...</echo>
-		<input propertyname="protean.modulename">Name of module to create: </input>
-		<available file="modules/${protean.modulename}" property="moduleexists" value="true"/>
-		<fail if="moduleexists" message="A module by that name already exists" />
-		<mkdir dir="modules/${protean.modulename}"/>
-		<mkdir dir="modules/${protean.modulename}/cmd"/>
-		<mkdir dir="modules/${protean.modulename}/lib"/>
-		<mkdir dir="modules/${protean.modulename}/test"/>
-		<mkdir dir="modules/${protean.modulename}/test/fake"/>
-		<mkdir dir="modules/${protean.modulename}/test/unit"/>
-		<mkdir dir="modules/${protean.modulename}/misc"/>
-		<mkdir dir="modules/${protean.modulename}/lang"/>
-		<mkdir dir="modules/${protean.modulename}/tpl"/>
-		<mkdir dir="modules/${protean.modulename}/tpl/default"/>
-		<mkdir dir="modules/${protean.modulename}/tpl/default/html"/>
-		<mkdir dir="modules/${protean.modulename}/tpl/default/css"/>
-		<mkdir dir="modules/${protean.modulename}/tpl/default/images"/>
-		<mkdir dir="modules/${protean.modulename}/tpl/default/js"/>
-		<exec command="touch .placeholder" dir="modules/${protean.modulename}/cmd" />
-		<exec command="touch .placeholder" dir="modules/${protean.modulename}/lib" />
-		<exec command="touch .placeholder" dir="modules/${protean.modulename}/test/fake" />
-		<exec command="touch .placeholder" dir="modules/${protean.modulename}/test/unit" />
-		<exec command="touch .placeholder" dir="modules/${protean.modulename}/misc" />
-		<exec command="touch .placeholder" dir="modules/${protean.modulename}/lang" />
-		<exec command="touch .placeholder" dir="modules/${protean.modulename}/tpl/default/html" />
-		<exec command="touch .placeholder" dir="modules/${protean.modulename}/tpl/default/css" />
-		<exec command="touch .placeholder" dir="modules/${protean.modulename}/tpl/default/images" />
-		<exec command="touch .placeholder" dir="modules/${protean.modulename}/tpl/default/js" />
-		<echo>Enjoy your new module!</echo>
-	</target>
+  <target name="dist" depends="dirmake">
+    <echo message="Starting project build..." />
+    <phingcall target="propel"/>
+  </target>
 
-	<!-- PROPEL TARGETS -->
-	<target name="propel-map">
-		<echo message="Rebuild Propel SQL map..." />
-		<delete file="modules/db/sql/sqldb.map"/>
-	</target>
+  <target name="makemodule">
+    <echo>Creating new module...</echo>
+    <input propertyname="protean.modulename">Name of module to create: </input>
+    <available file="modules/${protean.modulename}" property="moduleexists" value="true"/>
+    <fail if="moduleexists" message="A module by that name already exists" />
+    <mkdir dir="modules/${protean.modulename}"/>
+    <mkdir dir="modules/${protean.modulename}/cmd"/>
+    <mkdir dir="modules/${protean.modulename}/lib"/>
+    <mkdir dir="modules/${protean.modulename}/test"/>
+    <mkdir dir="modules/${protean.modulename}/test/fake"/>
+    <mkdir dir="modules/${protean.modulename}/test/unit"/>
+    <mkdir dir="modules/${protean.modulename}/misc"/>
+    <mkdir dir="modules/${protean.modulename}/lang"/>
+    <mkdir dir="modules/${protean.modulename}/tpl"/>
+    <mkdir dir="modules/${protean.modulename}/tpl/default"/>
+    <mkdir dir="modules/${protean.modulename}/tpl/default/html"/>
+    <mkdir dir="modules/${protean.modulename}/tpl/default/css"/>
+    <mkdir dir="modules/${protean.modulename}/tpl/default/images"/>
+    <mkdir dir="modules/${protean.modulename}/tpl/default/js"/>
+    <exec command="touch .placeholder" dir="modules/${protean.modulename}/cmd" />
+    <exec command="touch .placeholder" dir="modules/${protean.modulename}/lib" />
+    <exec command="touch .placeholder" dir="modules/${protean.modulename}/test/fake" />
+    <exec command="touch .placeholder" dir="modules/${protean.modulename}/test/unit" />
+    <exec command="touch .placeholder" dir="modules/${protean.modulename}/misc" />
+    <exec command="touch .placeholder" dir="modules/${protean.modulename}/lang" />
+    <exec command="touch .placeholder" dir="modules/${protean.modulename}/tpl/default/html" />
+    <exec command="touch .placeholder" dir="modules/${protean.modulename}/tpl/default/css" />
+    <exec command="touch .placeholder" dir="modules/${protean.modulename}/tpl/default/images" />
+    <exec command="touch .placeholder" dir="modules/${protean.modulename}/tpl/default/js" />
+    <echo>Enjoy your new module!</echo>
+  </target>
 
-	<target name="propel-create-db">
-		<echo message="Propel create DB..." />
-		<property name="project.dir" value="${project.basedir}/build" />
-		<property name="target" value="create-db" />
-		<phing phingfile="pear-build.xml" dir="${propel.generator.buildpath}" />
-	</target>
+  <!-- EXTERNAL DEPENDENCIES TARGETS -->
+  <target name="external">
+    <echo message="Run the following pear installs"/>
+    <echo message="------------------------------------------"/>
+    <echo message="pear upgrade PEAR"/>
+    <echo message="------------------------------------------"/>
+    <echo message="pear channel-discover pear.phing.info"/>
+    <echo message="sudo pear install -a phing/phing-2.4.2"/>
+    <echo message="------------------------------------------"/>
+    <echo message="pear channel-discover pear.phpunit.de"/>
+    <echo message="pear channel-discover components.ez.no"/>
+    <echo message="pear channel-discover pear.symfony-project.com"/>
+    <echo message="sudo pear install -a phpunit/PHPUnit-3.4.15"/>
+    <echo message="------------------------------------------"/>
+    <echo message="pear channel-discover pear.propelorm.org"/>
+    <echo message="sudo pear install -a propel/propel_generator-1.5.6"/>
+    <echo message="sudo pear install -a propel/propel_runtime-1.5.6"/>
+  </target>
 
-	<target name="propel-init">
-		<echo message="Initializing Propel..." />
-		<delete file="build/runtime-conf.xml"/>
-		<copy file="build/runtime-conf-dist.xml" tofile="build/runtime-conf.xml" overwrite="true">
-			<filterchain>
-				<replacetokens begintoken="%%" endtoken="%%">
-					<token key="PHING_PROTEAN_DATABASE_LOG_PATH" value="${protean.projectdir}/logs"/>
-					<token key="PHING_PROTEAN_DATABASE_DSN" value="${propel.database.url}"/>
-					<token key="PHING_PROTEAN_DATABASE_NAME" value="${propel.database.runningname}"/>
-					<token key="PHING_PROTEAN_DATABASE_TYPE" value="${propel.database}"/>
-					<token key="PHING_PROTEAN_DATABASE_USER" value="${propel.database.user}"/>
-					<token key="PHING_PROTEAN_DATABASE_PASSWORD" value="${propel.database.password}"/>
-					<token key="PHING_PROTEAN_DATABASE_CLASSNAME" value="${propel.database.classname}"/>
-				</replacetokens>
-			</filterchain>	
-		</copy>
-		<delete file="build/schema.xml"/>
-		<copy file="build/schema-dist.xml" tofile="build/schema.xml" overwrite="true">
-			<filterchain>
-				<replacetokens begintoken="%%" endtoken="%%">    
-					<token key="PHING_PROTEAN_DATABASE_NAME" value="${propel.database.runningname}"/>
-				</replacetokens>
-			</filterchain>	
-		</copy>
-	</target>
+  <!-- PROPEL TARGETS -->
+  <target name="propel-map">
+    <echo message="Rebuild Propel SQL map..." />
+    <delete file="${propel.sql.dir}/sqldb.map"/>
+  </target>
 
-	<target name="propel" depends="propel-init">
-		<echo message="Generating Propel files..." />
-		<property name="project.dir" value="${project.basedir}/build" />
-		<phing phingfile="pear-build.xml" dir="${propel.generator.buildpath}" />
-		<delete file="modules/db/sql/sqldb.map"/>
-		<copy file="modules/db/sql/sqldb-dist.map" tofile="modules/db/sql/sqldb.map" overwrite="true">
-			<filterchain>
-				<replacetokens begintoken="%%" endtoken="%%">    
-					<token key="PHING_PROTEAN_DATABASE_NAME" value="${propel.database.runningname}"/>
-				</replacetokens>
-			</filterchain>	
-		</copy>
-	</target>
+  <target name="propel-create-db">
+    <echo message="Propel create DB..." />
+    <property name="project.dir" value="${project.basedir}/build" />
+    <property name="target" value="create-db" />
+    <phing phingfile="pear-build.xml" dir="${propel.generator.buildpath}" />
+  </target>
 
-	<target name="propel-insert" depends="propel">
-		<echo message="Creating SQL Tables and Inserting..." />
-		<property name="project.dir" value="${project.basedir}/build" />
-		<property name="target" value="insert-sql" />
-		<phing phingfile="pear-build.xml" dir="${propel.generator.buildpath}" />
-	</target>
+  <target name="propel-init">
+    <echo message="Initializing Propel..." />
+    <delete file="build/runtime-conf.xml"/>
+    <copy file="build/runtime-conf-dist.xml" tofile="build/runtime-conf.xml" overwrite="true">
+      <filterchain>
+        <replacetokens begintoken="%%" endtoken="%%">
+          <token key="PHING_PROTEAN_DATABASE_LOG_PATH" value="${protean.projectdir}/logs"/>
+          <token key="PHING_PROTEAN_DATABASE_DSN" value="${propel.database.url}"/>
+          <token key="PHING_PROTEAN_DATABASE_NAME" value="${propel.database.runningname}"/>
+          <token key="PHING_PROTEAN_DATABASE_TYPE" value="${propel.database}"/>
+          <token key="PHING_PROTEAN_DATABASE_USER" value="${propel.database.user}"/>
+          <token key="PHING_PROTEAN_DATABASE_PASSWORD" value="${propel.database.password}"/>
+          <token key="PHING_PROTEAN_DATABASE_CLASSNAME" value="${propel.database.classname}"/>
+        </replacetokens>
+      </filterchain>
+    </copy>
+    <delete file="build/schema.xml"/>
+    <copy file="build/schema-dist.xml" tofile="build/schema.xml" overwrite="true">
+      <filterchain>
+        <replacetokens begintoken="%%" endtoken="%%">
+          <token key="PHING_PROTEAN_DATABASE_NAME" value="${propel.database.runningname}"/>
+        </replacetokens>
+      </filterchain>
+    </copy>
+  </target>
 
-	<!-- FILE SETS -->
-	<fileset dir="." id="config">
-		<include name="config.php"/>
-	</fileset>
+  <target name="propel" depends="propel-init">
+    <echo message="Generating Propel files..." />
+    <property name="project.dir" value="${project.basedir}/build" />
+    <phing phingfile="pear-build.xml" dir="${propel.generator.buildpath}" />
+    <delete file="${propel.sql.dir}/sqldb.map"/>
+    <copy file="${propel.sql.dir}/sqldb-dist.map" tofile="${propel.sql.dir}/sqldb.map" overwrite="true">
+      <filterchain>
+        <replacetokens begintoken="%%" endtoken="%%">
+          <token key="PHING_PROTEAN_DATABASE_NAME" value="${propel.database.runningname}"/>
+        </replacetokens>
+      </filterchain>
+    </copy>
+  </target>
 
-	<fileset dir="." id="php">
-		<include name="modules/api/lib/*.php"/>
-		<include name="modules/content/lib/*.php"/>
-		<include name="modules/db/lib/*.php"/>
-	</fileset>
+  <target name="propel-insert" depends="propel">
+    <echo message="Creating SQL Tables and Inserting..." />
+    <property name="project.dir" value="${project.basedir}/build" />
+    <property name="target" value="insert-sql" />
+    <phing phingfile="pear-build.xml" dir="${propel.generator.buildpath}" />
+  </target>
 
-	<fileset dir="." id="unittests">
-		<include name="modules/api/test/unit/*Test.class.php"/>
-		<include name="modules/content/test/unit/*Test.class.php"/>
-	</fileset>
+  <!-- FILE SETS -->
+  <fileset dir="." id="config">
+    <include name="config.php"/>
+  </fileset>
 
-	<fileset dir="." id="functionaltests">
-		<include name="modules/api/test/functional/*Test.class.php"/>
-		<include name="modules/content/test/functional/*Test.class.php"/>
-	</fileset>
+  <fileset dir="." id="php">
+    <include name="modules/api/lib/*.php"/>
+    <include name="modules/content/lib/*.php"/>
+    <include name="modules/db/lib/*.php"/>
+  </fileset>
 
-	<!-- DATABASE MIGRATE TARGET -->
-	<target name="db-migrate" depends="propel-insert">
-    <echo message="Running ETL from old database" />
-    <echo message="This assumes we're using mysql." />
-    <echo message="It also assumes there are build properties called protean.migration.database and protean.migration.images..." />
-		<exec command="php modules/db/migration/migrate.php ${propel.database.host} ${propel.database.user} ${propel.database.password} ${protean.migration.database} ${protean.migration.images}" />
-	</target>
+  <fileset dir="." id="unittests">
+    <include name="modules/api/test/unit/*Test.class.php"/>
+    <include name="modules/content/test/unit/*Test.class.php"/>
+    <include name="modules/registration/test/unit/*Test.class.php"/>
+    <include name="modules/rest/test/unit/*Test.class.php"/>
+  </fileset>
 
-	<!-- PHPUNIT REPORT TARGETS -->
-	<target name="clean-reports">
-		<delete dir="build/reports" />
-	</target>
+  <fileset dir="." id="functionaltests">
+    <include name="modules/api/test/functional/*Test.class.php"/>
+    <include name="modules/content/test/functional/*Test.class.php"/>
+    <include name="modules/reigstration/test/functional/*Test.class.php"/>
+    <include name="modules/rest/test/functional/*Test.class.php"/>
+  </fileset>
 
-	<target name="prepare-reports">
-		<mkdir dir="build/reports" />
-	</target>
+  <fileset dir="." id="devunittests">
+    <include name="modules/content/test/unit/*Test.class.php"/>
+    <include name="modules/registration/test/unit/*Test.class.php"/>
+    <include name="modules/rest/test/unit/*Test.class.php"/>
+  </fileset>
 
-	<target name="run-reports" depends="clean-reports, prepare-reports">
-		<echo msg="Creating unit test report" />
-		<phpunitreport infile="build/tests/testsuites.xml" format="frames" todir="build/reports" />
-	</target>
+  <!-- CODE MINIFY AND COMBINE TARGETS -->
+  <taskdef name="minify" classname="build.extended.tasks.yuiMinTask" />
 
-	<!-- CODE COVERAGE REPORT TARGETS -->
-	<target name="clean-coverage">
-		<delete dir="build/coverage"/>
-	</target>
+  <target name="minify">
+    <phingcall target="minify-js" />
+    <phingcall target="minify-css" />
+  </target>
 
-	<target name="prepare-coverage">
-		<mkdir dir="build/coverage"/>
-	</target>
+  <target name="combine-js">
+    <delete file="modules/content/tpl/default/js/script.js" />
+    <append destFile="modules/content/tpl/default/js/script.js">
+      <fileset dir=".">
+        <include name="modules/content/tpl/default/js/*.js"/>
+        <exclude name="modules/content/tpl/default/js/script.js"/>
+        <exclude name="modules/content/tpl/default/js/script.min.js"/>
+        <exclude name="modules/content/tpl/default/js/modernizr-1.6.min.js"/>
+      </fileset>
+    </append>
+    <delete file="modules/shop/tpl/default/js/script.js" />
+    <append destFile="modules/shop/tpl/default/js/script.js">
+      <fileset dir=".">
+        <include name="modules/shop/tpl/default/js/*.js"/>
+        <exclude name="modules/shop/tpl/default/js/script.js"/>
+        <exclude name="modules/shop/tpl/default/js/script.min.js"/>
+      </fileset>
+    </append>
+  </target>
 
-	<target name="setup-coverage" depends="clean-coverage, prepare-coverage">
-		<coverage-setup database="build/coverage/coverage.db">
-			<fileset refid="config"/>
-			<fileset refid="php"/>
-		</coverage-setup>
-	</target>
+  <target name="minify-js" depends="combine-js">
+    <echo>Running JS through {$protean.build.tool.yuicompressor}</echo>
+    <minify targetDir="modules/content/tpl/default/js"
+            yuiPath="modules/thirdparty/html5boilerplate/build/tools/yuicompressor-2.4.2.jar">
+      <fileset dir=".">
+        <include name="modules/content/tpl/default/js/script.js"/>
+      </fileset>
+    </minify>
+    <minify targetDir="modules/shop/tpl/default/js"
+            yuiPath="modules/thirdparty/html5boilerplate/build/tools/yuicompressor-2.4.2.jar">
+      <fileset dir=".">
+        <include name="modules/shop/tpl/default/js/script.js"/>
+      </fileset>
+    </minify>
+  </target>
 
-	<target name="run-coverage" depends="setup-coverage">
-		<phpunit haltonfailure="false" codecoverage="true" printsummary="true">
-			<batchtest>
-				<fileset refid="unittests"/>
-			</batchtest>
-			<formatter type="plain" usefile="false"/>
-		</phpunit>
-	</target>
+  <target name="combine-css">
+    <delete file="modules/content/tpl/default/css/style.css" />
+    <append destFile="modules/content/tpl/default/css/style.css">
+      <filelist dir="modules/content/tpl/default/css" files="html5boilerplate.css,960.css"/>
+    </append>
+    <append destFile="modules/content/tpl/default/css/style.css">
+      <fileset dir=".">
+        <include name="modules/content/tpl/default/css/**/*.css"/>
+        <exclude name="modules/content/tpl/default/css/style.css"/>
+        <exclude name="modules/content/tpl/default/css/style.min.css"/>
+        <exclude name="modules/content/tpl/default/css/html5boilerplate.css"/>
+        <exclude name="modules/content/tpl/default/css/960.css"/>
+      </fileset>
+    </append>
+  </target>
 
-	<target name="coverage" depends="run-coverage">
-		<echo msg="Creating coverage report" />
-		<coverage-report outfile="build/coverage/coverage.xml">
-			<report todir="build/coverage" />
-		</coverage-report>
-	</target> 
+  <target name="minify-css" depends="combine-css">
+    <minify targetDir="modules/content/tpl/default/css"
+            yuiPath="modules/thirdparty/html5boilerplate/build/tools/yuicompressor-2.4.2.jar">
+      <fileset dir=".">
+        <include name="modules/content/tpl/default/css/style.css"/>
+      </fileset>
+    </minify>
+  </target>
 
-	<!-- CLEAN UP BEFORE RUNNING TESTS -->
-	<target name="clean-tests">
-		<delete dir="build/tests" />
-	</target>
+  <!-- PHPUNIT REPORT TARGETS -->
+  <target name="clean-reports">
+    <delete dir="build/reports" />
+  </target>
 
-	<target name="prepare-tests">
-		<mkdir dir="build/tests"/>
-	</target>
+  <target name="prepare-reports">
+    <mkdir dir="build/reports" />
+  </target>
 
-	<!-- UNIT TEST TARGETS -->
-	<target name="test-unit" depends="clean-tests, prepare-tests">
-		<echo msg="Running unit tests" />
-		<phpunit haltonerror="true" haltonfailure="true" printsummary="true">
-			<batchtest>
-				<fileset refid="unittests"/>
-			</batchtest>
-			<formatter todir="build/tests" type="xml"/>
-			<formatter type="plain" usefile="false"/>
-		</phpunit>
-	</target>
+  <target name="run-reports" depends="clean-reports, prepare-reports">
+    <echo msg="Creating unit test report" />
+    <phpunitreport infile="build/tests/testsuites.xml" format="frames" todir="build/reports" />
+  </target>
 
-	<!-- FUNCTIONAL TEST TARGETS -->
-	<target name="test-functional" depends="clean-tests, prepare-tests">
-		<echo msg="Running functional tests" />
-		<phpunit haltonerror="true" haltonfailure="true" printsummary="true">
-			<batchtest>
-				<fileset refid="functionaltests"/>
-			</batchtest>
-			<formatter todir="build/tests" type="xml"/>
-			<formatter type="plain" usefile="false"/>
-		</phpunit>
-	</target>
+  <!-- CODE COVERAGE REPORT TARGETS -->
+  <target name="clean-coverage">
+    <delete dir="build/coverage"/>
+  </target>
 
-	<!-- ALL TESTS TARGET -->
-	<target name="test" depends="clean-tests, prepare-tests">
-		<echo msg="Running all unit and functional tests" />
-		<phpunit haltonerror="true" haltonfailure="true" printsummary="true">
-			<batchtest>
-				<fileset refid="unittests"/>
-				<fileset refid="functionaltests"/>
-			</batchtest>
-			<formatter todir="build/tests" type="xml"/>
-			<formatter type="plain" usefile="false"/>
-		</phpunit>
-	</target>
+  <target name="prepare-coverage">
+    <mkdir dir="build/coverage"/>
+  </target>
 
-	<!-- MODULES SPECIFIC TESTS TARGET -->
-	<target name="test-api">
-		<echo msg="... running api tests" />
-		<phpunit haltonerror="true" haltonfailure="true" printsummary="true">
-			<batchtest>
-				<fileset dir=".">
-					<include name="modules/api/test/unit/*Test.class.php"/>
-					<include name="modules/api/test/functional/*Test.class.php"/>
-				</fileset>
-			</batchtest>
-			<formatter type="plain" usefile="false"/>
-		</phpunit>
-	</target>
+  <target name="setup-coverage" depends="clean-coverage, prepare-coverage">
+    <coverage-setup database="build/coverage/coverage.db">
+      <fileset refid="config"/>
+      <fileset refid="php"/>
+    </coverage-setup>
+  </target>
 
-	<target name="test-content">
-		<echo msg="... running content tests" />
-		<phpunit haltonerror="true" haltonfailure="true" printsummary="true">
-			<batchtest>
-				<fileset dir=".">
-					<include name="modules/content/test/unit/*Test.class.php"/>
-					<include name="modules/content/test/functional/*Test.class.php"/>					
-				</fileset>
-			</batchtest>
-			<formatter type="plain" usefile="false"/>
-		</phpunit>
-	</target>
+  <target name="run-coverage" depends="setup-coverage">
+    <phpunit haltonfailure="false" codecoverage="true" printsummary="true">
+      <batchtest>
+        <fileset refid="unittests"/>
+      </batchtest>
+      <formatter type="plain" usefile="false"/>
+    </phpunit>
+  </target>
 
-	<target name="dev">
-		<echo msg="developing a feature" />
-		<phpunit haltonerror="true" haltonfailure="true" printsummary="true">
-			<batchtest>
-				<fileset dir=".">
-					<include name="modules/content/test/unit/*Test.class.php"/>
-				</fileset>
-			</batchtest>
-			<formatter type="plain" usefile="false"/>
-		</phpunit>
-	</target>
+  <target name="coverage" depends="run-coverage">
+    <echo msg="Creating coverage report" />
+    <coverage-report outfile="build/coverage/coverage.xml">
+      <report todir="build/coverage" />
+    </coverage-report>
+  </target>
+
+  <!-- CLEAN UP BEFORE RUNNING TESTS -->
+  <target name="clean-tests">
+    <delete dir="build/tests" />
+  </target>
+
+  <target name="prepare-tests">
+    <mkdir dir="build/tests"/>
+  </target>
+
+  <!-- UNIT TEST TARGETS -->
+  <target name="test-unit" depends="clean-tests, prepare-tests">
+    <echo msg="Running unit tests" />
+    <phpunit haltonerror="true" haltonfailure="true" printsummary="true">
+      <batchtest>
+        <fileset refid="unittests"/>
+      </batchtest>
+      <formatter todir="build/tests" type="xml"/>
+      <formatter type="plain" usefile="false"/>
+    </phpunit>
+  </target>
+
+
+  <target name="tmunittest" description="Run unit tests, optimized for TextMate output.">
+    <mkdir dir="build/tests"/>
+    <mkdir dir="build/tests/reports"/>
+    <mkdir dir="build/tests/reports/html"/>
+    <phpunit>
+      <batchtest>
+        <fileset refid="unittests"/>
+      </batchtest>
+      <formatter todir="build/tests/reports" type="xml"/>
+    </phpunit>
+    <phpunitreport
+      infile="build/tests/reports/testsuites.xml"
+      format="noframes"
+      todir="build/tests/reports/html"
+      />
+  </target>
+
+  <!-- FUNCTIONAL TEST TARGETS -->
+  <target name="test-functional" depends="clean-tests, prepare-tests">
+    <echo msg="Running functional tests" />
+    <phpunit haltonerror="true" haltonfailure="true" printsummary="true">
+      <batchtest>
+        <fileset refid="functionaltests"/>
+      </batchtest>
+      <formatter todir="build/tests" type="xml"/>
+      <formatter type="plain" usefile="false"/>
+    </phpunit>
+  </target>
+
+  <!-- ALL TESTS TARGET -->
+  <target name="test" depends="clean-tests, prepare-tests">
+    <echo msg="Running all unit and functional tests" />
+    <phpunit haltonerror="true" haltonfailure="true" printsummary="true">
+      <batchtest>
+        <fileset refid="unittests"/>
+        <fileset refid="functionaltests"/>
+      </batchtest>
+      <formatter todir="build/tests" type="xml"/>
+      <formatter type="plain" usefile="false"/>
+    </phpunit>
+  </target>
+
+  <!-- MODULES SPECIFIC TESTS TARGET -->
+  <target name="test-api">
+    <echo msg="... running api tests" />
+    <phpunit haltonerror="true" haltonfailure="true" printsummary="true">
+      <batchtest>
+        <fileset dir=".">
+          <include name="modules/api/test/unit/*Test.class.php"/>
+          <include name="modules/api/test/functional/*Test.class.php"/>
+        </fileset>
+      </batchtest>
+      <formatter type="plain" usefile="false"/>
+    </phpunit>
+  </target>
+
+  <target name="test-content">
+    <echo msg="... running content tests" />
+    <phpunit haltonerror="true" haltonfailure="true" printsummary="true">
+      <batchtest>
+        <fileset dir=".">
+          <include name="modules/content/test/unit/*Test.class.php"/>
+          <include name="modules/content/test/functional/*Test.class.php"/>
+        </fileset>
+      </batchtest>
+      <formatter type="plain" usefile="false"/>
+    </phpunit>
+  </target>
+
+  <target name="dev">
+    <echo msg="developing a feature" />
+    <phpunit haltonerror="true" haltonfailure="true" printsummary="true">
+      <batchtest>
+        <fileset dir=".">
+          <!-- <include name="modules/shop/test/integration/ProductHelperTest.class.php"/>
+                   <include name="modules/shop/test/integration/InventoryHelperTest.class.php"/> -->
+          <include name="modules/shop/test/unit/OrderHelperTest.class.php"/>
+        </fileset>
+      </batchtest>
+      <formatter type="plain" usefile="false"/>
+    </phpunit>
+  </target>
 </project>
 
