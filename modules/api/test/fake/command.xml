@@ -91,4 +91,11 @@
 			<forward>/content/addressbook/:integer:/edit</forward>
 		</status>
 	</uri>
+	
+	<uri name="/content/detail/:string:/:string:/:string:/:integer:">
+		<command>content.detail</command>
+		<viewheader>content.header</viewheader>
+		<viewfooter>content.footer</viewfooter>
+		<view>content.account-addresses</view>
+	</uri>
 </control>

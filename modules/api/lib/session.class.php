@@ -2,7 +2,7 @@
 /**************************************************************************\
 * Protean Framework                                                        *
 * https://github.com/erictj/protean                                        *
-* Copyright (c) 2006-2011, Loopshot Inc.  All rights reserved.             *
+* Copyright (c) 2006-2012, Eric Jennings.  All rights reserved.            *
 * ------------------------------------------------------------------------ *
 *  This program is free software; you can redistribute it and/or modify it *
 *  under the terms of the BSD License as described in license.txt.         *
@@ -27,14 +27,14 @@ class PFSession {
 			} else {
 				ini_set('session.save_handler', 'files');
 				
-			if (defined('PF_SESSION_PATH') && PF_SESSION_PATH != '') {
-				if (!is_dir(PF_SESSION_PATH . '/sessions') && is_writable(PF_SESSION_PATH)) {
-					mkdir(PF_SESSION_PATH . '/sessions', 0770);
+				if (defined('PF_SESSION_PATH') && PF_SESSION_PATH != '') {
+					if (!is_dir(PF_SESSION_PATH . '/sessions') && is_writable(PF_SESSION_PATH)) {
+						mkdir(PF_SESSION_PATH . '/sessions', 0770);
+					}
+					session_save_path(PF_SESSION_PATH . '/sessions');
 				}
-				session_save_path(PF_SESSION_PATH . '/sessions');
 			}
-			}
-
+			
 			if ($session_expire != '') {
 				session_set_cookie_params($session_expire * 60);
 				session_cache_expire($session_expire);
@@ -54,8 +54,7 @@ class PFSession {
 			}
 
 			if (php_sapi_name() != 'cli') {
-				session_start();
-				
+				session_start();			
 			}
 
 			$fingerprint = PF_SESSION_UNIQUE_KEY . @$_SERVER['HTTP_USER_AGENT'];

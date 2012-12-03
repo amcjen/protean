@@ -3,1688 +3,1967 @@
 
 <database name="%%PHING_PROTEAN_DATABASE_NAME%%" defaultIdMethod="native">
 
-	<behavior name="alternative_coding_standards">
-		<parameter name="brackets_newline" value="false" />
-		<parameter name="remove_closing_comments" value="true" />
-		<parameter name="use_whitespace" value="false" />
-		<parameter name="tab_size" value="2" />
-		<parameter name="strip_comments" value="true" />
-	</behavior>
+  <behavior name="alternative_coding_standards">
+    <parameter name="brackets_newline" value="false" />
+    <parameter name="remove_closing_comments" value="true" />
+    <parameter name="use_whitespace" value="false" />
+    <parameter name="tab_size" value="2" />
+    <parameter name="strip_comments" value="true" />
+  </behavior>
 
-	 <!-- LOCALE TABLES -->
-	<table name="locale_country" description="Country Table">
-		<column
-			name="locale_country_id"
-			required="true"
-			primaryKey="true"
-			autoIncrement="true"
-			type="INTEGER"
-			description="Country ID"/>
-		<column
-			name="long_name"
-			required="true"
-			type="VARCHAR"
-			size="64"
-			description="Long Name"/>
-		<column
-			name="short_name_2"
-			required="true"
-			type="VARCHAR"
-			size="2"
-			description="Short Name (2)"/>
-		<column
-			name="short_name_3"
-			required="true"
-			type="VARCHAR"
-			size="3"
-			description="Short Name (3)"/>
-		<column
-			name="iso_code"
-			required="true"
-			type="TINYINT"
-			description="ISO Code"/>
-		<column
-			name="display_order"
-			type="INTEGER"
-			description="Display Order"/>
-		<column
-			name="is_us_territory"
-			required="true"
-			type="BOOLEAN"
-			default="false"
-			description="Is US Territory"/>
-	</table>
+   <!-- LOCALE TABLES --> 
+  <table name="locale_location" description="Location Table">
+    <column
+      name="locale_location_id"
+      required="true"
+      primaryKey="true"
+      autoIncrement="true"
+      type="INTEGER"
+      description="Location ID"/>
+    <column
+      name="name"
+      required="true"
+      type="VARCHAR"
+      size="255"
+      description="Name"/>
+    <column
+      name="address_1"
+      type="VARCHAR"
+      size="255"
+      description="Address 1"/>
+    <column
+      name="address_2"
+      type="VARCHAR"
+      size="255"
+      description="Address 2"/>
+    <column
+      name="address_3"
+      type="VARCHAR"
+      size="255"
+      description="Address 3"/>
+    <column
+      name="city"
+      type="VARCHAR"
+      size="255"
+      description="City"/>
+    <column
+      name="region"
+      type="VARCHAR"
+      size="255"
+      description="Region"/>
+    <column
+      name="postal_code"
+      type="VARCHAR"
+      size="32"
+      description="Postal Code"/>
+    <column
+      name="locale_country"
+      type="VARCHAR"
+      size="2"
+      default="US"
+      description="Country"/>
+    <column
+      name="telephone_voice"
+      type="VARCHAR"
+      size="32"
+      description="Telephone - Voice"/>
+    <column
+      name="telephone_fax"
+      type="VARCHAR"
+      size="32"
+      description="Telephone - Fax"/>
+    <column
+      name="latitude"
+      type="FLOAT"
+      size="12"
+      scale="6"
+      description="Latitude"/>
+    <column
+      name="longitude"
+      type="FLOAT"
+      size="12"
+      scale="6"
+      description="Longitude"/>
+    <column
+      name="altitude"
+      type="TINYINT"
+      description="Altitude"/>
+    <behavior name="timestampable" />
+  </table>
 
-	<table name="locale_region" description="Region Table">
-		<column
-			name="locale_region_id"
-			required="true"
-			primaryKey="true"
-			autoIncrement="true"
-			type="INTEGER"
-			description="Region ID"/>
-		<column
-			name="locale_country_id"
-			required="true"
-			type="INTEGER"
-			description="Country ID"/>
-		<column
-			name="long_name"
-			required="true"
-			type="VARCHAR"
-			size="255"
-			description="Long Name"/>
-		<column
-			name="short_name"
-			required="true"
-			type="VARCHAR"
-			size="128"
-			description="Short Name"/>
-		<column
-			name="display_order"
-			type="INTEGER"
-			description="Display Order"/>
-		<foreign-key foreignTable="locale_country" onDelete="cascade">
-			<reference
-				local="locale_country_id"
-				foreign="locale_country_id"/>
-		</foreign-key>
-	</table>
+  <table name="locale_zipcode_lookup" description="Location Zipcode Lookup">
+    <column
+      name="locale_zipcode_lookup_id"
+      required="true"
+      primaryKey="true"
+      type="INTEGER"
+      autoIncrement="true"
+      size="11"
+      description="Primary Key"/>
+    <column
+      name="zipcode"
+      required="true"
+      type="VARCHAR"
+      size="5"
+      description="Zip Code"/>
+    <column
+      name="city"
+      required="true"
+      type="VARCHAR"
+      size="64"
+      description="City Name"/>
+    <column
+      name="region"
+      required="true"
+      type="VARCHAR"
+      size="255"
+      description="Region Name"/>
+  </table>
 
-	<table name="locale_location" description="Location Table">
-		<column
-			name="locale_location_id"
-			required="true"
-			primaryKey="true"
-			autoIncrement="true"
-			type="INTEGER"
-			description="Location ID"/>
-		<column
-			name="name"
-			required="true"
-			type="VARCHAR"
-			size="255"
-			description="Name"/>
-		<column
-			name="address_1"
-			type="VARCHAR"
-			size="255"
-			description="Address 1"/>
-		<column
-			name="address_2"
-			type="VARCHAR"
-			size="255"
-			description="Address 2"/>
-		<column
-			name="address_3"
-			type="VARCHAR"
-			size="255"
-			description="Address 3"/>
-		<column
-			name="city"
-			type="VARCHAR"
-			size="255"
-			description="City"/>
-		<column
-			name="locale_region_id"
-			required="true"
-			type="INTEGER"
-			description="Region ID"/>
-		<column
-			name="postal_code"
-			type="VARCHAR"
-			size="32"
-			description="Postal Code"/>
-		<column
-			name="locale_country_id"
-			required="true"
-			type="INTEGER"
-			description="Country ID"/>
-		<column
-			name="telephone_voice"
-			type="VARCHAR"
-			size="32"
-			description="Telephone - Voice"/>
-		<column
-			name="telephone_fax"
-			type="VARCHAR"
-			size="32"
-			description="Telephone - Fax"/>
-		<column
-			name="latitude"
-			type="FLOAT"
-			size="12"
-			scale="6"
-			description="Latitude"/>
-		<column
-			name="longitude"
-			type="FLOAT"
-			size="12"
-			scale="6"
-			description="Longitude"/>
-		<column
-			name="altitude"
-			type="TINYINT"
-			description="Altitude"/>
-		<behavior name="timestampable" />
-		<behavior name="soft_delete" />
-		<foreign-key foreignTable="locale_region" onDelete="restrict">
-			<reference
-				local="locale_region_id"
-				foreign="locale_region_id"/>
-		</foreign-key>
-		<foreign-key foreignTable="locale_country" onDelete="restrict">
-			<reference
-				local="locale_country_id"
-				foreign="locale_country_id"/>
-		</foreign-key>
-	</table>
+  <!-- AUTH TABLES -->
+  <table name="auth_user" description="User Table">
+    <column
+      name="auth_user_id"
+      required="true"
+      primaryKey="true"
+      autoIncrement="true"
+      type="INTEGER"
+      description="User ID"/>
+    <column
+      name="username"
+      required="true"
+      type="VARCHAR"
+      size="128"
+      description="Username"/>
+    <column
+      name="password"
+      required="true"
+      type="VARCHAR"
+      size="64"
+      description="Password"/>
+    <column
+      name="md5_password"
+      required="false"
+      type="VARCHAR"
+      size="38"
+      description="MD5 Password"/>
+    <column
+      name="last_login"
+      required="false"
+      type="TIMESTAMP"
+      description="Last Login"/>
+    <column
+      name="last_login_from"
+      required="false"
+      type="VARCHAR"
+      size="255"
+      description="Last Login From"/>
+    <column
+      name="last_password_change"
+      required="false"
+      type="TIMESTAMP"
+      description="Last Password Change"/>
+    <column
+      name="password_reset_key"
+      required="false"
+      type="VARCHAR"
+      size="64"
+      description="Password Reset Key"/>
+    <column
+      name="status"
+      required="true"
+      type="CHAR"
+      size="1"
+      default="A"
+      description="Status"/>
+    <column
+      name="expires"
+      required="false"
+      type="TIMESTAMP"
+      description="Expires"/>
+    <column
+      name="party_id"
+      required="false"
+      type="INTEGER"
+      description="Foreign Key Party ID"/>
+    <behavior name="timestampable" />
+    <foreign-key foreignTable="party" onDelete="cascade">
+      <reference
+        local="party_id"
+        foreign="party_id"/>
+    </foreign-key>
+    <unique>
+      <unique-column
+        name="username"/>
+    </unique>
+    <validator column="password" translate="none">
+      <rule
+        name="minLength"
+        value="4"
+        message="Password must be ${value} or more characters long."/>
+    </validator>
+  </table>
 
-	<table name="locale_zipcode_lookup" description="Location Zipcode Lookup">
-		<column
-			name="locale_zipcode_lookup_id"
-			required="true"
-			primaryKey="true"
-			type="INTEGER"
-			autoIncrement="true"
-			size="11"
-			description="Primary Key"/>
-		<column
-			name="zipcode"
-			required="true"
-			type="VARCHAR"
-			size="5"
-			description="Zip Code"/>
-		<column
-			name="city"
-			required="true"
-			type="VARCHAR"
-			size="64"
-			description="City Name"/>
-		<column
-			name="locale_region_id_state"
-			required="true"
-			type="INTEGER"
-			description="State Location ID"/>
-		<foreign-key foreignTable="locale_region" onDelete="restrict">
-			<reference
-				local="locale_region_id_state"
-				foreign="locale_region_id"/>
-		</foreign-key>
-	</table>
+  <table name="auth_user_group" description="User Group Table">
+    <column
+      name="auth_user_group_id"
+      required="true"
+      primaryKey="true"
+      autoIncrement="true"
+      type="INTEGER"
+      description="User Group ID"/>
+    <column
+      name="name"
+      required="true"
+      type="VARCHAR"
+      size="128"
+      description="Group Name"/>
+    <column
+      name="group_key"
+      required="true"
+      type="VARCHAR"
+      size="64"
+      description="Group Key"/>
+    <column
+      name="status"
+      required="true"
+      type="CHAR"
+      size="1"
+      default="A"
+      description="Status"/>
+    <column
+      name="expires"
+      required="false"
+      type="TIMESTAMP"
+      description="Expires"/>
+    <behavior name="timestampable" />
+    <validator column="name" translate="none">
+      <rule
+        name="unique"
+        message="Group name already exists in database." />
+    </validator>
+  </table>
 
-	<!-- AUTH TABLES -->
-	<table name="auth_user" description="User Table">
-		<column
-			name="auth_user_id"
-			required="true"
-			primaryKey="true"
-			autoIncrement="true"
-			type="INTEGER"
-			description="User ID"/>
-		<column
-			name="username"
-			required="true"
-			type="VARCHAR"
-			size="128"
-			description="Username"/>
-		<column
-			name="password"
-			required="true"
-			type="VARCHAR"
-			size="32"
-			description="Password"/>
-		<column
-			name="last_login"
-			required="false"
-			type="TIMESTAMP"
-			description="Last Login"/>
-		<column
-			name="last_login_from"
-			required="false"
-			type="VARCHAR"
-			size="255"
-			description="Last Login From"/>
-		<column
-			name="last_password_change"
-			required="false"
-			type="TIMESTAMP"
-			description="Last Password Change"/>
-		<column
-			name="password_reset_key"
-			required="false"
-			type="VARCHAR"
-			size="32"
-			description="Password Reset Key"/>
-		<column
-			name="status"
-			required="true"
-			type="CHAR"
-			size="1"
-			default="A"
-			description="Status"/>
-		<column
-			name="expires"
-			required="false"
-			type="TIMESTAMP"
-			description="Expires"/>
-		<column
-			name="party_id"
-			required="false"
-			type="INTEGER"
-			description="Foreign Key Party ID"/>
-		<behavior name="timestampable" />
-		<foreign-key foreignTable="party" onDelete="cascade">
-			<reference
-				local="party_id"
-				foreign="party_id"/>
-		</foreign-key>
-		<unique>
-			<unique-column
-				name="username"/>
-		</unique>
-		<validator column="password" translate="none">
-			<rule
-				name="minLength"
-				value="4"
-				message="Password must be ${value} or more characters long."/>
-		</validator>
-	</table>
+  <table name="auth_role" description="User Role Table">
+    <column
+      name="auth_role_id"
+      required="true"
+      primaryKey="true"
+      autoIncrement="true"
+      type="INTEGER"
+      description="Auth Role ID"/>
+    <column
+      name="name"
+      required="true"
+      type="VARCHAR"
+      size="128"
+      description="Role Name"/>
+    <column
+      name="role_key"
+      required="true"
+      type="VARCHAR"
+      size="64"
+      description="Role Key"/>
+    <column
+      name="status"
+      required="true"
+      type="CHAR"
+      size="1"
+      default="A"
+      description="Status"/>
+    <column
+      name="expires"
+      required="false"
+      type="TIMESTAMP"
+      description="Expires"/>
+    <behavior name="timestampable" />
+    <validator column="name" translate="none">
+      <rule
+        name="unique"
+        message="Role name already in database." />
+    </validator>
+  </table>
 
-	 <!-- AUTH TABLES -->
-	<table name="auth_user_group" description="User Group Table">
-		<column
-			name="auth_user_group_id"
-			required="true"
-			primaryKey="true"
-			autoIncrement="true"
-			type="INTEGER"
-			description="User Group ID"/>
-		<column
-			name="name"
-			required="true"
-			type="VARCHAR"
-			size="128"
-			description="Group Name"/>
-		<column
-			name="group_key"
-			required="true"
-			type="VARCHAR"
-			size="64"
-			description="Group Key"/>
-		<column
-			name="status"
-			required="true"
-			type="CHAR"
-			size="1"
-			default="A"
-			description="Status"/>
-		<column
-			name="expires"
-			required="false"
-			type="TIMESTAMP"
-			description="Expires"/>
-		<behavior name="timestampable" />
-		<validator column="name" translate="none">
-			<rule
-				name="unique"
-				message="Group name already exists in database." />
-		</validator>
-	</table>
+  <table name="auth_user_group_xref" description="User/Group Cross-reference Table">
+    <column
+      name="auth_user_id"
+      required="true"
+      primaryKey="true"
+      type="INTEGER"
+      description="User ID"/>
+    <column
+      name="auth_user_group_id"
+      required="true"
+      primaryKey="true"
+      type="INTEGER"
+      description="User Group ID"/>
+    <column
+      name="status"
+      required="true"
+      type="CHAR"
+      size="1"
+      default="A"
+      description="Status"/>
+    <foreign-key foreignTable="auth_user" onDelete="cascade">
+      <reference
+        local="auth_user_id"
+        foreign="auth_user_id"/>
+    </foreign-key>
+    <foreign-key foreignTable="auth_user_group" onDelete="cascade">
+      <reference
+        local="auth_user_group_id"
+        foreign="auth_user_group_id"/>
+    </foreign-key>
+    <unique>
+      <unique-column name="auth_user_id" />
+      <unique-column name="auth_user_group_id" />
+    </unique>
+  </table>
 
-	<table name="auth_role" description="User Role Table">
-		<column
-			name="auth_role_id"
-			required="true"
-			primaryKey="true"
-			autoIncrement="true"
-			type="INTEGER"
-			description="Auth Role ID"/>
-		<column
-			name="name"
-			required="true"
-			type="VARCHAR"
-			size="128"
-			description="Role Name"/>
-		<column
-			name="role_key"
-			required="true"
-			type="VARCHAR"
-			size="64"
-			description="Role Key"/>
-		<column
-			name="status"
-			required="true"
-			type="CHAR"
-			size="1"
-			default="A"
-			description="Status"/>
-		<column
-			name="expires"
-			required="false"
-			type="TIMESTAMP"
-			description="Expires"/>
-		<behavior name="timestampable" />
-		<validator column="name" translate="none">
-			<rule
-				name="unique"
-				message="Role name already in database." />
-		</validator>
-	</table>
+  <table name="auth_user_role_xref" description="User/Role Cross-reference Table">
+    <column
+      name="auth_user_id"
+      required="true"
+      primaryKey="true"
+      type="INTEGER"
+      description="User ID"/>
+    <column
+      name="auth_role_id"
+      required="true"
+      primaryKey="true"
+      type="INTEGER"
+      description="User Role ID"/>
+    <foreign-key foreignTable="auth_user" onDelete="cascade">
+      <reference
+        local="auth_user_id"
+        foreign="auth_user_id"/>
+    </foreign-key>
+    <foreign-key foreignTable="auth_role" onDelete="cascade">
+      <reference
+        local="auth_role_id"
+        foreign="auth_role_id"/>
+    </foreign-key>
+  </table>
 
-	<table name="auth_user_group_xref" description="User/Group Cross-reference Table">
-		<column
-			name="auth_user_id"
-			required="true"
-			primaryKey="true"
-			type="INTEGER"
-			description="User ID"/>
-		<column
-			name="auth_user_group_id"
-			required="true"
-			primaryKey="true"
-			type="INTEGER"
-			description="User Group ID"/>
-		<column
-			name="status"
-			required="true"
-			type="CHAR"
-			size="1"
-			default="A"
-			description="Status"/>
-		<foreign-key foreignTable="auth_user" onDelete="cascade">
-			<reference
-				local="auth_user_id"
-				foreign="auth_user_id"/>
-		</foreign-key>
-		<foreign-key foreignTable="auth_user_group" onDelete="cascade">
-			<reference
-				local="auth_user_group_id"
-				foreign="auth_user_group_id"/>
-		</foreign-key>
-		<unique>
-			<unique-column name="auth_user_id" />
-			<unique-column name="auth_user_group_id" />
-		</unique>
-	</table>
+  <table name="auth_user_group_role_xref" description="User Group/Role Cross-reference Table">
+    <column
+      name="auth_user_group_id"
+      required="true"
+      primaryKey="true"
+      type="INTEGER"
+      description="User Group ID"/>
+    <column
+      name="auth_role_id"
+      required="true"
+      primaryKey="true"
+      type="INTEGER"
+      description="User Role ID"/>
+    <foreign-key foreignTable="auth_user_group" onDelete="cascade">
+      <reference
+        local="auth_user_group_id"
+        foreign="auth_user_group_id"/>
+    </foreign-key>
+    <foreign-key foreignTable="auth_role" onDelete="cascade">
+      <reference
+        local="auth_role_id"
+        foreign="auth_role_id"/>
+    </foreign-key>
+  </table>
 
-	<table name="auth_user_role_xref" description="User/Role Cross-reference Table">
-		<column
-			name="auth_user_id"
-			required="true"
-			primaryKey="true"
-			type="INTEGER"
-			description="User ID"/>
-		<column
-			name="auth_role_id"
-			required="true"
-			primaryKey="true"
-			type="INTEGER"
-			description="User Role ID"/>
-		<foreign-key foreignTable="auth_user" onDelete="cascade">
-			<reference
-				local="auth_user_id"
-				foreign="auth_user_id"/>
-		</foreign-key>
-		<foreign-key foreignTable="auth_role" onDelete="cascade">
-			<reference
-				local="auth_role_id"
-				foreign="auth_role_id"/>
-		</foreign-key>
-	</table>
+  <!-- PARTY TABLES -->
+  <table name="party" description="Party Table">
+    <column
+      name="party_id"
+      required="true"
+      primaryKey="true"
+      autoIncrement="true"
+      type="INTEGER"
+      description="Party ID"/>
+    <column
+      name="first_name"
+      required="false"
+      type="VARCHAR"
+      size="128"
+      description="First Name"/>
+    <column
+      name="middle_name"
+      required="false"
+      type="VARCHAR"
+      size="128"
+      description="Middle Name"/>
+    <column
+      name="last_name"
+      required="false"
+      type="VARCHAR"
+      size="128"
+      description="Last Name"/>
+    <column
+      name="prefix"
+      required="false"
+      type="VARCHAR"
+      size="64"
+      description="Prefix"/>
+    <column
+      name="suffix"
+      required="false"
+      type="VARCHAR"
+      size="64"
+      description="Suffix"/>
+    <column
+      name="birthday"
+      required="false"
+      type="TIMESTAMP"
+      description="Birthday"/>
+    <column
+      name="gender"
+      required="false"
+      type="VARCHAR"
+      size="32"/>
+    <column
+      name="timezone"
+      required="false"
+      type="VARCHAR"
+      size="3"
+      description="Timezone"/>
+    <column
+      name="url"
+      required="false"
+      type="VARCHAR"
+      size="255"
+      description="URL"/>
+    <column
+      name="organization_name"
+      required="false"
+      type="VARCHAR"
+      size="255"
+      description="Organization Name"/>
+    <column
+      name="is_company"
+      required="false"
+      type="BOOLEAN"
+      default="false"
+      description="Is Company"/>
+    <column
+      name="title"
+      required="false"
+      type="VARCHAR"
+      size="128"
+      description="Title"/>
+    <column
+      name="telephone"
+      required="false"
+      type="VARCHAR"
+      size="32"
+      description="Telephone"/>
+    <column
+      name="email"
+      required="false"
+      type="VARCHAR"
+      size="255"
+      description="Email"/>
+    <column
+      name="twitter"
+      required="false"
+      type="VARCHAR"
+      size="255"
+      description="twitter"/>
+    <column
+      name="facebook"
+      required="false"
+      type="VARCHAR"
+      size="255"
+      description="Facebook"/>
+    <behavior name="timestampable" />
+    <column
+      name="note"
+      required="false"
+      type="CLOB"
+      lazyLoad="true"
+      description="Note"/>
+    <unique>
+      <unique-column
+        name="email"/>
+    </unique>
+  </table>
 
-	<table name="auth_user_group_role_xref" description="User Group/Role Cross-reference Table">
-		<column
-			name="auth_user_group_id"
-			required="true"
-			primaryKey="true"
-			type="INTEGER"
-			description="User Group ID"/>
-		<column
-			name="auth_role_id"
-			required="true"
-			primaryKey="true"
-			type="INTEGER"
-			description="User Role ID"/>
-		<foreign-key foreignTable="auth_user_group" onDelete="cascade">
-			<reference
-				local="auth_user_group_id"
-				foreign="auth_user_group_id"/>
-		</foreign-key>
-		<foreign-key foreignTable="auth_role" onDelete="cascade">
-			<reference
-				local="auth_role_id"
-				foreign="auth_role_id"/>
-		</foreign-key>
-	</table>
+  <table name="party_locale_location_xref" description="Party Locale Location Xref Table">
+    <column
+      name="party_id"
+      required="true"
+      primaryKey="true"
+      type="INTEGER"/>
+    <column
+      name="locale_location_id"
+      required="true"
+      primaryKey="true"
+      type="INTEGER"/>
+    <column
+      name="type"
+      required="true"
+      type="VARCHAR"
+      size="32"/>
+    <column
+      name="is_default"
+      required="true"
+      type="BOOLEAN"
+      default="false"/>
+    <foreign-key foreignTable="party" onDelete="cascade">
+      <reference
+        local="party_id"
+        foreign="party_id"/>
+    </foreign-key>
+    <foreign-key foreignTable="locale_location" onDelete="cascade">
+      <reference
+        local="locale_location_id"
+        foreign="locale_location_id"/>
+    </foreign-key>
+  </table>
 
-	<!-- PARTY TABLES -->
-	<table name="party" description="Party Table">
-		<column
-			name="party_id"
-			required="true"
-			primaryKey="true"
-			autoIncrement="true"
-			type="INTEGER"
-			description="Party ID"/>
-		<column
-			name="first_name"
-			required="false"
-			type="VARCHAR"
-			size="128"
-			description="First Name"/>
-		<column
-			name="middle_name"
-			required="false"
-			type="VARCHAR"
-			size="128"
-			description="Middle Name"/>
-		<column
-			name="last_name"
-			required="false"
-			type="VARCHAR"
-			size="128"
-			description="Last Name"/>
-		<column
-			name="prefix"
-			required="false"
-			type="VARCHAR"
-			size="64"
-			description="Prefix"/>
-		<column
-			name="suffix"
-			required="false"
-			type="VARCHAR"
-			size="64"
-			description="Suffix"/>
-		<column
-			name="birthday"
-			required="false"
-			type="TIMESTAMP"
-			description="Birthday"/>
-		<column
-			name="timezone"
-			required="false"
-			type="VARCHAR"
-			size="3"
-			description="Timezone"/>
-		<column
-			name="url"
-			required="false"
-			type="VARCHAR"
-			size="255"
-			description="URL"/>
-		<column
-			name="organization_name"
-			required="false"
-			type="VARCHAR"
-			size="255"
-			description="Organization Name"/>
-		<column
-			name="is_company"
-			required="false"
-			type="BOOLEAN"
-			default="false"
-			description="Is Company"/>
-		<column
-			name="title"
-			required="false"
-			type="VARCHAR"
-			size="128"
-			description="Title"/>
-		<column
-			name="locale_location_id_billing"
-			required="false"
-			type="INTEGER"
-			description="Location ID - Billing"/>
-		<column
-			name="locale_location_id_shipping"
-			required="false"
-			type="INTEGER"
-			description="Location ID - Shipping"/>
-		<column
-			name="telephone_cell"
-			required="false"
-			type="VARCHAR"
-			size="32"
-			description="Telephone - Cell"/>
-		<column
-			name="telephone_work"
-			required="false"
-			type="VARCHAR"
-			size="13"
-			description="Telephone - Work"/>
-		<column
-			name="email"
-			required="false"
-			type="VARCHAR"
-			size="255"
-			description="Email"/>
-		<column
-			name="im_username"
-			required="false"
-			type="VARCHAR"
-			size="255"
-			description="Instant Messaging Username"/>
-		<column
-			name="im_type"
-			required="false"
-			type="VARCHAR"
-			size="32"
-			description="Instant Messaging Network"/>
-		<behavior name="timestampable" />
-		<column
-			name="note"
-			required="false"
-			type="CLOB"
-			lazyLoad="true"
-			description="Note"/>
-		<foreign-key foreignTable="locale_location" onDelete="cascade">
-			<reference
-				local="locale_location_id_billing"
-				foreign="locale_location_id"/>
-		</foreign-key>
-		<foreign-key foreignTable="locale_location" onDelete="cascade">
-			<reference
-				local="locale_location_id_shipping"
-				foreign="locale_location_id"/>
-		</foreign-key>
-	</table>
-	
-	<!-- CALENDAR TABLES -->
-	<table name="cal_calendar" description="Calendar Table">
-		<column
-			name="cal_calendar_id"
-			required="true"
-			primaryKey="true"
-			autoIncrement="true"
-			type="INTEGER"
-			description="Calendar ID"/>
-		<column
-			name="name"
-			required="true"
-			type="VARCHAR"
-			size="255"
-			description="Name"/>
-		<column
-			name="owner_party_id"
-			required="true"
-			type="INTEGER"
-			description="Owner Party ID"/>
-		<behavior name="timestampable" />
-		<behavior name="soft_delete" />
-		<foreign-key foreignTable="party" onDelete="cascade">
-			<reference
-				local="owner_party_id"
-				foreign="party_id"/>
-		</foreign-key>
-	</table>
+  <!-- CALENDAR TABLES -->
+  <table name="cal_calendar" description="Calendar Table">
+    <column
+      name="cal_calendar_id"
+      required="true"
+      primaryKey="true"
+      autoIncrement="true"
+      type="INTEGER"
+      description="Calendar ID"/>
+    <column
+      name="name"
+      required="true"
+      type="VARCHAR"
+      size="255"
+      description="Name"/>
+    <column
+      name="owner_party_id"
+      required="false"
+      type="INTEGER"
+      description="Owner Party ID"/>
+    <behavior name="timestampable" />
+    <foreign-key foreignTable="party" onDelete="cascade">
+      <reference
+        local="owner_party_id"
+        foreign="party_id"/>
+    </foreign-key>
+  </table>
 
-	<table name="cal_event_repeat" description="Event Repeat Table">
-		<column
-			name="cal_event_repeat_id"
-			required="true"
-			primaryKey="true"
-			autoIncrement="true"
-			type="INTEGER"
-			description="Event Repeat ID"/>
-		<column
-			name="every_n_periods"
-			type="INTEGER"
-			description="Every N Periods"/>
-		<column
-			name="end_date_time"
-			type="TIMESTAMP"
-			required="true"
-			description="End Datetime"/>
-		<column
-			name="repeat_type"
-			type="VARCHAR"
-			size="32"
-			required="true"
-			description="Repeat Type"/>
-		<column
-			name="repeat_on_day"
-			type="TINYINT"
-			description="Repeat on Day"/>
-		<column
-			name="repeat_by_day"
-			type="TINYINT"
-			description="Repeat by Day"/>
-	</table>
+  <table name="cal_event_repeat" description="Event Repeat Table">
+    <column
+      name="cal_event_repeat_id"
+      required="true"
+      primaryKey="true"
+      autoIncrement="true"
+      type="INTEGER"
+      description="Event Repeat ID"/>
+    <column
+      name="every_n_periods"
+      type="INTEGER"
+      description="Every N Periods"/>
+    <column
+      name="end_date_time"
+      type="TIMESTAMP"
+      required="true"
+      description="End Datetime"/>
+    <column
+      name="repeat_type"
+      type="VARCHAR"
+      size="32"
+      required="true"
+      description="Repeat Type"/>
+    <column
+      name="repeat_on_day"
+      type="TINYINT"
+      description="Repeat on Day"/>
+    <column
+      name="repeat_by_day"
+      type="TINYINT"
+      description="Repeat by Day"/>
+  </table>
 
-	<table name="cal_event" description="Event Table">
-		<column
-			name="cal_event_id"
-			required="true"
-			primaryKey="true"
-			autoIncrement="true"
-			type="INTEGER"
-			description="Event ID"/>
-		<column
-			name="name"
-			type="VARCHAR"
-			size="255"
-			required="true"
-			description="Event Name"/>
-		<column
-			name="is_public"
-			type="BOOLEAN"
-			description="Is viewable by public"/>
-		<column
-			name="all_day"
-			type="BOOLEAN"
-			description="All-Day Event"/>
-		<column
-			name="start_date_time"
-			type="TIMESTAMP"
-			required="true"
-			description="Start Datetime"/>
-		<column
-			name="end_date_time"
-			type="TIMESTAMP"
-			required="true"
-			description="End Datetime"/>
-		<column
-			name="cal_event_repeat_id"
-			type="INTEGER"
-			description="Event Repeat ID"/>
-		<column
-			name="cal_calendar_id"
-			type="INTEGER"
-			required="true"
-			description="Calendar ID"/>
-		<column
-			name="locale_location_id"
-			type="INTEGER"
-			description="Location ID"/>
-		<column
-			name="notes"
-			type="LONGVARCHAR"
-			description="Event Notes"/>
-		<behavior name="timestampable" />
-		<behavior name="soft_delete" />
-		<foreign-key foreignTable="cal_event_repeat" onDelete="setnull">
-			<reference
-				local="cal_event_repeat_id"
-				foreign="cal_event_repeat_id"/>
-		</foreign-key>
-		<foreign-key foreignTable="cal_calendar" onDelete="cascade">
-			<reference
-				local="cal_calendar_id"
-				foreign="cal_calendar_id"/>
-		</foreign-key>
-		<foreign-key foreignTable="locale_location" onDelete="setnull">
-			<reference
-				local="locale_location_id"
-				foreign="locale_location_id"/>
-		</foreign-key>
-	</table>
+  <table name="cal_event" description="Event Table">
+    <column
+      name="cal_event_id"
+      required="true"
+      primaryKey="true"
+      autoIncrement="true"
+      type="INTEGER"
+      description="Event ID"/>
+    <column
+      name="name"
+      type="VARCHAR"
+      size="255"
+      required="true"
+      description="Event Name"/>
+    <column
+      name="is_public"
+      type="BOOLEAN"
+      description="Is viewable by public"/>
+    <column
+      name="all_day"
+      type="BOOLEAN"
+      description="All-Day Event"/>
+    <column
+      name="start_date_time"
+      type="TIMESTAMP"
+      required="true"
+      description="Start Datetime"/>
+    <column
+      name="end_date_time"
+      type="TIMESTAMP"
+      required="true"
+      description="End Datetime"/>
+    <column
+      name="cal_event_repeat_id"
+      type="INTEGER"
+      description="Event Repeat ID"/>
+    <column
+      name="cal_calendar_id"
+      type="INTEGER"
+      required="true"
+      description="Calendar ID"/>
+    <column
+      name="locale_location_id"
+      type="INTEGER"
+      description="Location ID"/>
+    <column
+      name="notes"
+      type="LONGVARCHAR"
+      description="Event Notes"/>
+    <behavior name="timestampable" />
+    <foreign-key foreignTable="cal_event_repeat" onDelete="setnull">
+      <reference
+        local="cal_event_repeat_id"
+        foreign="cal_event_repeat_id"/>
+    </foreign-key>
+    <foreign-key foreignTable="cal_calendar" onDelete="cascade">
+      <reference
+        local="cal_calendar_id"
+        foreign="cal_calendar_id"/>
+    </foreign-key>
+    <foreign-key foreignTable="locale_location" onDelete="setnull">
+      <reference
+        local="locale_location_id"
+        foreign="locale_location_id"/>
+    </foreign-key>
+  </table>
 
-	<!-- SHOP TABLES -->
-	<table name="shop_order_payment_method" description="Order Payment Method Table">
-		<column
-			name="shop_order_payment_method_id"
-			required="true"
-			primaryKey="true"
-			autoIncrement="true"
-			type="INTEGER"
-			description="Shop Order Payment Method ID"/>
-		<column
-			name="party_id"
-			required="true"
-			type="INTEGER"
-			description="Party ID"/>
-		<column
-			name="type"
-			required="true"
-			type="VARCHAR"
-			size="128"
-			description="Payment Type"/>
-		<column
-			name="name"
-			required="true"
-			type="VARCHAR"
-			size="255"
-			description="Name on Card"/>
-		<column
-			name="number"
-			required="true"
-			type="VARCHAR"
-			size="16"
-			description="Payment Number"/>
-		<column
-			name="expiration_date"
-			required="true"
-			type="TIMESTAMP"
-			description="Expiration Date"/>
-		<column
-			name="locale_location_id_billing"
-			required="false"
-			type="INTEGER"
-			description="Location ID - Billing"/>
-		<column
-			name="active"
-			required="true"
-			type="BOOLEAN"
-			default="false"
-			description="Active"/>
-		<behavior name="timestampable" />
-		<behavior name="soft_delete" />
-		<foreign-key foreignTable="party" onDelete="cascade">
-			<reference
-				local="party_id"
-				foreign="party_id"/>
-		</foreign-key>
-		<foreign-key foreignTable="locale_location" onDelete="cascade">
-			<reference
-				local="locale_location_id_billing"
-				foreign="locale_location_id"/>
-		</foreign-key>
-	</table>
+  <!-- SHOP TABLES -->
+  <table name="shop_order_payment_method" description="Order Payment Method Table">
+    <column
+      name="shop_order_payment_method_id"
+      required="true"
+      primaryKey="true"
+      autoIncrement="true"
+      type="INTEGER"
+      description="Shop Order Payment Method ID"/>
+    <column
+      name="party_id"
+      required="true"
+      type="INTEGER"
+      description="Party ID"/>
+    <column
+      name="stripe_customer_id"
+      required="false"
+      type="VARCHAR"
+      size="128"/>
+    <column
+      name="type"
+      required="true"
+      type="VARCHAR"
+      size="128"
+      description="Payment Type"/>
+    <column
+      name="name"
+      required="true"
+      type="VARCHAR"
+      size="255"
+      description="Name on Card"/>
+    <column
+      name="number"
+      required="true"
+      type="VARCHAR"
+      size="24"
+      description="Payment Number"/>
+    <column
+      name="expiration_date"
+      required="true"
+      type="TIMESTAMP"
+      description="Expiration Date"/>
+    <column
+      name="billing_locale_location_id"
+      required="false"
+      type="INTEGER"
+      description="Location ID - Billing"/>
+    <column
+      name="is_active"
+      required="true"
+      type="BOOLEAN"
+      default="false"/>
+    <behavior name="timestampable" />
+    <unique>
+      <unique-column name="stripe_customer_id" />
+    </unique>
+    <foreign-key foreignTable="party" onDelete="cascade">
+      <reference
+        local="party_id"
+        foreign="party_id"/>
+    </foreign-key>
+    <foreign-key foreignTable="locale_location" onDelete="setnull">
+      <reference
+        local="billing_locale_location_id"
+        foreign="locale_location_id"/>
+    </foreign-key>
+  </table>
 
-	<table name="shop_order" description="Shop Order Table">
-		<column
-			name="shop_order_id"
-			required="true"
-			primaryKey="true"
-			autoIncrement="true"
-			type="INTEGER"
-			description="Shop Order ID"/>
-		<column
-			name="party_id"
-			required="true"
-			type="INTEGER"
-			description="Party ID"/>
-		<column
-			name="shipping_locale_location_id"
-			type="INTEGER"
-			description="Shipping Location ID"/>
-		<column
-			name="subtotal_amount"
-			type="FLOAT"
-			size="10"
-			scale="2"
-			description="Subtotal Amount"/>
-		<column
-			name="tax_amount"
-			type="FLOAT"
-			size="10"
-			scale="2"
-			description="Tax Amount"/>
-		<column
-			name="shipping_amount"
-			type="FLOAT"
-			size="10"
-			scale="2"
-			description="Shipping Amount"/>
-		<column
-			name="shipping_tax_amount"
-			type="FLOAT"
-			size="10"
-			scale="2"
-			description="Shipping Tax Amount"/>
-		<column
-			name="handling_amount"
-			type="FLOAT"
-			size="10"
-			scale="2"
-			description="Handling Amount"/>
-		<column
-			name="shop_order_status_id"
-			required="true"
-			type="INTEGER"
-			description="Shop Order Status ID"/>
-		<column
-			name="fulfillment_party_id"
-			required="false"
-			type="INTEGER"
-			description="Fulfillment Party ID"/>
-		<column
-			name="ship_method_id"
-			required="false"
-			type="INTEGER"
-			description="Ship Method ID"/>
-		<column
-			name="ship_carrier_id"
-			required="false"
-			type="INTEGER"
-			description="Ship Carrier ID"/>
-		<column
-			name="ship_service_id"
-			required="false"
-			type="INTEGER"
-			description="Ship Service ID"/> 
-		<column
-			name="ship_tracking_number"
-			required="false"
-			type="VARCHAR"
-			size="255"
-			description="Ship Tracking Number"/>
-		<column
-			name="ship_cost"
-			type="FLOAT"
-			size="10"
-			scale="2"
-			description="Ship Cost"/>
-		<column
-			name="coupon_code"
-			required="false"
-			type="VARCHAR"
-			size="255"
-			description="Coupon Code"/>
-		<column
-			name="is_gift"
-			required="false"
-			type="BOOLEAN"/>
-		<behavior name="timestampable" />
-		<column
-			name="date_fulfilled"
-			required="false"
-			type="TIMESTAMP"
-			description="Date Fulfilled"/>
-		<column
-			name="date_shipped"
-			required="false"
-			type="TIMESTAMP"
-			description="Date Shipped"/>
-		<behavior name="timestampable" />
-		<behavior name="soft_delete" />
-		<foreign-key foreignTable="party" onDelete="cascade">
-			<reference
-				local="party_id"
-				foreign="party_id"/>
-		</foreign-key>
-		<foreign-key foreignTable="locale_location" onDelete="cascade">
-			<reference
-				local="shipping_locale_location_id"
-				foreign="locale_location_id"/>
-		</foreign-key>
-		<foreign-key foreignTable="shop_order_status" onDelete="cascade">
-			<reference
-				local="shop_order_status_id"
-				foreign="shop_order_status_id"/>
-		</foreign-key>
-		<foreign-key foreignTable="party" onDelete="cascade">
-			<reference
-				local="fulfillment_party_id"
-				foreign="party_id"/>
-		</foreign-key>
-	</table>
+  <table name="shop_order" description="Shop Order Table">
+    <column
+      name="shop_order_id"
+      required="true"
+      primaryKey="true"
+      autoIncrement="true"
+      type="INTEGER"
+      description="Shop Order ID"/>
+    <column
+      name="party_id"
+      required="true"
+      type="INTEGER"
+      description="Party ID"/>
+    <column
+      name="order_type"
+      required="true"
+      type="VARCHAR"
+      default="ecommerce"
+      size="64"/>
+   <column
+      name="shop_order_status_id"
+      required="false"
+      type="INTEGER"
+      default="NULL"
+      description="Shop Order Status ID"/>
+    <column
+      name="subtotal_amount"
+      type="FLOAT"
+      size="10"
+      scale="4"
+      default="0"
+      description="Subtotal Amount"/>
+    <column
+      name="discount_amount"
+      type="FLOAT"
+      size="10"
+      scale="4"
+      default="0"
+      description="Discount Amount"/>
+    <column
+      name="points_discount_amount"
+      type="FLOAT"
+      size="10"
+      scale="4"
+      default="0"
+      description="Points Discount Amount"/>
+    <column
+      name="tax_amount"
+      type="FLOAT"
+      size="10"
+      scale="4"
+      default="0"
+      description="Tax Amount"/>
+    <column
+      name="shipping_amount"
+      type="FLOAT"
+      size="10"
+      scale="4"
+      default="0"
+      description="Shipping Amount"/>
+    <column
+      name="shipping_tax_amount"
+      type="FLOAT"
+      size="10"
+      scale="4"
+      default="0"
+      description="Shipping Tax Amount"/>
+    <column
+      name="handling_amount"
+      type="FLOAT"
+      size="10"
+      scale="4"
+      default="0"
+      description="Handling Amount"/>
+    <column
+      name="discount_code"
+      required="false"
+      type="VARCHAR"
+      size="255"
+      description="Discount Code"/>
+    <column
+      name="points_applied"
+      required="true"
+      default="0"
+      type="INTEGER"/>
+    <column
+      name="points_earned"
+      required="true"
+      default="0"
+      type="INTEGER"/>
+    <column
+      name="notes"
+      required="false"
+      type="CLOB"
+      lazyLoad="true"/>
+    <behavior name="timestampable" />
+    <foreign-key foreignTable="party" onDelete="cascade">
+      <reference
+        local="party_id"
+        foreign="party_id"/>
+    </foreign-key>
+    <foreign-key foreignTable="shop_order_status" onDelete="setnull">
+      <reference
+        local="shop_order_status_id"
+        foreign="shop_order_status_id"/>
+    </foreign-key>
+  </table>
+  
+  <table name="shop_order_status" description="Shop Order Status Table">
+    <column
+      name="shop_order_status_id"
+      required="true"
+      primaryKey="true"
+      autoIncrement="true"
+      type="INTEGER"
+      description="Shop Order Status ID"/>
+    <column
+      name="name"
+      required="true"
+      type="VARCHAR"
+      size="255"
+      description="Status Name"/>
+    <column
+      name="list_order"
+      required="true"
+      type="INTEGER"
+      description="List Order"/>
+  </table>
 
-	<table name="shop_order_item" description="Shop Order Item Table">
-		<column
-			name="shop_order_item_id"
-			required="true"
-			primaryKey="true"
-			autoIncrement="true"
-			type="INTEGER"
-			description="Shop Order Item ID"/>
-		<column
-			name="shop_order_id"
-			required="true"
-			type="INTEGER"
-			description="Shop Order ID"/>
-		<column
-			name="shop_product_item_id"
-			required="true"
-			type="INTEGER"
-			description="Shop Product Item ID"/>
-		<column
-			name="product_quantity"
-			required="true"
-			type="INTEGER"
-			description="Product Quantity"/>
-		<column
-			name="product_item_price"
-			type="FLOAT"
-			size="10"
-			scale="2"
-			description="Product Item Price"/>
-		<column
-			name="attribute_1_value"
-			required="false"
-			type="VARCHAR"
-			size="255"
-			description="Attribute 1 Value"/>
-		<column
-			name="attribute_2_value"
-			required="false"
-			type="VARCHAR"
-			size="255"
-			description="Attribute 2 Value"/>
-		<column
-			name="attribute_3_value"
-			required="false"
-			type="VARCHAR"
-			size="255"
-			description="Attribute_3_Value"/>
-		<column
-			name="attribute_4_value"
-			required="false"
-			type="VARCHAR"
-			size="255"
-			description="Attribute 4 Value"/>
-		<column
-			name="attribute_5_value"
-			required="false"
-			type="VARCHAR"
-			size="255"
-			description="Attribute 5 Value"/>
-		<behavior name="timestampable" />
-		<behavior name="soft_delete" />
-		<foreign-key foreignTable="shop_order" onDelete="cascade">
-			<reference
-				local="shop_order_id"
-				foreign="shop_order_id"/>
-		</foreign-key>
-		<foreign-key foreignTable="shop_product_item" onDelete="cascade">
-			<reference
-				local="shop_product_item_id"
-				foreign="shop_product_item_id"/>
-		</foreign-key>
-	</table>
+  <table name="shop_order_item" description="Shop Order Item Table">
+    <column
+      name="shop_order_item_id"
+      required="true"
+      primaryKey="true"
+      autoIncrement="true"
+      type="INTEGER"
+      description="Shop Order Item ID"/>
+    <column
+      name="shop_order_id"
+      required="true"
+      type="INTEGER"
+      description="Shop Order ID"/>
+    <column
+      name="shop_order_item_status_id"
+      required="false"
+      type="INTEGER"
+      description="Shop Order Item Status ID"/>
+    <column
+      name="shop_product_item_id"
+      required="false"
+      type="INTEGER"
+      description="Shop Product Item ID"/>
+    <column
+      name="price"
+      type="FLOAT"
+      size="10"
+      scale="4"
+      description="Price"/>
+    <column
+      name="points_earned"
+      required="true"
+      default="0"
+      type="INTEGER"/>
+    <column
+      name="attribute_1_value"
+      required="false"
+      type="VARCHAR"
+      size="255"
+      description="Attribute 1 Value"/>
+    <column
+      name="attribute_2_value"
+      required="false"
+      type="VARCHAR"
+      size="255"
+      description="Attribute 2 Value"/>
+    <column
+      name="attribute_3_value"
+      required="false"
+      type="VARCHAR"
+      size="255"
+      description="Attribute_3_Value"/>
+    <column
+      name="attribute_4_value"
+      required="false"
+      type="VARCHAR"
+      size="255"
+      description="Attribute 4 Value"/>
+    <column
+      name="attribute_5_value"
+      required="false"
+      type="VARCHAR"
+      size="255"
+      description="Attribute 5 Value"/>
+    <behavior name="timestampable" />
+    <foreign-key foreignTable="shop_order" onDelete="cascade">
+      <reference
+        local="shop_order_id"
+        foreign="shop_order_id"/>
+    </foreign-key>
+    <foreign-key foreignTable="shop_order_item_status" onDelete="setnull">
+      <reference
+        local="shop_order_item_status_id"
+        foreign="shop_order_item_status_id"/>
+    </foreign-key>
+    <foreign-key foreignTable="shop_product_item" onDelete="setnull">
+      <reference
+        local="shop_product_item_id"
+        foreign="shop_product_item_id"/>
+    </foreign-key>
+  </table>
 
-	<table name="shop_order_status" description="Shop Order Status Table">
-		<column
-			name="shop_order_status_id"
-			required="true"
-			primaryKey="true"
-			autoIncrement="true"
-			type="INTEGER"
-			description="Shop Order Status ID"/>
-		<column
-			name="name"
-			required="true"
-			type="VARCHAR"
-			size="255"
-			description="Status Name"/>
-		<column
-			name="list_order"
-			required="true"
-			type="INTEGER"
-			description="List Order"/>
-	</table>
+  <table name="shop_order_item_status" description="Shop Order Item Status Table">
+    <column
+      name="shop_order_item_status_id"
+      required="true"
+      primaryKey="true"
+      autoIncrement="true"
+      type="INTEGER"
+      description="Shop Order Item Status ID"/>
+    <column
+      name="name"
+      required="true"
+      type="VARCHAR"
+      size="255"
+      description="Status Name"/>
+    <column
+      name="list_order"
+      required="true"
+      type="INTEGER"
+      description="List Order"/>
+  </table>
 
-	<table name="shop_order_payment" description="Shop Order Payment Table">
-		<column
-			name="shop_order_payment_id"
-			required="true"
-			primaryKey="true"
-			autoIncrement="true"
-			type="INTEGER"
-			description="Shop Order Payment ID"/>
-		<column
-			name="shop_order_id"
-			required="true"
-			type="INTEGER"
-			description="Shop Order ID"/>
-		<column
-			name="shop_order_payment_method_id"
-			required="true"
-			type="INTEGER"
-			description="Shop Order Payment Method ID"/>
-		<column
-			name="amount"
-			required="true"
-			type="FLOAT"
-			size="10"
-			scale="2"
-			description="Payment Amount"/>
-		<column
-			name="transaction_id"
-			required="true"
-			type="VARCHAR"
-			size="32"
-			description="Transaction ID"/>
-		<column
-			name="response_code"
-			required="true"
-			type="INTEGER"
-			description="Response Code"/>
-		<column
-			name="response_reason_code"
-			required="true"
-			type="INTEGER"
-			description="Response Reason Code"/>
-		<column
-			name="response_text"
-			required="true"
-			type="VARCHAR"
-			size="255"
-			description="Response Text"/>
-		<column
-			name="avs_result_code"
-			required="true"
-			type="CHAR"
-			size="1"
-			description="AVS Result Code"/>
-		<column
-			name="approval_code"
-			required="true"
-			type="VARCHAR"
-			size="6"
-			description="Approval Code"/>
-		<column
-			name="cvv2_code"
-			required="false"
-			type="INTEGER"
-			description="CVV2 Approval Code"/>
-		<behavior name="timestampable" />
-		<behavior name="soft_delete" />
-		<foreign-key foreignTable="shop_order" onDelete="cascade">
-			<reference
-				local="shop_order_id"
-				foreign="shop_order_id"/>
-		</foreign-key>
-		<foreign-key foreignTable="shop_order_payment_method" onDelete="cascade">
-			<reference
-				local="shop_order_payment_method_id"
-				foreign="shop_order_payment_method_id"/>
-		</foreign-key>
-	</table>
+  <table name="shop_order_payment" description="Shop Order Payment Table">
+    <column
+      name="shop_order_payment_id"
+      required="true"
+      primaryKey="true"
+      autoIncrement="true"
+      type="INTEGER"
+      description="Shop Order Payment ID"/>
+    <column
+      name="shop_order_id"
+      required="true"
+      type="INTEGER"
+      description="Shop Order ID"/>
+    <column
+      name="shop_order_payment_method_id"
+      required="false"
+      type="INTEGER"
+      default="NULL"
+      description="Shop Order Payment Method ID"/>
+    <column
+      name="stripe_charge_id"
+      required="false"
+      type="VARCHAR"
+      size="128"/>
+    <column
+      name="paypal_txn_id"
+      required="false"
+      type="VARCHAR"
+      size="128"/>
+    <column
+      name="paypal_txn_id_processed"
+      required="false"
+      type="BOOLEAN"
+      default="false"/>
+    <column
+      name="amount"
+      required="true"
+      type="FLOAT"
+      size="10"
+      scale="4"
+      description="Payment Amount"/>
+    <column
+      name="response_text"
+      required="true"
+      type="VARCHAR"
+      size="255"
+      description="Response Text"/>
+    <behavior name="timestampable" />
+    <foreign-key foreignTable="shop_order" onDelete="cascade">
+      <reference
+        local="shop_order_id"
+        foreign="shop_order_id"/>
+    </foreign-key>
+    <foreign-key foreignTable="shop_order_payment_method" onDelete="setnull">
+      <reference
+        local="shop_order_payment_method_id"
+        foreign="shop_order_payment_method_id"/>
+    </foreign-key>
+  </table>
 
-	<table name="shop_product_category" description="Shop Product Category Table">
-		<column
-			name="shop_product_category_id"
-			required="true"
-			primaryKey="true"
-			autoIncrement="true"
-			type="INTEGER"
-			description="Product Category ID"/>
-		<column
-			name="shop_product_category_parent_id"
-			required="false"
-			type="INTEGER"
-			description="Product Category Parent ID"/>
-		<column
-			name="name"
-			required="true"
-			type="VARCHAR"
-			size="255"
-			description="Category Name"/>
-		<column
-			name="description"
-			required="false"
-			type="LONGVARCHAR"
-			description="Category Description"/>
-		<column
-			name="publish"
-			required="true"
-			type="BOOLEAN"
-			default="true"
-			description="Publish"/>
-		<behavior name="timestampable" />
-		<foreign-key foreignTable="shop_product_category" onDelete="cascade">
-			<reference
-				local="shop_product_category_parent_id"
-				foreign="shop_product_category_id"/>
-		</foreign-key>
-	</table>
+  <table name="shop_order_shipment" description="Shop Order Shipment Table">
+    <column
+      name="shop_order_shipment_id"
+      required="true"
+      primaryKey="true"
+      autoIncrement="true"
+      type="INTEGER"/>
+    <column
+      name="shop_order_id"
+      required="true"
+      type="INTEGER"/>
+    <column
+      name="shipping_locale_location_id"
+      type="INTEGER"
+      description="Shipping Location ID"/>
+    <column
+      name="fulfillment_party_id"
+      required="false"
+      type="INTEGER"
+      default="NULL"
+      description="Fulfillment Party ID"/>
+    <column
+      name="ship_carrier"
+      required="false"
+      type="VARCHAR"
+      size="255"
+      description="Ship Carrier"/>
+    <column
+      name="ship_carrier_service"
+      required="false"
+      type="VARCHAR"
+      size="255"
+      description="Ship Carrier Service"/>
+    <column
+      name="ship_tracking_number"
+      required="false"
+      type="VARCHAR"
+      size="255"
+      description="Ship Tracking Number"/>
+    <column
+      name="weight"
+      type="FLOAT"
+      size="10"
+      scale="4"
+      description="Ship Weight"/>
+    <column
+      name="ship_cost"
+      type="FLOAT"
+      size="10"
+      scale="4"
+      description="Ship Cost"/>
+    <column
+      name="fulfilled_at"
+      required="false"
+      type="TIMESTAMP"
+      description="Date Fulfilled"/>
+    <column
+      name="shipped_at"
+      required="false"
+      type="TIMESTAMP"
+      description="Date Shipped"/>
+    <column
+      name="created_at"
+      required="false"
+      type="TIMESTAMP"/>
+    <column
+      name="updated_at"
+      required="false"
+      type="TIMESTAMP"/>
+    <behavior name="timestampable" />
+    <foreign-key foreignTable="shop_order" onDelete="cascade">
+      <reference
+        local="shop_order_id"
+        foreign="shop_order_id"/>
+    </foreign-key>
+    <foreign-key foreignTable="locale_location" onDelete="setnull">
+      <reference
+        local="shipping_locale_location_id"
+        foreign="locale_location_id"/>
+    </foreign-key>
+    <foreign-key foreignTable="party" onDelete="setnull">
+      <reference
+        local="fulfillment_party_id"
+        foreign="party_id"/>
+    </foreign-key>
+  </table>
 
-	<table name="shop_product_category_xref" description="Shop Product Category XRef Table">
-		<column
-			name="shop_product_id"
-			required="true"
-			primaryKey="true"
-			type="INTEGER"
-			description="Shop Product ID"/>
-		<column
-			name="shop_product_category_id"
-			required="true"
-			primaryKey="true"
-			type="INTEGER"
-			description="Shop Product Category ID"/>
-		<foreign-key foreignTable="shop_product" onDelete="cascade">
-			<reference
-				local="shop_product_id"
-				foreign="shop_product_id"/>
-		</foreign-key>
-		<foreign-key foreignTable="shop_product_category" onDelete="cascade">
-			<reference
-				local="shop_product_category_id"
-				foreign="shop_product_category_id"/>
-		</foreign-key>
-	</table>
+  <table name="shop_order_shipment_item_xref">
+    <column
+      name="shop_order_shipment_id"
+      required="true"
+      primaryKey="true"
+      type="INTEGER"/>
+    <column
+      name="shop_order_item_id"
+      required="true"
+      primaryKey="true"
+      type="INTEGER"/>
+    <foreign-key foreignTable="shop_order_shipment" onDelete="cascade">
+      <reference
+        local="shop_order_shipment_id"
+        foreign="shop_order_shipment_id"/>
+    </foreign-key>
+    <foreign-key foreignTable="shop_order_item" onDelete="cascade">
+      <reference
+        local="shop_order_item_id"
+        foreign="shop_order_item_id"/>
+    </foreign-key>
+  </table>
 
-	<table name="shop_product" description="Shop Product Table">
-		<column
-			name="shop_product_id"
-			required="true"
-			primaryKey="true"
-			autoIncrement="true"
-			type="INTEGER"
-			description="Shop Product ID"/>
-		<column
-			name="name"
-			required="true"
-			type="VARCHAR"
-			size="255"
-			description="Product Name"/>
-		<column
-			name="short_description"
-			required="false"
-			type="LONGVARCHAR"
-			description="Short Description"/>
-		<column
-			name="long_description"
-			required="false"
-			type="LONGVARCHAR"
-			description="Long Description"/>
-		<column
-			name="search_tags"
-			required="false"
-			type="VARCHAR"
-			size="255"
-			description="Search Tags"/>
-		<column
-			name="publish"
-			required="true"
-			type="BOOLEAN"
-			default="true"
-			description="Publish"/>
-		<column
-			name="attribute_1_key"
-			required="false"
-			type="VARCHAR"
-			size="255"
-			description="Attribute 1 Key"/>
-		<column
-			name="attribute_2_key"
-			required="false"
-			type="VARCHAR"
-			size="255"
-			description="Attribute 2 Key"/>
-		<column
-			name="attribute_3_key"
-			required="false"
-			type="VARCHAR"
-			size="255"
-			description="Attribute_3_Key"/>
-		<column
-			name="attribute_4_key"
-			required="false"
-			type="VARCHAR"
-			size="255"
-			description="Attribute 4 Key"/>
-		<column
-			name="attribute_5_key"
-			required="false"
-			type="VARCHAR"
-			size="255"
-			description="Attribute 5 Key"/>
-		<behavior name="timestampable" />
-		<behavior name="soft_delete" />
-	</table>
+  <table name="shop_product_category" description="Shop Product Category Table">
+    <column
+      name="shop_product_category_id"
+      required="true"
+      primaryKey="true"
+      autoIncrement="true"
+      type="INTEGER"
+      description="Product Category ID"/>
+    <column
+      name="shop_product_category_parent_id"
+      required="false"
+      type="INTEGER"
+      description="Product Category Parent ID"/>
+    <column
+      name="name"
+      required="true"
+      type="VARCHAR"
+      size="255"
+      description="Category Name"/>
+    <column
+      name="description"
+      required="false"
+      type="LONGVARCHAR"
+      description="Category Description"/>
+    <column
+      name="shop_product_category_type_id"
+      required="false"
+      type="INTEGER"/>
+    <column
+      name="is_published"
+      required="true"
+      type="BOOLEAN"
+      default="true"
+      description="Publish"/>
+    <column
+      name="meta_title"
+      required="false"
+      type="VARCHAR"
+      size="255"/>
+    <column
+      name="meta_keywords"
+      required="false"
+      type="LONGVARCHAR"/>
+    <column
+      name="meta_description"
+      required="false"
+      type="LONGVARCHAR"/>
+    <column
+      name="meta_image"
+      required="false"
+      type="VARCHAR"
+      size="255"/>
+    <behavior name="timestampable" />
+    <foreign-key foreignTable="shop_product_category" onDelete="setnull">
+      <reference
+        local="shop_product_category_parent_id"
+        foreign="shop_product_category_id"/>
+    </foreign-key>
+    <foreign-key foreignTable="shop_product_category_type" onDelete="setnull">
+      <reference
+        local="shop_product_category_type_id"
+        foreign="shop_product_category_type_id"/>
+    </foreign-key>
+  </table>
 
-	<table name="shop_product_item" description="Shop Product Table">
-		<column
-			name="shop_product_item_id"
-			required="true"
-			primaryKey="true"
-			autoIncrement="true"
-			type="INTEGER"
-			description="Shop Product Item ID"/>
-		<column
-			name="shop_product_id"
-			required="true"
-			type="INTEGER"
-			description="Shop Product ID"/>
-		<column
-			name="sku"
-			required="true"
-			type="VARCHAR"
-			size="255"
-			description="Product Sku"/>
-		<column
-			name="upc"
-			required="false"
-			type="VARCHAR"
-			size="255"
-			description="Product UPC Code"/>
-		<column
-			name="cost"
-			type="FLOAT"
-			size="10"
-			scale="2"
-			description="Product Cost"/>
-		<column
-			name="price"
-			type="FLOAT"
-			size="10"
-			scale="2"
-			description="Product Price"/>
-		<column
-			name="thumbnail_image"
-			required="false"
-			type="VARCHAR"
-			size="255"
-			description="Thumbnail Image"/>
-		<column
-			name="fullsize_image"
-			required="false"
-			type="VARCHAR"
-			size="255"
-			description="Fullsize Image"/>
-		<column
-			name="publish"
-			required="true"
-			type="BOOLEAN"
-			default="true"
-			description="Publish"/>
-		<column
-			name="weight"
-			required="true"
-			type="FLOAT"
-			size="5"
-			scale="1"
-			description="Product Weight"/>
-		<column
-			name="weight_uom"
-			required="true"
-			type="VARCHAR"
-			size="2"
-			description="Weight Unit of Measure"/>
-		<column
-			name="length"
-			required="false"
-			type="FLOAT"
-			size="5"
-			scale="1"
-			description="Product Length"/>
-		<column
-			name="width"
-			required="false"
-			type="FLOAT"
-			size="5"
-			scale="1"
-			description="Product Width"/>
-		<column
-			name="Height"
-			required="false"
-			type="FLOAT"
-			size="5"
-			scale="1"
-			description="Product Height"/>
-		<column
-			name="lwh_uom"
-			required="true"
-			type="VARCHAR"
-			size="2"
-			description="LWH Unit of Measure"/>
-		<column
-			name="in_stock"
-			required="true"
-			type="INTEGER"
-			description="Quantity in Stock"/>
-		<column
-			name="offline_sold"
-			required="false"
-			type="INTEGER"
-			description="Number of Stock Sold Offline"/>
-		<column
-			name="count_per_package"
-			required="true"
-			type="INTEGER"
-			description="Number of Items per Package"/>
-		<column
-			name="available_start"
-			required="false"
-			type="TIMESTAMP"
-			description="Date Item Becomes Available"/>
-		<column
-			name="available_end"
-			required="false"
-			type="TIMESTAMP"
-			description="Date Item Becomes Unavailable"/>
-		<column
-			name="on_special"
-			required="false"
-			type="BOOLEAN"
-			description="Item on Special"/>
-		<column
-			name="on_special_discount"
-			required="false"
-			type="FLOAT"
-			size="5"
-			scale="2"
-			description="On Special Discount"/>
-		<column
-			name="attribute_1_value"
-			required="false"
-			type="VARCHAR"
-			size="255"
-			description="Attribute 1 Value"/>
-		<column
-			name="attribute_2_value"
-			required="false"
-			type="VARCHAR"
-			size="255"
-			description="Attribute 2 Value"/>
-		<column
-			name="attribute_3_value"
-			required="false"
-			type="VARCHAR"
-			size="255"
-			description="Attribute_3_Value"/>
-		<column
-			name="attribute_4_value"
-			required="false"
-			type="VARCHAR"
-			size="255"
-			description="Attribute 4 Value"/>
-		<column
-			name="attribute_5_value"
-			required="false"
-			type="VARCHAR"
-			size="255"
-			description="Attribute 5 Value"/>
-		<column
-			name="display_order"
-			required="false"
-			type="INTEGER"/>
-		<behavior name="timestampable" />
-		<behavior name="soft_delete" />
-		<foreign-key foreignTable="shop_product" onDelete="cascade">
-			<reference
-				local="shop_product_id"
-				foreign="shop_product_id"/>
-		</foreign-key>
-	</table>
+  <table name="shop_product_category_type">
+    <column
+      name="shop_product_category_type_id"
+      required="true"
+      type="INTEGER"
+      primaryKey="true"
+      autoIncrement="true"/>
+    <column
+      name="name"
+      required="true"
+      type="VARCHAR"
+      size="255"/>
+  </table>
 
-	<table name="shop_tax" description="Shop Tax Table">
-		<column
-			name="shop_tax_id"
-			required="true"
-			primaryKey="true"
-			autoIncrement="true"
-			type="INTEGER"
-			description="Shop Tax ID"/>
-		<column
-			name="locale_country_id"
-			required="true"
-			type="INTEGER"
-			description="Country ID"/>
-		<column
-			name="postal_code"
-			required="true"
-			type="VARCHAR"
-			size="5"
-			description="Postal Code"/>
-		<column
-			name="state_abbreviation"
-			required="true"
-			type="VARCHAR"
-			size="2"
-			description="State Abbreviation"/>
-		<column
-			name="county_name"
-			required="true"
-			type="VARCHAR"
-			size="255"
-			description="County Name"/>
-		<column
-			name="city_name"
-			required="true"
-			type="VARCHAR"
-			size="255"
-			description="City Name"/>
-		<column
-			name="state_sales_tax"
-			type="FLOAT"
-			size="10"
-			scale="2"
-			description="State Sales Tax"/>
-		<column
-			name="state_use_tax"
-			type="FLOAT"
-			size="10"
-			scale="2"
-			description="State Use Tax"/>
-		<column
-			name="county_sales_tax"
-			type="FLOAT"
-			size="10"
-			scale="2"
-			description="County Sales Tax"/>
-		<column
-			name="county_use_tax"
-			type="FLOAT"
-			size="10"
-			scale="2"
-			description="County Use Tax"/>
-		<column
-			name="city_sales_tax"
-			type="FLOAT"
-			size="10"
-			scale="2"
-			description="City Sales Tax"/>
-		<column
-			name="city_use_tax"
-			type="FLOAT"
-			size="10"
-			scale="2"
-			description="City Use Tax"/>
-		<column
-			name="total_sales_tax"
-			type="FLOAT"
-			size="10"
-			scale="2"
-			description="Total Sales Tax"/>
-		<column
-			name="total_use_tax"
-			type="FLOAT"
-			size="10"
-			scale="2"
-			description="Total Use Tax"/>
-		<column
-			name="tax_shipping_alone"
-			required="true"
-			type="BOOLEAN"
-			description="Tax Shipping Alone"/>
-		<column
-			name="tax_shipping_and_handling"
-			required="true"
-			type="BOOLEAN"
-			description="Tax Shipping and Handling"/>
-	</table>
+  <table name="shop_product_category_xref" description="Shop Product Category XRef Table">
+    <column
+      name="shop_product_id"
+      required="true"
+      primaryKey="true"
+      type="INTEGER"
+      description="Shop Product ID"/>
+    <column
+      name="shop_product_category_id"
+      required="true"
+      primaryKey="true"
+      type="INTEGER"
+      description="Shop Product Category ID"/>
+    <foreign-key foreignTable="shop_product" onDelete="cascade">
+      <reference
+        local="shop_product_id"
+        foreign="shop_product_id"/>
+    </foreign-key>
+    <foreign-key foreignTable="shop_product_category" onDelete="cascade">
+      <reference
+        local="shop_product_category_id"
+        foreign="shop_product_category_id"/>
+    </foreign-key>
+  </table>
 
-	<table name="shop_zone_shipping" description="Shop Zone Shipping">
-		<column
-			name="shop_zone_shipping_id"
-			required="true"
-			type="INTEGER"
-			primaryKey="true"
-			autoIncrement="true"
-			description="Shop Shipping Zone ID"/>
-		<column
-			name="name"
-			required="true"
-			type="VARCHAR"
-			size="255"
-			description="Zone Name"/>
-		<column
-			name="locale_region_id"
-			required="false"
-			type="INTEGER"
-			description="Region ID"/>
-		<column
-			name="locale_region_shipping_cost"
-			type="FLOAT"
-			size="10"
-			scale="2"
-			description="Locale Region Shipping Cost"/>
-		<column
-			name="per_pound_shipping_cost"
-			type="FLOAT"
-			size="10"
-			scale="2"
-			description="Per Pound Shipping Cost"/>
-		<column
-			name="handling_cost"
-			type="FLOAT"
-			size="10"
-			scale="2"
-			description="Handling Cost"/>
-		<foreign-key foreignTable="locale_region" onDelete="cascade">
-			<reference
-				local="locale_region_id"
-				foreign="locale_region_id"/>
-		</foreign-key>
-	</table>
+  <table name="shop_product" description="Shop Product Table">
+    <column
+      name="shop_product_id"
+      required="true"
+      primaryKey="true"
+      autoIncrement="true"
+      type="INTEGER"
+      description="Shop Product ID"/>
+    <column
+      name="name"
+      required="true"
+      type="VARCHAR"
+      size="255"
+      description="Product Name"/>
+    <column
+      name="short_description"
+      required="false"
+      type="LONGVARCHAR"
+      description="Short Description"/>
+    <column
+      name="long_description"
+      required="false"
+      type="LONGVARCHAR"
+      description="Long Description"/>
+    <column
+      name="search_tags"
+      required="false"
+      type="VARCHAR"
+      size="255"
+      description="Search Tags"/>
+    <column
+      name="video_uri"
+      required="false"
+      type="VARCHAR"
+      size="255"
+      description="Video URI"/>
+    <column
+      name="is_published"
+      required="true"
+      type="BOOLEAN"
+      default="true"
+      description="Publish"/>
+    <column
+      name="is_featured"
+      required="true"
+      type="BOOLEAN"
+      default="false"
+      description="Featured"/>
+    <column
+      name="attribute_1_key"
+      required="false"
+      type="VARCHAR"
+      size="255"
+      description="Attribute 1 Key"/>
+    <column
+      name="attribute_2_key"
+      required="false"
+      type="VARCHAR"
+      size="255"
+      description="Attribute 2 Key"/>
+    <column
+      name="attribute_3_key"
+      required="false"
+      type="VARCHAR"
+      size="255"
+      description="Attribute_3_Key"/>
+    <column
+      name="attribute_4_key"
+      required="false"
+      type="VARCHAR"
+      size="255"
+      description="Attribute 4 Key"/>
+    <column
+      name="attribute_5_key"
+      required="false"
+      type="VARCHAR"
+      size="255"
+      description="Attribute 5 Key"/>
+    <behavior name="timestampable" />
+  </table>
 
-	<!-- CMS TABLES -->
-	<table name="cms_category" description="CMS Category Table">
-		<column
-			name="cms_category_id"
-			required="true"
-			primaryKey="true"
-			autoIncrement="true"
-			type="INTEGER"
-			description="CMS Category ID"/>
-		<column
-			name="cms_category_parent_id"
-			required="false"
-			type="INTEGER"
-			description="CMS Category Parent ID"/>
-		<column
-			name="name"
-			required="true"
-			type="VARCHAR"
-			size="255"
-			description="Category Name"/>
-		<column
-			name="description"
-			required="false"
-			type="LONGVARCHAR"
-			description="Category Description"/>
-		<column
-			name="publish"
-			required="true"
-			type="BOOLEAN"
-			default="true"
-			description="Publish"/>
-		<column
-			name="date_publish_start"
-			required="true"
-			type="TIMESTAMP"
-			description="Publish Start Date"/>
-		<column
-			name="date_publish_end"
-			required="true"
-			type="TIMESTAMP"
-			description="Publish End Date"/>
-		<behavior name="timestampable" />
-		<column
-			name="party_id_modified"
-			required="true"
-			type="INTEGER"
-			description="Party ID Modified By"/>
-		<behavior name="timestampable" />
-		<foreign-key foreignTable="cms_category" onDelete="cascade">
-			<reference
-				local="cms_category_parent_id"
-				foreign="cms_category_id"/>
-		</foreign-key>
-		<foreign-key foreignTable="party" onDelete="cascade">
-			<reference
-				local="party_id_modified"
-				foreign="party_id"/>
-		</foreign-key>
-	</table>
+  <table name="shop_product_item" description="Shop Product Table">
+    <column
+      name="shop_product_item_id"
+      required="true"
+      primaryKey="true"
+      autoIncrement="true"
+      type="INTEGER"
+      description="Shop Product Item ID"/>
+    <column
+      name="shop_product_id"
+      required="true"
+      type="INTEGER"
+      description="Shop Product ID"/>
+    <column
+      name="sku"
+      required="true"
+      type="VARCHAR"
+      size="255"
+      description="Product Sku"/>
+    <column
+      name="upc"
+      required="false"
+      type="VARCHAR"
+      size="255"
+      description="Product UPC Code"/>
+    <column
+      name="cost"
+      type="FLOAT"
+      size="10"
+      scale="4"
+      description="Product Cost"/>
+    <column
+      name="msrp"
+      type="FLOAT"
+      size="10"
+      scale="4"/>
+    <column
+      name="price"
+      type="FLOAT"
+      size="10"
+      scale="4"
+      description="Product Price"/>
+    <column
+      name="reward_points"
+      type="INTEGER"
+      default="0"/>
+    <column
+      name="reward_points_start_at"
+      required="false"
+      type="TIMESTAMP"/>
+    <column
+      name="reward_points_end_at"
+      required="false"
+      type="TIMESTAMP"/>
+    <column
+      name="is_published"
+      required="true"
+      type="BOOLEAN"
+      default="true"
+      description="Publish"/>
+    <column
+      name="weight"
+      required="true"
+      type="FLOAT"
+      size="5"
+      scale="1"
+      description="Product Weight"/>
+    <column
+      name="weight_uom"
+      required="true"
+      type="VARCHAR"
+      size="2"
+      description="Weight Unit of Measure"/>
+    <column
+      name="length"
+      required="false"
+      type="FLOAT"
+      size="5"
+      scale="1"
+      description="Product Length"/>
+    <column
+      name="width"
+      required="false"
+      type="FLOAT"
+      size="5"
+      scale="1"
+      description="Product Width"/>
+    <column
+      name="height"
+      required="false"
+      type="FLOAT"
+      size="5"
+      scale="1"
+      description="Product Height"/>
+    <column
+      name="lwh_uom"
+      required="true"
+      type="VARCHAR"
+      size="2"
+      description="LWH Unit of Measure"/>
+    <column
+      name="in_stock"
+      required="true"
+      type="INTEGER"
+      description="Quantity in Stock"/>
+    <column
+      name="reorder_quantity"
+      required="false"
+      type="INTEGER"
+      description="Reorder Quantity"/>
+    <column
+      name="start_at"
+      required="false"
+      type="TIMESTAMP"
+      description="Date Item Becomes Available"/>
+    <column
+      name="end_at"
+      required="false"
+      type="TIMESTAMP"
+      description="Date Item Becomes Unavailable"/>
+    <column
+      name="special_price"
+      required="false"
+      type="FLOAT"
+      size="10"
+      scale="4"/>
+    <column
+      name="special_points"
+      required="false"
+      type="INTEGER"/>
+    <column
+      name="special_max_per_purchase"
+      required="false"
+      type="INTEGER"/>
+    <column
+      name="special_in_stock"
+      required="false"
+      type="INTEGER"/>
+    <column
+      name="special_start_at"
+      required="false"
+      type="TIMESTAMP"/>
+    <column
+      name="special_end_at"
+      required="false"
+      type="TIMESTAMP"/>
+    <column
+      name="attribute_1_value"
+      required="false"
+      type="VARCHAR"
+      size="255"
+      description="Attribute 1 Value"/>
+    <column
+      name="attribute_2_value"
+      required="false"
+      type="VARCHAR"
+      size="255"
+      description="Attribute 2 Value"/>
+    <column
+      name="attribute_3_value"
+      required="false"
+      type="VARCHAR"
+      size="255"
+      description="Attribute_3_Value"/>
+    <column
+      name="attribute_4_value"
+      required="false"
+      type="VARCHAR"
+      size="255"
+      description="Attribute 4 Value"/>
+    <column
+      name="attribute_5_value"
+      required="false"
+      type="VARCHAR"
+      size="255"
+      description="Attribute 5 Value"/>
+    <column
+      name="display_order"
+      required="false"
+      type="INTEGER"/>
+    <behavior name="timestampable" />
+    <index>
+      <index-column name="start_at" /> 
+    </index>
+    <index>
+      <index-column name="end_at" /> 
+    </index>
+    <foreign-key foreignTable="shop_product" onDelete="cascade">
+      <reference
+        local="shop_product_id"
+        foreign="shop_product_id"/>
+    </foreign-key>
+  </table>
 
-	<table name="cms_content" description="CMS Content Table">
-		<column
-			name="cms_content_id"
-			required="true"
-			primaryKey="true"
-			autoIncrement="true"
-			type="INTEGER"
-			description="CMS Content ID"/>
-		<column
-			name="language_key"
-			required="true"
-			type="VARCHAR"
-			size="2"
-			default="en"
-			description="Language Key"/>
-		<column
-			name="application_key"
-			required="true"
-			type="VARCHAR"
-			size="100"
-			description="Application Key"/>
-		<column
-			name="command_key"
-			required="true"
-			type="VARCHAR"
-			size="100"
-			description="Command Key"/>
-		<column
-			name="div_id_key"
-			required="true"
-			type="VARCHAR"
-			size="100"
-			description="Div ID Key"/>
-		<column
-			name="content"
-			required="false"
-			type="LONGVARCHAR"
-			description="Content"/>
-		<column
-			name="rows"
-			required="true"
-			type="INTEGER"
-			default="1"
-			description="Row Width"/>
-		<column
-			name="cols"
-			required="true"
-			type="INTEGER"
-			default="12"
-			description="Column Width"/>
-		<column
-			name="publish"
-			required="true"
-			type="BOOLEAN"
-			default="true"
-			description="Publish"/>
-		<column
-			name="use_rte"
-			required="true"
-			type="BOOLEAN"
-			default="false"
-			description="Use Rich Text Editor"/>
-		<column
-			name="date_publish_start"
-			required="true"
-			type="TIMESTAMP"
-			description="Publish Start Date"/>
-		<column
-			name="date_publish_end"
-			required="true"
-			type="TIMESTAMP"
-			description="Publish End Date"/>
-		<column
-			name="party_id_modified"
-			required="true"
-			type="INTEGER"
-			description="Party ID Modified By"/>
-		<behavior name="timestampable" />
-		<behavior name="soft_delete" />
-		<foreign-key foreignTable="party" onDelete="cascade">
-			<reference
-				local="party_id_modified"
-				foreign="party_id"/>
-		</foreign-key>
-		<unique>
-			<unique-column name="language_key" />
-			<unique-column name="application_key" />
-			<unique-column name="command_key" />
-			<unique-column name="div_id_key" />
-		</unique>
-	</table>
+  <table name="shop_product_media" description="Shop Product Media">
+    <column
+      name="shop_product_media_id"
+      required="true"
+      primaryKey="true"
+      autoIncrement="true"
+      type="INTEGER"/>
+    <column
+      name="shop_product_id"
+      required="true"
+      type="INTEGER"/>
+    <column
+      name="shop_product_item_id"
+      required="false"
+      type="INTEGER"
+      default="null"/>
+    <column
+      name="type"
+      required="true"
+      type="VARCHAR"
+      size="255"/>
+    <column
+      name="uri"
+      required="true"
+      type="VARCHAR"
+      size="255"/>
+    <column
+      name="label"
+      required="false"
+      type="VARCHAR"
+      size="255"/>
+    <column
+      name="position"
+      required="false"
+      type="INTEGER"/>
+    <column
+      name="is_active"
+      required="true"
+      type="BOOLEAN"
+      default="true"/>
+    <foreign-key foreignTable="shop_product" onDelete="cascade">
+      <reference
+        local="shop_product_id"
+        foreign="shop_product_id"/>
+    </foreign-key>
+  </table>
 
-	<!-- APP-SPECIFIC TABLES -->
-	
+  <table name="shop_product_related_xref" description="Shop Product Related XRef Table">
+    <column
+      name="shop_product_id"
+      required="true"
+      primaryKey="true"
+      type="INTEGER"
+      description="Shop Product ID"/>
+    <column
+      name="related_shop_product_id"
+      required="true"
+      primaryKey="true"
+      type="INTEGER"
+      description="Related Shop Product ID"/>
+    <foreign-key foreignTable="shop_product" onDelete="cascade">
+      <reference
+        local="shop_product_id"
+        foreign="shop_product_id"/>
+    </foreign-key>
+    <foreign-key foreignTable="shop_product" onDelete="cascade">
+      <reference
+        local="related_shop_product_id"
+        foreign="shop_product_id"/>
+    </foreign-key>
+  </table>
+  
+  <table name="shop_product_matching_solid_xref" description="Shop Product Matching Solid XRef Table">
+    <column
+      name="shop_product_id"
+      required="true"
+      primaryKey="true"
+      type="INTEGER"/>
+    <column
+      name="matching_solid_shop_product_id"
+      required="true"
+      primaryKey="true"
+      type="INTEGER"/>
+    <foreign-key foreignTable="shop_product" onDelete="cascade">
+      <reference
+        local="shop_product_id"
+        foreign="shop_product_id"/>
+    </foreign-key>
+    <foreign-key foreignTable="shop_product" onDelete="cascade">
+      <reference
+        local="matching_solid_shop_product_id"
+        foreign="shop_product_id"/>
+    </foreign-key>
+  </table>
+  
+  <table name="shop_cart" description="Shop Cart">
+    <column
+      name="shop_cart_id"
+      required="true"
+      primaryKey="true"
+      autoIncrement="true"
+      type="INTEGER"/>
+    <column
+      name="cart_type"
+      required="true"
+      default="ecommerce"
+      type="VARCHAR"
+      size="64"/>
+    <column
+      name="party_id"
+      required="false"
+      default="NULL"
+      type="INTEGER"/>
+    <column
+      name="session_id"
+      required="false"
+      default="NULL"
+      type="VARCHAR"
+      size="255"/>
+    <column
+      name="discount_code"
+      required="false"
+      type="VARCHAR"
+      size="255"/>
+    <column
+      name="points_applied"
+      required="false"
+      default="0"
+      type="INTEGER"/>
+    <behavior name="timestampable" />
+    <unique>
+      <unique-column name="party_id" />
+    </unique>
+    <foreign-key foreignTable="party" onDelete="cascade">
+      <reference
+        local="party_id"
+        foreign="party_id"/>
+    </foreign-key>
+  </table>
+
+  <table name="shop_cart_item" description="Shop Cart Item">
+    <column
+      name="shop_cart_item_id"
+      required="true"
+      primaryKey="true"
+      autoIncrement="true"
+      type="INTEGER"/>
+    <column
+      name="shop_cart_id"
+      required="true"
+      type="INTEGER"/>
+    <column
+      name="shop_product_item_id"
+      required="true"
+      type="INTEGER"/>
+    <column
+      name="price"
+      required="true"
+      type="FLOAT"
+      size="10"
+      scale="4"/>
+    <column
+      name="attribute_1_value"
+      required="false"
+      type="VARCHAR"
+      size="255"
+      description="Attribute 1 Value"/>
+    <column
+      name="attribute_2_value"
+      required="false"
+      type="VARCHAR"
+      size="255"
+      description="Attribute 2 Value"/>
+    <column
+      name="attribute_3_value"
+      required="false"
+      type="VARCHAR"
+      size="255"
+      description="Attribute_3_Value"/>
+    <column
+      name="attribute_4_value"
+      required="false"
+      type="VARCHAR"
+      size="255"
+      description="Attribute 4 Value"/>
+    <column
+      name="attribute_5_value"
+      required="false"
+      type="VARCHAR"
+      size="255"
+      description="Attribute 5 Value"/>
+    <column
+      name="expires_at"
+      required="true"
+      type="TIMESTAMP"/>
+    <behavior name="timestampable"/>
+    <foreign-key foreignTable="shop_cart" onDelete="cascade">
+      <reference
+        local="shop_cart_id"
+        foreign="shop_cart_id"/>
+    </foreign-key>
+    <foreign-key foreignTable="shop_product_item" onDelete="cascade">
+      <reference
+        local="shop_product_item_id"
+        foreign="shop_product_item_id"/>
+    </foreign-key>
+  </table>
+  
+  <table name="shop_wishlist" description="Shop Wishlist">
+    <column
+      name="shop_wishlist_id"
+      required="true"
+      primaryKey="true"
+      autoIncrement="true"
+      type="INTEGER"/>
+    <column
+      name="party_id"
+      required="false"
+      default="NULL"
+      type="INTEGER"/>
+    <behavior name="timestampable" />
+    <unique>
+      <unique-column name="party_id" />
+    </unique>
+    <foreign-key foreignTable="party" onDelete="cascade">
+      <reference
+        local="party_id"
+        foreign="party_id"/>
+    </foreign-key>
+  </table>
+
+  <table name="shop_wishlist_item" description="Shop Wishlist Item">
+    <column
+      name="shop_wishlist_item_id"
+      required="true"
+      primaryKey="true"
+      autoIncrement="true"
+      type="INTEGER"/>
+    <column
+      name="shop_wishlist_id"
+      required="true"
+      type="INTEGER"/>
+    <column
+      name="shop_product_item_id"
+      required="true"
+      type="INTEGER"/>
+    <behavior name="timestampable"/>
+    <foreign-key foreignTable="shop_wishlist" onDelete="cascade">
+      <reference
+        local="shop_wishlist_id"
+        foreign="shop_wishlist_id"/>
+    </foreign-key>
+    <foreign-key foreignTable="shop_product_item" onDelete="cascade">
+      <reference
+        local="shop_product_item_id"
+        foreign="shop_product_item_id"/>
+    </foreign-key>
+  </table>
+
+  <table name="shop_tax" description="Shop Tax Table">
+    <column
+      name="shop_tax_id"
+      required="true"
+      primaryKey="true"
+      autoIncrement="true"
+      type="INTEGER"
+      description="Shop Tax ID"/>
+    <column
+      name="postal_code"
+      required="true"
+      type="VARCHAR"
+      size="5"
+      description="Postal Code"/>
+    <column
+      name="state_abbreviation"
+      required="true"
+      type="VARCHAR"
+      size="2"
+      description="State Abbreviation"/>
+    <column
+      name="county_name"
+      required="true"
+      type="VARCHAR"
+      size="255"
+      description="County Name"/>
+    <column
+      name="city_name"
+      required="true"
+      type="VARCHAR"
+      size="255"
+      description="City Name"/>
+    <column
+      name="state_sales_tax"
+      type="FLOAT"
+      size="10"
+      scale="4"
+      description="State Sales Tax"/>
+    <column
+      name="state_use_tax"
+      type="FLOAT"
+      size="10"
+      scale="4"
+      description="State Use Tax"/>
+    <column
+      name="county_sales_tax"
+      type="FLOAT"
+      size="10"
+      scale="4"
+      description="County Sales Tax"/>
+    <column
+      name="county_use_tax"
+      type="FLOAT"
+      size="10"
+      scale="4"
+      description="County Use Tax"/>
+    <column
+      name="city_sales_tax"
+      type="FLOAT"
+      size="10"
+      scale="4"
+      description="City Sales Tax"/>
+    <column
+      name="city_use_tax"
+      type="FLOAT"
+      size="10"
+      scale="4"
+      description="City Use Tax"/>
+    <column
+      name="total_sales_tax"
+      type="FLOAT"
+      size="10"
+      scale="4"
+      description="Total Sales Tax"/>
+    <column
+      name="total_use_tax"
+      type="FLOAT"
+      size="10"
+      scale="4"
+      description="Total Use Tax"/>
+    <column
+      name="tax_shipping_alone"
+      required="true"
+      type="BOOLEAN"
+      description="Tax Shipping Alone"/>
+    <column
+      name="tax_shipping_and_handling"
+      required="true"
+      type="BOOLEAN"
+      description="Tax Shipping and Handling"/>
+  </table>
+
+  <table name="shop_zone_shipping" description="Shop Zone Shipping">
+    <column
+      name="shop_zone_shipping_id"
+      required="true"
+      type="INTEGER"
+      primaryKey="true"
+      autoIncrement="true"
+      description="Shop Shipping Zone ID"/>
+    <column
+      name="name"
+      required="true"
+      type="VARCHAR"
+      size="255"
+      description="Zone Name"/>
+    <column
+      name="region"
+      required="false"
+      type="VARCHAR"
+      size="255"
+      description="Region"/>
+    <column
+      name="region_shipping_cost"
+      type="FLOAT"
+      size="10"
+      scale="4"
+      description="Locale Region Shipping Cost"/>
+    <column
+      name="per_pound_shipping_cost"
+      type="FLOAT"
+      size="10"
+      scale="4"
+      description="Per Pound Shipping Cost"/>
+    <column
+      name="handling_cost"
+      type="FLOAT"
+      size="10"
+      scale="4"
+      description="Handling Cost"/>
+  </table>
+  
+  <table name="shop_discount_code">
+    <column
+      name="shop_discount_code_id"
+      required="true"
+      type="INTEGER"
+      primaryKey="true"
+      autoIncrement="true"/>
+    <column
+      name="name"
+      required="true"
+      type="VARCHAR"
+      size="255"/>
+    <column
+      name="code"
+      required="true"
+      type="VARCHAR"
+      size="255"/>
+    <column
+      name="discount_amount"
+      type="FLOAT"
+      size="10"
+      scale="4"/>
+    <column
+      name="discount_percentage"
+      type="FLOAT"
+      size="5"
+      scale="2"/>
+    <column
+      name="max_usage_per_user"
+      type="INTEGER"
+      default="1"
+      required="true"/>
+    <column
+      name="max_usage_ever"
+      type="INTEGER"
+      required="false"/>
+    <column
+      name="is_active"
+      required="true"
+      type="BOOLEAN"
+      default="false"/>
+   <behavior name="timestampable" />
+   <unique>
+     <unique-column
+       name="code"/>
+   </unique>
+  </table>
+  
+  <table name="shop_discount_code_usage">
+    <column
+      name="shop_discount_code_usage_id"
+      required="true"
+      type="INTEGER"
+      primaryKey="true"
+      autoIncrement="true"/>
+    <column
+      name="shop_discount_code_id"
+      required="true"
+      type="INTEGER"/>
+    <column
+      name="shop_order_id"
+      required="true"
+      type="INTEGER"/>
+   <behavior name="timestampable" />
+   <foreign-key foreignTable="shop_discount_code" onDelete="cascade">
+     <reference
+       local="shop_discount_code_id"
+       foreign="shop_discount_code_id"/>
+   </foreign-key>
+   <foreign-key foreignTable="shop_order" onDelete="cascade">
+     <reference
+       local="shop_order_id"
+       foreign="shop_order_id"/>
+   </foreign-key>
+  </table>
+
+
+  <!-- APP-SPECIFIC TABLES -->
+ 
 </database>

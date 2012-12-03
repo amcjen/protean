@@ -2,7 +2,7 @@
 /**************************************************************************\
 * Protean Framework                                                        *
 * https://github.com/erictj/protean                                        *
-* Copyright (c) 2006-2011, Loopshot Inc.  All rights reserved.             *
+* Copyright (c) 2006-2012, Eric Jennings.  All rights reserved.            *
 * ------------------------------------------------------------------------ *
 *  This program is free software; you can redistribute it and/or modify it *
 *  under the terms of the BSD License as described in license.txt.         *
@@ -33,7 +33,7 @@ class PFForm {
 		$this->parser->setNamespace('PFForm');
 
 		if (PFRegistry::getInstance()->isValueSet('pf_override_theme') && 
-		file_exists(PF_BASE . DIRECTORY_SEPARATOR . 'modules' . DIRECTORY_SEPARATOR . $appName . DIRECTORY_SEPARATOR . 'tpl' . DIRECTORY_SEPARATOR . PFRegistry::getInstance()->get('pf_override_theme') . DIRECTORY_SEPARATOR . 'html' . DIRECTORY_SEPARATOR . $formName . '.form.tpl')) {
+			  file_exists(PF_BASE . DIRECTORY_SEPARATOR . 'modules' . DIRECTORY_SEPARATOR . $appName . DIRECTORY_SEPARATOR . 'tpl' . DIRECTORY_SEPARATOR . PFRegistry::getInstance()->get('pf_override_theme') . DIRECTORY_SEPARATOR . 'html' . DIRECTORY_SEPARATOR . $formName . '.form.tpl')) {
 			$theme = PFRegistry::getInstance()->get('pf_override_theme');
 		} else {
 			$theme = PFRegistry::getInstance()->get('pf_theme');	
@@ -48,7 +48,8 @@ class PFForm {
 
 		if (PF_FORM_FIELD_ERROR_HIGHLIGHTING) {
 			$errorAttributes = array(
-				'class'				=>	'errorfield',
+	//			'class'				=>	'errorfield',
+				'class'				=>	$this->form->getAttribute('class') . ' errorfield',
 				'description'	=>	'Please fix me, I\'m erroneous!'
 				);
 
@@ -97,6 +98,10 @@ class PFForm {
 
 	public function setAction($action) {
 		$this->form->setAttribute('action', $action);
+	}
+	
+	public function getAction() {
+		$this->form->getAttribute('action');
 	}
 
 	public function setCharset($charset='utf-8') {

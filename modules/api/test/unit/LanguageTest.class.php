@@ -2,14 +2,13 @@
 /**************************************************************************\
 * Protean Framework                                                        *
 * https://github.com/erictj/protean                                        *
-* Copyright (c) 2006-2011, Loopshot Inc.  All rights reserved.             *
+* Copyright (c) 2006-2012, Eric Jennings.  All rights reserved.            *
 * ------------------------------------------------------------------------ *
 *  This program is free software; you can redistribute it and/or modify it *
 *  under the terms of the BSD License as described in license.txt.         *
 \**************************************************************************/
 
 require_once 'config.php';
-require_once 'PHPUnit/Framework.php';
 require_once 'modules/api/lib/factory.class.php';
 require_once 'modules/api/lib/request.class.php';
 require_once 'modules/content/cmd/default.class.php';
@@ -45,7 +44,7 @@ class LanguageTest extends PHPUnit_Framework_TestCase {
 	
 		$this->assertTrue($this->language->loadTranslationTable('api'), 'Failed loading translation table');
 		
-		$prot = $this->language->getTranslation('api', PROTEAN_FRAMEWORK);
+		$prot = $this->language->getTranslation('api', 'PROTEAN_FRAMEWORK');
 		
 		$this->assertEquals('Protean Framework', $prot, '$language->getTranslation() failed:');
 	}

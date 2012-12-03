@@ -2,7 +2,7 @@
 /**************************************************************************\
 * Protean Framework                                                        *
 * https://github.com/erictj/protean                                        *
-* Copyright (c) 2006-2011, Loopshot Inc.  All rights reserved.             *
+* Copyright (c) 2006-2012, Eric Jennings.  All rights reserved.            *
 * ------------------------------------------------------------------------ *
 *  This program is free software; you can redistribute it and/or modify it *
 *  under the terms of the BSD License as described in license.txt.         *
@@ -49,6 +49,13 @@ class PFRequest {
 	}
 	
 	public function getProperty($key) {
+		if ( isset($this->properties[$key]) && is_array($this->properties[$key]) ){
+		 	$new_array = $this->properties[$key];
+			foreach ($this->properties[$key] as $index => $value){
+				$new_array[$index] = @html_entity_decode($value, ENT_QUOTES, 'UTF-8');		
+			}
+		 	return $new_array;
+		}
 		return @html_entity_decode($this->properties[$key], ENT_QUOTES, 'UTF-8');
 	}
 	

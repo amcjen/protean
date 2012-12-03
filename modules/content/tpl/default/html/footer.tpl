@@ -12,19 +12,10 @@
 </div>
 {$PF_JAVASCRIPT_INCLUDES}
 {$PF_FOOTER_JAVASCRIPT}
-{if $smarty.const.PF_ANALYTICS_TRACKING}
-{literal}
-<script type="text/javascript">
-try{
-	var gaJsHost = (("https:" == document.location.protocol) ? "https://ssl." : "http://www.");
-	document.write(unescape("%3Cscript src='" + gaJsHost + "google-analytics.com/ga.js' type='text/javascript'%3E%3C/script%3E"));
-{/literal}
-	var pageTracker = _gat._getTracker("{$smarty.const.PF_ANALYTICS_ID}");
-	pageTracker._trackPageview();
-{literal}
-} catch(err) {}
-</script>
-{/literal}
-{/if}
+
+{if $smarty.const.PF_INCLUDE_GA_TRACKING}{include file='modules/content/tpl/default/html/ga-js.tpl'}{/if}
+{if $smarty.const.PF_INCLUDE_SNAPENGAGE}{include file='modules/content/tpl/default/html/snapengage-js.tpl'}{/if}
+{if $smarty.const.PF_INCLUDE_GET_SATISFACTION}{include file='modules/content/tpl/default/html/getsatisfaction-js.tpl'}{/if}
+
 </body>
 </html>

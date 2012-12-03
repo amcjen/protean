@@ -2,7 +2,7 @@
 /**************************************************************************\
 * Protean Framework                                                        *
 * https://github.com/erictj/protean                                        *
-* Copyright (c) 2006-2011, Loopshot Inc.  All rights reserved.             *
+* Copyright (c) 2006-2012, Eric Jennings.  All rights reserved.            *
 * ------------------------------------------------------------------------ *
 *  This program is free software; you can redistribute it and/or modify it *
 *  under the terms of the BSD License as described in license.txt.         *
@@ -18,15 +18,15 @@ class PFRestHelper {
 		$data	= array();
 		switch ($requestMethod) {
 			case 'get':
-			$data = $_GET;
-			break;
+				$data = $_GET;
+				break;
 			case 'post':
-			$data = $_POST;
-			break;
+				$data = $_POST;
+				break;
 			case 'put':
-			parse_str(file_get_contents('php://input'), $putVars);
-			$data = $putVars;
-			break;
+				parse_str(file_get_contents('php://input'), $putVars);
+				$data = $putVars;
+				break;
 		}
 
 		$returnObject->setMethod($requestMethod);
@@ -39,13 +39,18 @@ class PFRestHelper {
 		return $returnObject;
 	}
 
-	public static function sendResponse($status=200, $content='', $contentType='text/html') { 		
+	public static function sendResponse($status=200, $content=array(), $contentType='application/json') { 		
 		$statusHeader = 'HTTP/1.1 ' . $status . ' ' . PFRestHelper::getStatusCodeMessage($status);
 		header($statusHeader);
 		header('Content-type: ' . $contentType . '; charset=utf-8');
 
-		if ($contentType != 'text/html') {
+    if ($contentType == 'application/json') {
+      echo json_encode($content);
+      ob_flush();
+      exit;
+		} else if ($contentType != 'text/html') {
 			echo $content;
+			ob_flush();
 			exit;
 		} else {
 
@@ -53,20 +58,20 @@ class PFRestHelper {
 
 			switch ($status) {
 				case 400:
-				$message = 'A bad request was made to the URL ' . $_SERVER['REQUEST_URI'] . '.';
-				break;
+					$message = 'A bad request was made to the URL ' . $_SERVER['REQUEST_URI'] . '.';
+					break;
 				case 401:
-				$message = 'You must be authorized to view this page.';
-				break;
+					$message = 'You must be authorized to view this page.';
+					break;
 				case 404:
-				$message = 'The requested URL ' . $_SERVER['REQUEST_URI'] . ' was not found.';
-				break;
+					$message = 'The requested URL ' . $_SERVER['REQUEST_URI'] . ' was not found.';
+					break;
 				case 500:
-				$message = 'The server encountered an error processing your request.';
-				break;
+					$message = 'The server encountered an error processing your request.';
+					break;
 				case 501:
-				$message = 'The requested method is not implemented.';
-				break;
+					$message = 'The requested method is not implemented.';
+					break;
 			}
 
 			$signature = ($_SERVER['SERVER_SIGNATURE'] == '') ? $_SERVER['SERVER_SOFTWARE'] . ' Server at ' . $_SERVER['SERVER_NAME'] . ' Port ' . $_SERVER['SERVER_PORT'] : $_SERVER['SERVER_SIGNATURE'];
@@ -91,16 +96,19 @@ class PFRestHelper {
 		}	
 	}
 
-	public static function makeJSONResponse($status, $code, $message) {
+	public static function makeResponse($status, $code, $message, $arr=array()) {
 		$m = explode(' ', microtime());
 	  $utime = $m[1] . (int)round($m[0]*1000,3);
 	
-		$json->status = $status;
-		$json->code = $code;
-		$json->message = $message;
-		$json->timestamp = $utime;
-		
-		return json_encode($json);
+		$res['status'] = $status;
+		$res['code'] = $code;
+		$res['message'] = $message;
+		$res['timestamp'] = $utime;
+		if (is_array($arr)) {
+      $res = array_merge($res, $arr);
+    }
+    
+		return $res;
 	}
 
 	public static function getStatusCodeMessage($status) {

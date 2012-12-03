@@ -1,19 +1,27 @@
 <!DOCTYPE html>
 <html>
 	<head>
-		<meta http-equiv="content-type" content="text/html; charset=UTF-8" /> 
-		<meta name="keywords" content="Protean Framework" /> 
-		<meta name="description" content="" />
-		<title>Protean Framework</title>
- 		<link rel="Shortcut Icon" href="/favicon.ico" /> 
-		<link rel="stylesheet" type="text/css" media="screen" href="/modules/content/tpl/default/css/960-reset-text.css" />
-		<link rel="stylesheet" type="text/css" media="screen" href="/modules/content/tpl/default/css/style.css" />
+		<meta charset="utf-8">
+		<meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+		<title>{$PF_PAGE_TITLE|default:$smarty.const.PF_SITE_NAME}</title>
+		<meta name="keywords" content="$PF_PAGE_KEYWORDS|default:Protean Framework" /> 
+		<meta name="description" content="{$PF_PAGE_DESCRIPTION|default:"Protean Framework"}">
+		<meta name="author" content="Protean">
+		<meta name="viewport" content="width=device-width, initial-scale=1.0">
+		<link rel="shortcut icon" href="{$CDN_IMAGE_URL}/favicon.png">
+		<link rel="apple-touch-icon" href="{$CDN_IMAGE_URL}/apple-touch-icon.png">
+		{$PF_HEAD_CSS_INCLUDES}	
+		<script src="/modules/thirdparty/html5boilerplate/js/libs/modernizr-1.6.min.js"></script>
 	</head>
 
 	<body>
-		<div id="doc" class="container_16">
-			<div id="hd" class="grid_16 alpha">
-				<div class="grid_13 alpha">
+	<div id="container" class="container_16">
+		<header>
+			<p id="jsnotice">
+			  <strong>JavaScript is currently disabled.</strong> This site requires JavaScript to function correctly.<br />
+			  Please <a href="http://enable-javascript.com/" target="_blank"> enable JavaScript in your browser</a>!
+			</p>
+			<div class="grid_13 alpha">
 			  	<img id="headerlogo" src="#" alt="Protean Framework" border="0" /> 
 				</div>
 				<div class="grid_3 omega" id="header-nav">
@@ -25,5 +33,5 @@
 					<a href="/registration/login">Login</a>
 					{/if}
 				</div>
-			</div>
-			{include file=$ERRORSTACK_TPL}
+			{include file='modules/content/tpl/default/html/errorstack.tpl'}
+		</header>

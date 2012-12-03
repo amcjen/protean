@@ -1,6 +1,6 @@
 Protean Framework
 https://github.com/erictj/protean
-Copyright (c) 2006-2010, Loopshot Inc.
+Copyright (c) 2006-2011, Loopshot Inc.
 All rights reserved.
 
 Redistribution and use in source and binary forms, with or without modification, are permitted provided that the following conditions are met:

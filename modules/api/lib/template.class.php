@@ -2,7 +2,7 @@
 /**************************************************************************\
 * Protean Framework                                                        *
 * https://github.com/erictj/protean                                        *
-* Copyright (c) 2006-2010, Loopshot Inc.  All rights reserved.             *
+* Copyright (c) 2006-2012, Eric Jennings.  All rights reserved.            *
 * ------------------------------------------------------------------------ *
 *  This program is free software; you can redistribute it and/or modify it *
 *  under the terms of the BSD License as described in license.txt.         *
@@ -35,9 +35,9 @@ function _compile_lang($key) {
 }
 
 /**
-* Protean register resource functions, to support application-prepended file names
-*
-*/
+ * Protean register resource functions, to support application-prepended file names
+ *
+ */
 function protean_get_template($tplName, &$tplSource, &$smarty) {
 	list($appName, $tplFile) = explode('.', $tplName, 2);
 
@@ -76,29 +76,39 @@ function protean_get_secure($tpl_name, &$smarty) {
 
 function protean_get_trusted($tpl_name, &$smarty) { }
 
+/**
+@package api
+*/
 class PFTemplate extends Smarty { 
 
 	protected $appName;
+	protected $controllerMap;
 	protected $debug;
-	protected $more_template_dir = array();
 
 	public function __construct($appName, $languageTable='global') {
-		$this->error_reporting = null;
+		parent::__construct();
+		$this->error_reporting = E_ALL & ~E_NOTICE;
 
 		if (PFRegistry::getInstance()->isValueSet('pf_theme') == false) {
 			PFRegistry::getInstance()->set('pf_theme', 'default');
 		} 
 
+		$this->template_dir = null;
+
 		$this->appName = $appName;
+		$this->controllerMap = PFRegistry::getControllerMap();
+		
 		if (PF_TEMPLATE_DEBUG) {
 			$this->debug = true;
+			$this->debugging = true;
 		} else {
 			$this->debug = false;
+			$this->debugging = false;
 		}
 
 		PFRegistry::getInstance()->set('APPNAME', $this->appName);
 
-		$this->template_dir = PF_BASE . '/modules/' . $this->appName . '/tpl/' . PFRegistry::getInstance()->get('pf_theme') . '/html/';
+		$this->addTemplateDir(PF_BASE . '/modules/' . $this->appName . '/tpl/' . PFRegistry::getInstance()->get('pf_theme') . '/html/');
 		$this->addTemplateDir(PF_BASE);
 
 		if (!is_dir(PF_TEMP_PATH . '/tpl_cmp') && is_writable(PF_TEMP_PATH)) {
@@ -116,8 +126,10 @@ class PFTemplate extends Smarty {
 		}
 		$this->cache_dir = PF_TEMP_PATH . '/tpl_cch';
 
-		parent::smarty();
-
+    if (PF_CACHE_ENABLED == true && PF_CACHE_TEMPLATES == true) {
+      $this->loadCacheResource('apc'); 
+      $this->setCaching(true);
+    }
 		/*
 		Change this line if translation of dynamic data is needed ;-)
 		$this->register_prefilter("smarty_prefilter_i18n");
@@ -125,9 +137,9 @@ class PFTemplate extends Smarty {
 		$this->register_outputfilter("smarty_prefilter_i18n");
 		this change makes it possible even to translate dynamic data e.g. options because translation is done after compilation of template [xaos, 20050206]
 		*/
-		$this->register_prefilter('smarty_prefilter_i18n');
+		$this->registerFilter('pre', 'smarty_prefilter_i18n');
 
-		$this->register_resource('protean', array('protean_get_template',
+		$this->registerResource('protean', array('protean_get_template',
 			'protean_get_timestamp',
 			'protean_get_secure',
 			'protean_get_trusted'));
@@ -161,12 +173,12 @@ class PFTemplate extends Smarty {
 	}
 
 	public function display($appName, $tplName) {
-		$header = $this->get_template_vars('PF_HEADER');
+		$header = $this->tpl_vars['PF_HEADER'];
 		if (empty($header)) {
 			$this->setHeader();
 		}
 
-		$footer = $this->get_template_vars('PF_FOOTER');
+		$footer = $this->tpl_vars['PF_FOOTER'];
 		if (empty($footer)) {
 			$this->setFooter();
 		}
@@ -192,28 +204,35 @@ class PFTemplate extends Smarty {
 		}
 
 		if (empty($templateDir)) {
-			$this->template_dir = PF_BASE . '/modules/' . $appName . '/tpl/' . PFRegistry::getInstance()->get('pf_theme') . '/html/';
+			$this->setTemplateDir(PF_BASE . '/modules/' . $appName . '/tpl/' . PFRegistry::getInstance()->get('pf_theme') . '/html/');;
 		} else {
-			$this->template_dir = $templateDir;
+			$this->setTemplateDir($templateDir);
 		}
 
-		$this->template_dir = array_merge(array($this->template_dir), $this->more_template_dir);
-
-		if (parent::template_exists($tplName)) {
-			$ret = parent::fetch($tplName, $cache_id, $compile_id, $display);
+		if (parent::templateExists($tplName)) {
+			$ret = parent::fetch($tplName, $cache_id, $compile_id, null, $display);
 		} else {
 			throw new PFException('api', array('TEMPLATE_DOES_NOT_EXIST', $this->template_dir[0] . $tplName), E_USER_ERROR);
 		}
 
-		$this->template_dir = $curTemplateDir;
+		$this->setTemplateDir($curTemplateDir);
 		return $ret;
+	}
+
+	public function getTemplatePath($appName, $tplName) {
+		
+		if (PFRegistry::getInstance()->isValueSet('pf_theme') == false) {
+			PFRegistry::getInstance()->set('pf_theme', 'default');
+		}
+			
+		return PF_BASE . '/modules/' . $appName . '/tpl/' . PFRegistry::getInstance()->get('pf_theme') . '/html/' . $tplName;		
 	}
 
 	public function smartyFetch($tplName, $display=false) {	
 		$this->setLanguageIDs($cache_id, $compile_id);
 
-		if (parent::template_exists($tplName)) {
-			$ret = parent::fetch($tplName, $cache_id, $compile_id, $display);
+		if (parent::templateExists($tplName)) {
+			$ret = parent::fetch($tplName, $cache_id, $compile_id, null, $display);
 		} else {
 			throw new PFException('api', array('TEMPLATE_DOES_NOT_EXIST', $this->template_dir . $tplName), E_USER_ERROR);
 		}
@@ -233,7 +252,7 @@ class PFTemplate extends Smarty {
 	}
 
 	public function setHeader($appName='', $tplName='header.tpl') {	
-		list($defaultApp, $defaultCmd) = explode('.', PF_DEFAULT_COMMAND);
+		list(, $defaultApp, ) = explode('/', PF_DEFAULT_URI);
 
 		if (empty($appName)) {
 			$appName = $defaultApp;
@@ -244,12 +263,13 @@ class PFTemplate extends Smarty {
 		}
 
 		$this->assign('PF_ERRORSTACK', PFErrorstack::getErrorStackAsFormattedString());
-		$header = $this->fetch($appName, $tplName);
-		$this->assign('PF_HEADER', $header);
+
+		//$header = $this->fetch($appName, $tplName);
+		$this->assign('PF_HEADER', $this->getTemplatePath($appName, $tplName));
 	}
 
 	public function setFooter($appName='', $tplName='footer.tpl') {
-		list($defaultApp, $defaultCmd) = explode('.', PF_DEFAULT_COMMAND);
+		list(, $defaultApp, ) = explode('/', PF_DEFAULT_URI);
 
 		if (empty($appName)) {
 			$appName = $defaultApp;
@@ -259,8 +279,8 @@ class PFTemplate extends Smarty {
 			$tplName = 'footer.tpl';
 		}
 
-		$footer = $this->fetch($appName, $tplName);		
-		$this->assign('PF_FOOTER', $footer);
+		//$this->assign('PF_FOOTER', $this->fetch($appName, $tplName));
+		$this->assign('PF_FOOTER', $this->getTemplatePath($appName, $tplName));
 	}
 
 	public function trigger_error($error_msg, $error_type = E_USER_WARNING) {
@@ -273,67 +293,6 @@ class PFTemplate extends Smarty {
 
 	public function setLanguageIDs(&$cache_id, &$compile_id) {
 		$cache_id = $compile_id = $this->appName . '-' . PFLanguage::getInstance($this->appName)->getCurrentLanguage();	
-	}
-
-	public function _process_template($tpl_file, $compile_path) {
-		if ($this->debug) {
-			PFDebugStack::append('Template File: ' . $tpl_file . '<br />Compile Path: ' . $compile_path, __FILE__, __LINE__);
-		}
-
-		if (!$this->force_compile && file_exists($compile_path)) {	
-			if (!$this->compile_check) {
-				return true;
-			} else {
-				if (!$this->_fetch_template_info($tpl_file, $template_source, $template_timestamp)) {
-					if ($this->debug) {
-						PFDebugStack::append('Failed fetching template info: ' . $tpl_file, __FILE__, __LINE__);
-					}
-					return false;
-				}
-				if ($template_timestamp > filemtime($compile_path) || $this->languageFilesAreModified($compile_path, $lang_path)) {	
-
-					if ($this->debug) {
-						PFDebugStack::append('Compiled template: ' . $tpl_fil, __FILE__, __LINE__);
-					}
-
-					if ($template_timestamp >= filemtime($lang_path)) {
-						$timestamp = $template_timestamp;
-					} else {
-						$timestamp = filemtime($lang_path);
-					}
-
-					$this->_compile_template($tpl_file, $template_source, $template_compiled);
-					$this->_write_compiled_template($compile_path, $template_compiled, $timestamp);
-					return true;
-				} else {					
-					if ($this->debug) {
-						PFDebugStack::append('Did not compile template: ' . $tpl_file, __FILE__, __LINE__);
-					}
-					return true;
-				}
-			}
-		} else {
-
-			if ($this->force_compile) {
-				$this->clear_cache();
-			}
-
-			if (!$this->_fetch_template_info($tpl_file, $template_source, $template_timestamp)) {
-				if ($this->debug) {
-					PFDebugStack::append('Failed fetching template info (2): ' . $tpl_file, __FILE__, __LINE__);
-				}
-				return false;
-			}
-
-			if ($this->debug) {
-				PFDebugStack::append('Force-compiled template: ' . $tpl_file, __FILE__, __LINE__);
-			}
-
-			$this->_compile_template($tpl_file, $template_source, $template_compiled);
-			$this->_write_compiled_template($compile_path, $template_compiled, $template_timestamp);
-
-			return true;
-		}
 	}
 
 	protected function languageFilesAreModified($compilePath, &$langPath) {
@@ -363,16 +322,8 @@ class PFTemplate extends Smarty {
 		return false;
 	}
 
-	public function addTemplateDir($dir) {
-		$this->more_template_dir[] = $dir;
-	}
-
-	public function getTemplateDir() {
+	public function getTemplateDirs() {
 		return $this->template_dir;
-	}
-
-	public function getMoreTemplateDir() {
-		return $this->more_template_dir;
 	}
 
 	public function getCompileDir() {
@@ -385,10 +336,6 @@ class PFTemplate extends Smarty {
 
 	public function getCacheDir() {
 		return $this->cache_dir;
-	}
-
-	public function setTemplateDir($dir) {
-		return $this->template_dir = $dir;
 	}
 
 	public function setCompileDir($dir) {

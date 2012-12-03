@@ -187,13 +187,13 @@ class patForms_Element_Switch extends patForms_Element
      */
 	var	$validatorErrorCodes  =   array(
 		"C"	=>	array(
-			1	=>	"Please enter the following information",
+			1	=>	"Please select the following field",
 		),
 		"de" =>	array(
-			1	=>	"Pflichtfeld. Bitte w‰hlen Sie dieses Feld an.",
+			1	=>	"Pflichtfeld. Bitte wählen Sie dieses Feld an.",
 		),
 		"fr" =>	array(
-			1	=>	"Vous devez sÈlectionner ce champ.",
+			1	=>	"Vous devez sélectionner ce champ.",
 		)
 	);
 

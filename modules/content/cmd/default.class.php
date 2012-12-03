@@ -32,7 +32,19 @@ class PFDefaultCommand extends PFCommand {
 		$this->templateHelper->assign('PF_BASE_JAVASCRIPT_PATH', $this->session->getJSPath('content'));	
 		$this->templateHelper->assign('PF_VERSION', PF_VERSION);
 		$this->templateHelper->assign('PF_SERVER_NAME', @$_SERVER['SERVER_NAME']);
-		$this->templateHelper->assign('PF_CONTENT_IMAGE_PATH', $this->session->getImagePath('content'));
+				
+		if (PF_ENVIRONMENT == 'development') {
+			$this->templateHelper->addCSSInclude('/modules/content/tpl/default/css/html5boilerplate.css');
+			$this->templateHelper->addCSSInclude('/modules/content/tpl/default/css/960.css');
+			$this->templateHelper->addCSSInclude('/modules/content/tpl/default/css/protean.css');
+		} else {
+			$this->templateHelper->addCSSInclude('/modules/content/tpl/default/css/style.min.css');
+			$this->templateHelper->addJavascriptInclude('/modules/content/tpl/default/js/script.min.js');
+		}
+		
+		$this->templateHelper->assign('CURRENTLY_LOGGED_IN', $this->session->isLoggedIn());
+		$this->templateHelper->assign('PF_URL', PF_URL);
+		$this->templateHelper->assign('PF_URL_SECURE', PF_URL_SECURE);
 	}
 	
 	public function assignHeaderPaths() {

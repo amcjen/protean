@@ -2,7 +2,7 @@
 /**************************************************************************\
 * Protean Framework                                                        *
 * https://github.com/erictj/protean                                        *
-* Copyright (c) 2006-2011, Loopshot Inc.  All rights reserved.             *
+* Copyright (c) 2006-2012, Eric Jennings.  All rights reserved.            *
 * ------------------------------------------------------------------------ *
 *  This program is free software; you can redistribute it and/or modify it *
 *  under the terms of the BSD License as described in license.txt.         *
@@ -46,11 +46,10 @@ final class PFFactory {
 		$p1='_UNDEF_',$p2='_UNDEF_',$p3='_UNDEF_',$p4='_UNDEF_',
 		$p5='_UNDEF_',$p6='_UNDEF_',$p7='_UNDEF_',$p8='_UNDEF_',
 		$p9='_UNDEF_',$p10='_UNDEF_',$p11='_UNDEF_',$p12='_UNDEF_',
-	$p13='_UNDEF_',$p14='_UNDEF_',$p15='_UNDEF_',$p16='_UNDEF_') {
+		$p13='_UNDEF_',$p14='_UNDEF_',$p15='_UNDEF_',$p16='_UNDEF_') {
 
 		try {		
 			list ($appname, $classname) = explode('.', $class);
-
 			// load class file if not in third-party directory (since we already added those to the
 				// include_path earlier)
 				if ($appname != 'thirdparty') {	
@@ -60,7 +59,7 @@ final class PFFactory {
 						throw new PFException('', PFException::ERR_FILE_NOT_READABLE . ': ' . $filename . '.', E_USER_FATAL);
 					}
 
-					require_once($filename);
+				  require_once($filename);
 				}
 
 				if ($appname == 'api') {

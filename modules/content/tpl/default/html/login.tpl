@@ -1,4 +1,4 @@
-{$PF_HEADER}
+{include file=$PF_HEADER}
 
 			<p>
 				<form method="post" name="loginform" id="loginform" action="{$LOGIN_LINK}" accept-charset="utf-8" enctype="multipart/form-data">
@@ -14,4 +14,4 @@
 				</form>
 			</p>
 		
-{$PF_FOOTER}
+{include file=$PF_FOOTER}

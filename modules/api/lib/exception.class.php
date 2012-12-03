@@ -2,7 +2,7 @@
 /**************************************************************************\
 * Protean Framework                                                        *
 * https://github.com/erictj/protean                                        *
-* Copyright (c) 2006-2011, Loopshot Inc.  All rights reserved.             *
+* Copyright (c) 2006-2012, Eric Jennings.  All rights reserved.            *
 * ------------------------------------------------------------------------ *
 *  This program is free software; you can redistribute it and/or modify it *
 *  under the terms of the BSD License as described in license.txt.         *
@@ -36,7 +36,6 @@ class PFException extends Exception {
 		} else {
 			$code = $e->getCode();
 		}
-
 		return new PFException('', $e->getMessage(), $code);		
 	}
 
@@ -315,10 +314,10 @@ class PFException extends Exception {
 	public function handleRestException($type='application/json') {
 		
 		if ($type == 'application/json') {
-			$json = PFRestHelper::makeJSONResponse('error', $this->getCode(), $this->getMessage());
+			$json = PFRestHelper::makeResponse('error', $this->getCode(), $this->getMessage());
 			PFRestHelper::sendResponse(500, $json, $type);
 		} else {
-		PFRestHelper::sendResponse(500, $this->getSlimError());
+			PFRestHelper::sendResponse(500, $this->getSlimError());
 		}
 		
 		$this->logException();

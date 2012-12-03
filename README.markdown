@@ -1,6 +1,6 @@
 OVERVIEW
 =========
-Protean is a PHP5 framework that I began developing in 2005 while flying back from a Debian Linux conference held in Helsinki Finland.  Something about the altitude triggered me to realize there must be an easier, better way to deploy PHP5 projects quickly, safely, while leveraging as many existing top-notch packages such as Smarty, PropelORM, PHPUnit, Phing, and others.  
+Protean is a PHP5 framework that I began developing in 2005 while flying back from a Debian Linux conference held in Helsinki Finland.  Something about the altitude triggered me to realize there must be an easier, better way to deploy PHP5 projects quickly, safely, while leveraging as many existing top-notch packages such as Smarty, PropelORM, PHPUnit, Phing, and others.
 
 I took the initial base ideas of the framework from Matt Zandstra (now at Yahoo!), who wrote an excellent book on making clean, testable PHP5 code.  I had additional requirements, such as one-line testability, support for continuous integration, multi-lingual support, and easy templating for front-end developers.
 
@@ -13,49 +13,49 @@ It's quite simple at it's core--Protean is an MVC-based, inversion-of-control fr
 
 How Protean routes: command.xml
 -------------------------------
-Very simply!  Here is a simple route that exposes the /content/hello URI.  The <command> name attribute defines what controller is called.  The view tags describe what header/footer and body views will be rendered.  This gives a lot of flexibility as you can reuse views while having them handled by different controllers if desired.  This is essentially an implementation of Martin Fowler's Front Controller design pattern from his seminal Patterns of Enterprise Application Architecture book. 
+Very simply!  Here is a simple route that exposes the /content/hello URI.  The <command> name attribute defines what controller is called.  The view tags describe what header/footer and body views will be rendered.  This gives a lot of flexibility as you can reuse views while having them handled by different controllers if desired.  This is essentially an implementation of Martin Fowler's Front Controller design pattern from his seminal Patterns of Enterprise Application Architecture book.
 
-	<control>
-		<!-- /content/hello URL handler -->	
-		<command name="content.hello">
-			<viewheader>content.header</viewheader>
-			<viewfooter>content.footer</viewfooter>
-			<view>content.hello</view>
-		</command>
-	</control>
+  <control>
+    <!-- /content/hello URL handler -->
+    <command name="content.hello">
+      <viewheader>content.header</viewheader>
+      <viewfooter>content.footer</viewfooter>
+      <view>content.hello</view>
+    </command>
+  </control>
 
 The controller: hello.class.php
 -------------------------------
 Here is the controller for /content/hello.  We always extend the default command, which handles some basic initialization for us.  We grab the $page template instance and set a Smarty variable to the user's first name.
 
-	<?php
+  <?php
 
-	class PFHelloCommand extends PFDefaultCommand { 
+  class PFHelloCommand extends PFDefaultCommand {
 
-		public function doExecute(PFRequest $request) {	
-			parent::doExecute($request);
+    public function doExecute(PFRequest $request) {
+      parent::doExecute($request);
 
-			$user = PFFactory::getInstance()->createObject('content.userhelper');
-			$page = PFRegistry::getInstance()->getPage();
-			$page->assign('FIRSTNAME', $user->getUser(1)->getFirstName());
-		}
-	}
-	?>
-	
+      $user = PFFactory::getInstance()->createObject('content.userhelper');
+      $page = PFRegistry::getInstance()->getPage();
+      $page->assign('FIRSTNAME', $user->getUser(1)->getFirstName());
+    }
+  }
+  ?>
+
 The view: hello.tpl
 -------------------
 This is a Smarty template file that Protean will auto-render.  The PF_HEADER and PF_FOOTER vars will automatically get replaced by whatever header/footer is defined within the command.xml file above.  If a site needs different header/footer files for sub-sections of the site, easy-peasy, just change the command.xml.  No mucking around with template files.
 
-	{$PF_HEADER}
+  {$PF_HEADER}
 
-		<div id="bd"> 
-			<h1>
-				Hello {$FIRSTNAME}!
-			</h1>
-		</div>
-			
-	{$PF_FOOTER}
-	
+    <div id="bd">
+      <h1>
+        Hello {$FIRSTNAME}!
+      </h1>
+    </div>
+
+  {$PF_FOOTER}
+
 The model: userhelper.class.php
 --------------------------------
 Protean allows you a lot of flexibility in how closely you wish to couple your controller and your model.  You could call raw SQL directly from your controller class above if you wish.  However, a best practice recommendation is to create a simple domain object that your controller class can call to get its data.
@@ -76,7 +76,7 @@ And while Protean supports any level of helper/domain-object classes that a team
 
 FUTURE DIRECTION:
 ================
-There are so many great frameworks and platforms available five years later, it's difficult to assume Protean is better than the other options.  One very compelling framework--if somewhat immature--is Lithium, which takes the best of modern MVC frameworks such as dependency injection, IoC, and others, and implements them by leveraging the lastest features of PHP 5.3.  Of course, the Ruby on Rails community is very strong and has some excellent ideas about minimizing the amount of code necessary to deploy a production project.
+There are so many great frameworks and platforms available five years later, it's difficult to assume Protean is better than the other options.  One very compelling framework--if somewhat immature--is Lithium, which takes the best of modern MVC frameworks such as dependency injection, IoC, and others, and implements them by leveraging the latest features of PHP 5.3.  Of course, the Ruby on Rails community is very strong and has some excellent ideas about minimizing the amount of code necessary to deploy a production project.
 
 Having done so much architecture in my past, I always keep a back-burner going in my mind regarding performance.  PHP5 is probably one of the most tried-and-true platforms for scaling web applications of all that are available.  Facebook runs PHP5, both interpreted and compiled, as well as very large amounts of optimizations throughout.  Facebook itself is a testament to how well a PHP5 architecture not only performs, but also how well it integrates very cleanly with other systems when it's time to scale out sub-components such as databases or caching/middleware.
 
@@ -90,26 +90,25 @@ Here are the requirements for building and testing Protean:
 Log
 -------------------
 
-	pear install Log
+    pear install Log
 
-Phing 2.4.2
+Phing 2.4.12
 -------------------
 
-	pear channel-discover pear.phing.info
-	sudo pear install -a phing/phing-2.4.2
+    pear channel-discover pear.phing.info
+    sudo pear install -a phing/phing-2.4.12
 
-Propel 1.5.6
+Propel 1.6.7
 -------------------
 
-	pear channel-discover pear.propelorm.org
-	sudo pear install -a propel/propel_generator-1.5.6
-	sudo pear install -a propel/propel_runtime-1.5.6
+    pear channel-discover pear.propelorm.org
+    sudo pear install -a propel/propel_generator-1.6.7
+    sudo pear install -a propel/propel_runtime-1.6.7
 
-PHPUnit 3.4.15
+PHPUnit 3.7.8
 -------------------
 
-	pear channel-discover pear.phpunit.de
-	pear channel-discover components.ez.no
-	pear channel-discover pear.symfony-project.com
-	sudo pear install -a phpunit/PHPUnit-3.4.15
-	
+    pear channel-discover pear.phpunit.de
+    pear channel-discover components.ez.no
+    pear channel-discover pear.symfony-project.com
+    sudo pear install -a phpunit/PHPUnit-3.7.8

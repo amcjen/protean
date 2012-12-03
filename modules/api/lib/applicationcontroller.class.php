@@ -2,7 +2,7 @@
 /**************************************************************************\
 * Protean Framework                                                        *
 * https://github.com/erictj/protean                                        *
-* Copyright (c) 2006-2011, Loopshot Inc.  All rights reserved.             *
+* Copyright (c) 2006-2012, Eric Jennings.  All rights reserved.            *
 * ------------------------------------------------------------------------ *
 *  This program is free software; you can redistribute it and/or modify it *
 *  under the terms of the BSD License as described in license.txt.         *
@@ -10,255 +10,259 @@
 /**
 @package api
 */
-class PFApplicationController { 
+class PFApplicationController {
 
-	private static $STATUS_STRINGS = array (
-		'CMD_DEFAULT',
-		'CMD_OK',
-		'CMD_ERROR',
-		'CMD_INSUFFICIENT_DATA',
-		'CMD_FORM_FAILED',
-		'CMD_UNAUTHORIZED'
-		);
+  private static $STATUS_STRINGS = array (
+    'CMD_DEFAULT',
+    'CMD_OK',
+    'CMD_ERROR',
+    'CMD_INSUFFICIENT_DATA',
+    'CMD_FORM_FAILED',
+    'CMD_UNAUTHORIZED'
+    );
 
-	protected static $baseCommand;
-	protected $controllerMap = array();
-	protected $invoked = array();
+  protected static $baseCommand;
+  protected $controllerMap = array();
+  protected $invoked = array();
 
-	protected $debug;
+  protected $debug;
 
-	public function __construct(PFControllerMap $map) {
+  public function __construct(PFControllerMap $map) {
 
-		$this->debug = PF_APP_CONTROLLER_DEBUG;
-		$defaultApp = PFRequestHelper::getDefaultURIApplication();
-		$this->controllerMap[$defaultApp] = $map;
-		
-		list($defaultApp, $defaultCmd) = explode('.', $this->controllerMap[$defaultApp]->getCommand(PF_DEFAULT_URI . '|get'));
+    $this->debug = PF_APP_CONTROLLER_DEBUG;
+    $defaultApp = PFRequestHelper::getDefaultURIApplication();
+    $this->controllerMap[$defaultApp] = $map;
 
-		if (!self::$baseCommand) {	
-			self::$baseCommand = new ReflectionClass('PFCommand');
-			PFFactory::getInstance()->initCommandObject($defaultApp . '.' . $defaultCmd);	
-		}
-	}
-	
-	public function addControllerMap($app) {
+    list($defaultApp, $defaultCmd) = explode('.', $this->controllerMap[$defaultApp]->getCommand(PF_DEFAULT_URI . '|get'));
 
-		if (array_key_exists($app, $this->controllerMap)) {
-			return;
-		}
-		
-		$map = PFApplicationHelper::getInstance()->loadControllerMap($app);
-		$this->controllerMap[$app] = $map;
-	}
-	
-	public function getControllerMap($app) {
-		if (!array_key_exists($app, $this->controllerMap)) {
-			$this->addControllerMap($app);
-		}
-		return $this->controllerMap[$app];
-	}
+    if (!self::$baseCommand) {
+      self::$baseCommand = new ReflectionClass('PFCommand');
+      PFFactory::getInstance()->initCommandObject($defaultApp . '.' . $defaultCmd);
+    }
+  }
 
-	public function getView(PFRequest $request) {
-		list($app, $tpl) = explode('.', $this->getResource($request, 'View'));
-		if (!empty($tpl)) {
-			return $tpl . '.tpl';
-		} else {
-			return '';
-		}
-	}
+  public function addControllerMap($app) {
 
-	public function getViewApplication(PFRequest $request) {
+    if (array_key_exists($app, $this->controllerMap)) {
+      return;
+    }
 
-		@list($app, $tpl) = explode('.', $this->getResource($request, 'View'));
-		return $app;
-	}
+    $map = PFApplicationHelper::getInstance()->loadControllerMap($app);
+    $this->controllerMap[$app] = $map;
+  }
 
-	public function getViewHeader(PFRequest $request) {
+  public function getControllerMap($app) {
+    if (!array_key_exists($app, $this->controllerMap)) {
+      $this->addControllerMap($app);
+    }
+    return $this->controllerMap[$app];
+  }
 
-		@list($app, $tpl) = explode('.', $this->getResource($request, 'ViewHeader'));
+  public function getView(PFRequest $request) {
+    list($app, $tpl) = explode('.', $this->getResource($request, 'View'));
+    if (!empty($tpl)) {
+      return $tpl . '.tpl';
+    } else {
+      return '';
+    }
+  }
 
-		if (!empty($tpl)) {
-			return $tpl . '.tpl';
-		} else {
-			return '';
-		}
-	}
+  public function getViewApplication(PFRequest $request) {
 
-	public function getViewHeaderApplication(PFRequest $request) {
+    @list($app, $tpl) = explode('.', $this->getResource($request, 'View'));
+    return $app;
+  }
 
-		@list($app, $tpl) = explode('.', $this->getResource($request, 'ViewHeader'));
-		return $app;
-	}
+  public function getViewHeader(PFRequest $request) {
 
-	public function getViewFooter(PFRequest $request) {
+    @list($app, $tpl) = explode('.', $this->getResource($request, 'ViewHeader'));
 
-		list($app, $tpl) = explode('.', $this->getResource($request, 'ViewFooter'));
-		if (!empty($tpl)) {
-			return $tpl . '.tpl';
-		} else {
-			return '';
-		}
-	}
+    if (!empty($tpl)) {
+      return $tpl . '.tpl';
+    } else {
+      return '';
+    }
+  }
 
-	public function getViewFooterApplication(PFRequest $request) {
+  public function getViewHeaderApplication(PFRequest $request) {
 
-		@list($app, $tpl) = explode('.', $this->getResource($request, 'ViewFooter'));
-		return $app;
-	}
+    @list($app, $tpl) = explode('.', $this->getResource($request, 'ViewHeader'));
+    return $app;
+  }
 
-	public function getForward(PFRequest $request) {
-		return $this->getResource($request, 'Forward');
-	}
+  public function getViewFooter(PFRequest $request) {
 
-	public function getLogin(PFRequest $request) {
-		return $this->getResource($request, 'Login');
-	}
+    list($app, $tpl) = explode('.', $this->getResource($request, 'ViewFooter'));
+    if (!empty($tpl)) {
+      return $tpl . '.tpl';
+    } else {
+      return '';
+    }
+  }
 
-	public function getPermissions(PFRequest $request) {
-		return $this->getResource($request, 'Permissions');
-	}
+  public function getViewFooterApplication(PFRequest $request) {
 
-	public function getTheme(PFRequest $request) {
-		return $this->getResource($request, 'Theme');
-	}
+    @list($app, $tpl) = explode('.', $this->getResource($request, 'ViewFooter'));
+    return $app;
+  }
 
-	private function getResource(PFRequest $request, $resource) {
+  public function getForward(PFRequest $request) {
+    return $this->getResource($request, 'Forward');
+  }
 
-		$uri = PFRequestHelper::getURIPattern($request->get('pf.uri'));
-		$verb = PFRequestHelper::getHTTPVerbForURIPattern($request->get('pf.uri'));
-		$app = PFRequestHelper::getURIApplication($uri, $verb);
-		$cmd = PFRequestHelper::getURICommand($uri, $verb);
-		$this->addControllerMap($app);
-	
-		$cmdString = $uri . '|' . $verb;
-		$previous = $request->getLastCommandRun();
+  public function getLogin(PFRequest $request) {
+    return $this->getResource($request, 'Login');
+  }
 
-		// printr('resource: ' . $resource);
-		// printr('pf.uri: ' . $request->get('pf.uri'));
-		// printr('uri: ' . $uri);
-		// printr('verb: ' . $verb);
-		// printr('app: ' . $app);
-		// printr('cmd: ' . $cmd);	
+  public function getPermissions(PFRequest $request) {
+    return $this->getResource($request, 'Permissions');
+  }
 
-		if (is_object($previous)) {
-			$status = $previous->getStatus();
-		}
+  public function getTheme(PFRequest $request) {
+    return $this->getResource($request, 'Theme');
+  }
 
-		if (!isset($status)) {
-			$status = 0;
-		}
+  private function getResource(PFRequest $request, $resource) {
 
-		$acquire = 'get' . $resource; 
-		// printr('acquire: ' . $acquire);
-		// printr($cmdString);
-		// printr($request);
-		// printr($this->controllerMap);
+    $uri = PFRequestHelper::getURIPattern($request->get('pf.uri'));
+    $verb = PFRequestHelper::getHTTPVerbForURIPattern($request->get('pf.uri'));
+    $app = PFRequestHelper::getURIApplication($uri, $verb);
+    $cmd = PFRequestHelper::getURICommand($uri, $verb);
+    $this->addControllerMap($app);
 
-		$res = $this->controllerMap[$app]->$acquire($cmdString, $status);
-		
-		if (!$res) {
-			$res = $this->controllerMap[$app]->$acquire($cmdString, 0);
-		}
-		if (!$res) {
-			$res = $this->controllerMap[$app]->$acquire(PF_DEFAULT_URI . '|get', $status);
-		}
-		if (!$res) {
-			$res = $this->controllerMap[$app]->$acquire(PF_DEFAULT_URI . '|get', 0);
-		}
+    $uriArray = explode('?', $uri);
+    $uri = $uriArray[0];
 
-		if ($this->debug) {	
-			printr('appController::getResource:  ' . $acquire . '(' . $cmdString . ', ' . $status . ') -> ' . $res);	
-		}
+    $cmdString = $uri . '|' . $verb;
+    $previous = $request->getLastCommandRun();
 
-		return $res;
-	}
+    // printr('resource: ' . $resource);
+    // printr('pf.uri: ' . $request->get('pf.uri'));
+    // printr('uri: ' . $uri);
+    // printr('verb: ' . $verb);
+    // printr('app: ' . $app);
+    // printr('cmd: ' . $cmd);
 
-	public function getCommand(PFRequest $request) {
+    if (is_object($previous)) {
+      $status = $previous->getStatus();
+    }
 
-		$previous = $request->getLastCommandRun();
+    if (!isset($status)) {
+      $status = 0;
+    }
 
-		$app = PFRequestHelper::getCurrentURIApplication();
-		$cmd = PFRequestHelper::getCurrentURICommand();
-		$this->addControllerMap($app);
+    $acquire = 'get' . $resource;
+    
+    // printr('acquire: ' . $acquire);
+    // printr($cmdString);
+    // printr($request);
+    // printr($this->controllerMap[$app]);
 
-		if (!$previous) {
-			$commandType = 'Running';			
-			$uri = PFRequestHelper::getCurrentURIPattern();
-			$verb = PFRequestHelper::getHTTPVerb();
+    $res = $this->controllerMap[$app]->$acquire($cmdString, $status);
 
-		} else {
-			$commandType = 'Forwarded to';
-			$uri = $this->getForward($request);
-			$verb = PFRequestHelper::getHTTPVerbForURIPattern($uri);
-		
-			if (!$uri) {
-				return NULL;
-			}
-		}
-		
-		$request->set('pf.uri', $uri . '|' . $verb);
+    if (!$res) {
+      $res = $this->controllerMap[$app]->$acquire($cmdString, 0);
+    }
+    if (!$res) {
+      $res = $this->controllerMap[$app]->$acquire(PF_DEFAULT_URI . '|get', $status);
+    }
+    if (!$res) {
+      $res = $this->controllerMap[$app]->$acquire(PF_DEFAULT_URI . '|get', 0);
+    }
 
-		if ($this->debug) {
-			$cmd = PFRequestHelper::getURICommand($uri, $verb);
-			printr('-- ' . $commandType . ' command ' . $uri . '|' . $verb);
-		}
+    if ($this->debug) {
+      printr('appController::getResource:  ' . $acquire . '(' . $cmdString . ', ' . $status . ') -> ' . $res);
+    }
 
-		$cmdObject = $this->resolveCommand($uri, $verb);
+    return $res;
+  }
 
-		if (!$cmdObject) {
-			
-			$cmdObject = $this->resolveCommand($uri, $verb);
-			if (!$cmdObject) {
-				if ($this->debug) {
-					printr('-- ' . $commandType . ' command ' . 'content' . '.' . 'notfound');
-				}
+  public function getCommand(PFRequest $request) {
 
-				$cmdObject = $this->resolveCommand('/content/notfound', 'get');
-				$request->set('pf.uri', '/content/notfound|get');
-			}
-		}
+    $previous = $request->getLastCommandRun();
 
-		$cmdClass = get_class($cmdObject);
-		@$this->invoked[$cmdClass]++;
+    $app = PFRequestHelper::getCurrentURIApplication();
+    $cmd = PFRequestHelper::getCurrentURICommand();
+    $this->addControllerMap($app);
 
-		if ($this->invoked[$cmdClass] > 1) {
-			PFErrorStack::clearErrorStack();
-		}
+    if (!$previous) {
+      $commandType = 'Running';
+      $uri = PFRequestHelper::getCurrentURIPattern();
+      $verb = PFRequestHelper::getHTTPVerb();
 
-		if ($this->invoked[$cmdClass] > 2) {
-			throw new PFException('api', array('CIRCULAR_COMMAND_FORWARDING', $cmdClass), E_USER_ERROR);
-		}
+    } else {
+      $commandType = 'Forwarded to';
+      $uri = $this->getForward($request);
+      $verb = PFRequestHelper::getHTTPVerbForURIPattern($uri);
 
-		return $cmdObject;
-	}
+      if (!$uri) {
+        return NULL;
+      }
+    }
 
-	protected function resolveCommand($uri, $verb) {
-		
-		if ($uri == '') {
-			$uri = PF_DEFAULT_URI;
-		}
-		
-		$app = PFRequestHelper::getURIApplication($uri, $verb);
-		$cmd = PFRequestHelper::getURICommand($uri, $verb);
-	
-		$filepath = PF_BASE . '/modules/' . $app . '/cmd/' . $cmd . '.class.php';
-		$classname = 'PF' . ucfirst($cmd) . 'Command';
+    $request->set('pf.uri', $uri . '|' . $verb);
 
-		if (file_exists($filepath)) {
+    if ($this->debug) {
+      $cmd = PFRequestHelper::getURICommand($uri, $verb);
+      printr('-- ' . $commandType . ' command ' . $uri . '|' . $verb);
+    }
 
-			require_once $filepath;
+    $cmdObject = $this->resolveCommand($uri, $verb);
 
-			if (class_exists($classname)) {
+    if (!$cmdObject) {
 
-				$cmdClass = new reflectionClass($classname);
-				if ($cmdClass->isSubClassOf(self::$baseCommand)) {
-					return $cmdClass->newInstance();
-				}
-			}
-		}
+      $cmdObject = $this->resolveCommand($uri, $verb);
+      if (!$cmdObject) {
+        if ($this->debug) {
+          printr('-- ' . $commandType . ' command ' . 'content' . '.' . 'notfound');
+        }
 
-		return NULL;
-	}
+        $cmdObject = $this->resolveCommand('/content/notfound', 'get');
+        $request->set('pf.uri', '/content/notfound|get');
+      }
+    }
+
+    $cmdClass = get_class($cmdObject);
+    @$this->invoked[$cmdClass]++;
+
+    if ($this->invoked[$cmdClass] > 1) {
+      PFErrorStack::clearErrorStack();
+    }
+
+    if ($this->invoked[$cmdClass] > 2) {
+      throw new PFException('api', array('CIRCULAR_COMMAND_FORWARDING', $cmdClass), E_USER_ERROR);
+    }
+
+    return $cmdObject;
+  }
+
+  protected function resolveCommand($uri, $verb) {
+
+    if ($uri == '') {
+      $uri = PF_DEFAULT_URI;
+    }
+
+    $app = PFRequestHelper::getURIApplication($uri, $verb);
+    $cmd = PFRequestHelper::getURICommand($uri, $verb);
+
+    $filepath = PF_BASE . '/modules/' . $app . '/cmd/' . $cmd . '.class.php';
+    $classname = 'PF' . ucfirst($cmd) . 'Command';
+
+    if (file_exists($filepath)) {
+
+      require_once $filepath;
+
+      if (class_exists($classname)) {
+
+        $cmdClass = new reflectionClass($classname);
+        if ($cmdClass->isSubClassOf(self::$baseCommand)) {
+          return $cmdClass->newInstance();
+        }
+      }
+    }
+
+    return NULL;
+  }
 }
 
 ?>

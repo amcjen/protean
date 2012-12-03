@@ -2,7 +2,7 @@
 /**************************************************************************\
 * Protean Framework                                                        *
 * https://github.com/erictj/protean                                        *
-* Copyright (c) 2006-2011, Loopshot Inc.  All rights reserved.             *
+* Copyright (c) 2006-2012, Eric Jennings.  All rights reserved.            *
 * ------------------------------------------------------------------------ *
 *  This program is free software; you can redistribute it and/or modify it *
 *  under the terms of the BSD License as described in license.txt.         *
@@ -35,14 +35,14 @@ class PFImageFile {
 
 			switch ($type) {
 				case IMAGETYPE_JPEG:
-				return basename(self::stripFileExtension($filePath) . '.jpg');
-				break;
+					return basename(self::stripFileExtension($filePath) . '.jpg');
+					break;
 				case IMAGETYPE_GIF:
-				return basename(self::stripFileExtension($filePath) . '.gif');
-				break;
+					return basename(self::stripFileExtension($filePath) . '.gif');
+					break;
 				case IMAGETYPE_PNG:
-				return basename(self::stripFileExtension($filePath) . '.png');
-				break;
+					return basename(self::stripFileExtension($filePath) . '.png');
+					break;
 			}
 		}
 
@@ -66,17 +66,17 @@ class PFImageFile {
 		$type = self::getCommandLineImageMimetype($name);
 		switch ($type) {
 			case IMAGETYPE_JPEG:
-			$sourceImage = imagecreatefromjpeg($name);
-			break;
+				$sourceImage = imagecreatefromjpeg($name);
+				break;
 			case IMAGETYPE_GIF:
-			$sourceImage = imagecreatefromgif($name);
-			break;
+				$sourceImage = imagecreatefromgif($name);
+				break;
 			case IMAGETYPE_PNG:
-			$sourceImage = imagecreatefrompng($name);
-			break;
+				$sourceImage = imagecreatefrompng($name);
+				break;
 			default:
-			throw new PFException('api', 'IMAGE_TYPE_MUST_BE_JPG_GIF_PNG', E_USER_WARNING);
-			break;
+				throw new PFException('api', 'IMAGE_TYPE_MUST_BE_JPG_GIF_PNG', E_USER_WARNING);
+				break;
 		}
 
 		if (!isset($sourceImage)) {
@@ -106,17 +106,17 @@ class PFImageFile {
 
 		switch ($type) {
 			case IMAGETYPE_JPEG:
-			imagejpeg($destinationImage, $filename, 95);
-			break;
+				imagejpeg($destinationImage, $filename, 95);
+				break;
 			case IMAGETYPE_GIF:
-			imagegif($destinationImage, $filename);
-			break;
+				imagegif($destinationImage, $filename);
+				break;
 			case IMAGETYPE_PNG:
-			imagepng($destinationImage, $filename);
-			break;
+				imagepng($destinationImage, $filename);
+				break;
 			default:
-			throw new PFException('api', 'IMAGE_TYPE_MUST_BE_JPG_GIF_PNG', E_USER_WARNING);
-			break;
+				throw new PFException('api', 'IMAGE_TYPE_MUST_BE_JPG_GIF_PNG', E_USER_WARNING);
+				break;
 		}
 
 		imagedestroy($destinationImage);

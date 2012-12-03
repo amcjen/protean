@@ -2,14 +2,13 @@
 /**************************************************************************\
 * Protean Framework                                                        *
 * https://github.com/erictj/protean                                        *
-* Copyright (c) 2006-2011, Loopshot Inc.  All rights reserved.             *
+* Copyright (c) 2006-2012, Eric Jennings.  All rights reserved.            *
 * ------------------------------------------------------------------------ *
 *  This program is free software; you can redistribute it and/or modify it *
 *  under the terms of the BSD License as described in license.txt.         *
 \**************************************************************************/
 
 require_once 'config.php';
-require_once 'PHPUnit/Framework.php';
 require_once 'modules/api/lib/requesthelper.class.php';
 
 class RequestHelperTest extends PHPUnit_Framework_TestCase {
@@ -59,6 +58,10 @@ class RequestHelperTest extends PHPUnit_Framework_TestCase {
 		$uri = '/content/staticpage';
 		$verb = 'get';
 		$this->assertEquals('content', PFRequestHelper::getCurrentURIApplication($uri, $verb));
+		
+		$uri = '/content/default?somevar=withslashses/in/it';
+		$verb = 'get';
+		$this->assertEquals('content', PFRequestHelper::getCurrentURIApplication($uri, $verb));
 	}
 	
 	public function testGetCurrentURICommand() {
@@ -72,6 +75,14 @@ class RequestHelperTest extends PHPUnit_Framework_TestCase {
 		$this->assertEquals('default', PFRequestHelper::getCurrentURICommand());
 		
 		$_SERVER['REQUEST_URI'] = '/content/staticpage';
+		$_SERVER['REQUEST_METHOD'] = 'GET';
+		$this->assertEquals('static', PFRequestHelper::getCurrentURICommand());
+		
+		$_SERVER['REQUEST_URI'] = '/content/default?somevar=withslashses/in/it';
+		$_SERVER['REQUEST_METHOD'] = 'GET';
+		$this->assertEquals('default', PFRequestHelper::getCurrentURICommand());
+		
+		$_SERVER['REQUEST_URI'] = '/content/staticpage?shortcode=GM7KW&amount=9.69&origin=https%3A//some.domain.com';
 		$_SERVER['REQUEST_METHOD'] = 'GET';
 		$this->assertEquals('static', PFRequestHelper::getCurrentURICommand());
 	}
@@ -89,6 +100,10 @@ class RequestHelperTest extends PHPUnit_Framework_TestCase {
 		$uri = '/content/staticpage';
 		$verb = 'get';
 		$this->assertEquals('static', PFRequestHelper::getURICommand($uri, $verb));
+		
+		$uri = '/content/staticpage?shortcode=GM7KW&amount=9.69&origin=https%3A//some.domain.com';
+		$verb = 'get';
+		$this->assertEquals('static', PFRequestHelper::getURICommand($uri, $verb));
 	}
 
 	public function testGetCurrentURIPattern() {
@@ -101,6 +116,9 @@ class RequestHelperTest extends PHPUnit_Framework_TestCase {
 		
 		$_SERVER['REQUEST_URI'] = '/content/default/15432/edit';
 		$this->assertEquals('/content/default/:integer:/edit', PFRequestHelper::getCurrentURIPattern());
+		
+	  $_SERVER['REQUEST_URI'] = '/content/staticpage?shortcode=GM7KW&amount=9.69&origin=https%3A//some.domain.com';
+		$this->assertEquals('/content/staticpage', PFRequestHelper::getCurrentURIPattern());
 	}
 
 	public function testGetURIPattern() {

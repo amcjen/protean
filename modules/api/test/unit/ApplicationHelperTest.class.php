@@ -2,14 +2,13 @@
 /**************************************************************************\
 * Protean Framework                                                        *
 * https://github.com/erictj/protean                                        *
-* Copyright (c) 2006-2011, Loopshot Inc.  All rights reserved.             *
+* Copyright (c) 2006-2012, Eric Jennings.  All rights reserved.            *
 * ------------------------------------------------------------------------ *
 *  This program is free software; you can redistribute it and/or modify it *
 *  under the terms of the BSD License as described in license.txt.         *
 \**************************************************************************/
 
 require_once 'config.php';
-require_once 'PHPUnit/Framework.php';
 require_once 'modules/api/lib/applicationhelper.class.php';
 require_once 'modules/api/lib/registry.class.php';
 
@@ -29,7 +28,7 @@ class ApplicationHelperTest extends PHPUnit_Framework_TestCase {
 	public function testControllerMapCreation() {
 	
 		$map = PFRegistry::getInstance()->getControllerMap();
- 
+		
 		$mapClass = new ReflectionClass('PFControllerMap');
 		$this->assertTrue($mapClass->isInstance($map), 'Controller map not instantiated correctly.');
 	}

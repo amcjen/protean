@@ -7,7 +7,7 @@
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
     <meta name="KEYWORDS" content="Home" />
     <meta name="robots" content="index,follow" />
-    <link rel="shortcut icon" href="/favicon.ico" />
+    <link rel="shortcut icon" href="/favicon.png" />
 
     <style type="text/css" media="screen,projection">
 

@@ -8,16 +8,15 @@
 		<style type="text/css" title="currentStyle">
 			@import "../../media/css/demo_page.css";
 			@import "../../media/css/demo_table.css";
-			@import "media/css/TableTools.css";
-			table.FixedHeader_Cloned thead th { background-color: white; }
+			.FixedHeader_Cloned th { background-color: white; }
 		</style>
 		<script type="text/javascript" charset="utf-8" src="../../media/js/jquery.js"></script>
 		<script type="text/javascript" charset="utf-8" src="../../media/js/jquery.dataTables.js"></script>
-		<script type="text/javascript" charset="utf-8" src="FixedHeader.js"></script>
+		<script type="text/javascript" charset="utf-8" src="js/FixedHeader.js"></script>
 		<script type="text/javascript" charset="utf-8">
 			$(document).ready( function () {
 				var oTable = $('#example').dataTable();
-				$.fn.dataTableExt.FixedHeader( oTable );
+				new FixedHeader( oTable );
 			} );
 		</script>
 	</head>
@@ -465,8 +464,17 @@
 			<h1>Initialisation code</h1>
 			<pre>$(document).ready( function () {
 	var oTable = $('#example').dataTable();
-	$.fn.dataTableExt.FixedHeader( oTable );
+	new FixedHeader( oTable );
 } );</pre>
+
+			<h1>Examples</h1>
+			<ul>
+				<li><a href="index.html">Basic demo with just the HeaderFixed</a></li>
+				<li><a href="html_table.html">FixedHeader without requiring DataTables</a></li>
+				<li><a href="two_tables.html">Two tables with FixedHeaders on a single page</a></li>
+				<li><a href="top_bottom_left_right.html">A spreadsheet style layout with header and footer, left and right columns all fixed.</a></li>
+				<li><a href="zIndexes.html">Change the display order of the fixed elements (zIndex)</a></li>
+			</ul>
 		
 			<p>Empty paragraphs to force scrolling!...</p>
 			<p style="height:500px;">&nbsp;</p>
