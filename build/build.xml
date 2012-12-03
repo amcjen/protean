@@ -433,7 +433,6 @@
     </phpunit>
   </target>
 
-
   <!-- MODULES SPECIFIC TESTS TARGET -->
   <target name="test-api">
     <echo msg="... running api tests" />
@@ -483,13 +482,14 @@
       <formatter type="plain" usefile="false"/>
     </phpunit>
   </target>
-  
-  <target name="test-shop-workers">
-    <echo msg="... running shop workers tests" />
+
+  <target name="test-content">
+    <echo msg="... running content tests" />
     <phpunit haltonerror="true" haltonfailure="true" printsummary="true">
       <batchtest>
         <fileset dir=".">
-          <include name="modules/shop/test/workers/*Test.class.php"/>
+          <include name="modules/content/test/unit/*Test.class.php"/>
+          <include name="modules/content/test/functional/*Test.class.php"/>
         </fileset>
       </batchtest>
       <formatter type="plain" usefile="false"/>
@@ -501,8 +501,6 @@
     <phpunit haltonerror="true" haltonfailure="true" printsummary="false">
       <batchtest>
         <fileset dir=".">
-          <!-- <include name="modules/shop/test/integration/ProductHelperTest.class.php"/>
-                   <include name="modules/shop/test/integration/InventoryHelperTest.class.php"/> -->
           <include name="modules/shop/test/API/CustomerAddressTest.class.php"/>
         </fileset>
       </batchtest>

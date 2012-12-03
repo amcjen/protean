@@ -112,3 +112,19 @@ PHPUnit 3.7.8
     pear channel-discover components.ez.no
     pear channel-discover pear.symfony-project.com
     sudo pear install -a phpunit/PHPUnit-3.7.8
+	
+POST-INSTALL:
+=============
+Some basic final post-install things to do to get your "hello world" page showing:
+
+- make a new MySQL database for this Protean install.  Here's how I do it
+	- mysqladmin -u root -p create protean
+	- mysql -u root -p
+	- mysql> grant all on protean.* to protean@localhost identified by 'protean';
+- cd into the build/ directory, copy build-dist.properties to build.properties
+- Edit this file, changing the various paths and database settings to suit your install
+- While still in the build/ directory, run the following phing commands
+	- phing config
+ 	- phing propel-insert
+- Now in the build/ directory, you should find a file called "protean.conf". This is the Apache virtual host snippet you should add to your Apache config to get it up and running.
+- Restart Apache, and visit your virtualhost in your browser, you should see that Protean is up and running!
