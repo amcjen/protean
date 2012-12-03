@@ -52,7 +52,7 @@ class PFProfiler {
       include_once PF_BASE . '/modules/thirdparty/xhprof/xhprof_lib/utils/xhprof_runs.php';
       $xhprofRuns = new XHProfRuns_Default(PF_PROFILER_RUNS_PATH);
       $runId = $xhprofRuns->save_run($data, 'xhprof');
-      printr('<a target="_blank" href="' . PF_URL . '/modules/thirdparty/xhprof/xhprof_html/index.php?run=' . $runId . '">Profiler</a>');
+      printr('<a target="_blank" href="' . PF_URL . '/modules/thirdparty/xhprof/xhprof_html/index.php?run=' . $runId . '">Profiler Output</a>');
     }
   }
 }

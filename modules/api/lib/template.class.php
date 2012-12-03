@@ -10,30 +10,6 @@
 
 require_once 'modules/thirdparty/smarty/Smarty.class.php';
 
-/*
-* smarty_prefilter_i18n()
-* This function takes the language file, and rips it into the template
-*/
-function smarty_prefilter_i18n($tpl_source, &$smarty) {
-	try {			
-		if (!is_object(PFLanguage::getInstance())) {
-			throw new PFException('', 'Error loading template\'s multilanguage support', E_USER_ERROR);
-		}
-	} catch (PFException $e) {
-		$e->handleException();
-	}
-
-	return preg_replace_callback('/##(.+?)##/', '_compile_lang', $tpl_source);
-}
-
-function _compile_lang($key) {
-	try {
-		return PFLanguage::getInstance()->getTranslation(PFRegistry::getInstance()->get('APPNAME'), $key[1]);
-	} catch (PFException $e) {
-		$e->handleException();
-	} 
-}
-
 /**
  * Protean register resource functions, to support application-prepended file names
  *
@@ -85,7 +61,7 @@ class PFTemplate extends Smarty {
 	protected $controllerMap;
 	protected $debug;
 
-	public function __construct($appName, $languageTable='global') {
+	public function __construct($appName) {
 		parent::__construct();
 		$this->error_reporting = E_ALL & ~E_NOTICE;
 
@@ -130,23 +106,13 @@ class PFTemplate extends Smarty {
       $this->loadCacheResource('apc'); 
       $this->setCaching(true);
     }
-		/*
-		Change this line if translation of dynamic data is needed ;-)
-		$this->register_prefilter("smarty_prefilter_i18n");
-		to this
-		$this->register_outputfilter("smarty_prefilter_i18n");
-		this change makes it possible even to translate dynamic data e.g. options because translation is done after compilation of template [xaos, 20050206]
-		*/
-		$this->registerFilter('pre', 'smarty_prefilter_i18n');
-
 		$this->registerResource('protean', array('protean_get_template',
 			'protean_get_timestamp',
 			'protean_get_secure',
 			'protean_get_trusted'));
 
-		$this->compile_id = PFLanguage::getInstance()->getCurrentLanguage();
+		$this->compile_id = 'protean';
 
-		PFLanguage::getInstance()->loadTranslationTable($this->appName, $languageTable);
 		if (PF_TEMPLATE_FORCE_RECOMPILE == true) {
 			$this->force_compile = true;
 		}
@@ -196,7 +162,6 @@ class PFTemplate extends Smarty {
 	}
 
 	public function fetch($appName, $tplName, $display=false, $templateDir='') {
-		$this->setLanguageIDs($cache_id, $compile_id);
 		$curTemplateDir = $this->template_dir;
 
 		if (PFRegistry::getInstance()->isValueSet('pf_theme') == false) {
@@ -229,7 +194,7 @@ class PFTemplate extends Smarty {
 	}
 
 	public function smartyFetch($tplName, $display=false) {	
-		$this->setLanguageIDs($cache_id, $compile_id);
+		$this->setCacheCompileIds($cache_id, $compile_id);
 
 		if (parent::templateExists($tplName)) {
 			$ret = parent::fetch($tplName, $cache_id, $compile_id, null, $display);
@@ -245,7 +210,7 @@ class PFTemplate extends Smarty {
 		}
 
 		if (!isset($compile_id)) {
-			$this->setLanguageIDs($cache_id, $compile_id);
+			$this->setCacheCompileIds($cache_id, $compile_id);
 		}
 
 		return parent::is_cached($tpl_file, $cache_id, $compile_id);
@@ -291,35 +256,8 @@ class PFTemplate extends Smarty {
 		PFTemplateHelper::getInstance()->assignDefaults($this);
 	}
 
-	public function setLanguageIDs(&$cache_id, &$compile_id) {
-		$cache_id = $compile_id = $this->appName . '-' . PFLanguage::getInstance($this->appName)->getCurrentLanguage();	
-	}
-
-	protected function languageFilesAreModified($compilePath, &$langPath) {
-
-		$tableDirectory = PFLanguage::getInstance()->getLanguageTableFileDirectory($this->appName);
-
-		if (@is_dir($tableDirectory)) {
-			$tableHandle = opendir($tableDirectory);
-			while (false !== ($tableFilename = readdir($tableHandle))) {		
-				$parts = pathinfo($tableFilename);
-
-				if($parts['extension'] == 'lng' && filemtime($tableDirectory . $tableFilename) > filemtime($compilePath)) {			
-					if ($this->debug) {
-						$dbg = 'Table file: ' . $tableDirectory . $tableFilename . '<br />';
-						$dbg .= 'Compile file: ' . $compilePath . '<br />';
-						$dbg .= 'Table File mtime: ' . filemtime($tableDirectory . $tableFilename) . '<br />';
-						$dbg .= 'Compile File mtime: ' . filemtime($compilePath) . '<br />';
-						PFDebugStack::append($dbg, __FILE__, __LINE__);
-					}
-
-					$langPath = $tableDirectory . $tableFilename;
-					return true;
-				} 
-			}
-		}
-
-		return false;
+	public function setCacheCompileIds(&$cache_id, &$compile_id) {
+		$cache_id = $compile_id = $this->appName;	
 	}
 
 	public function getTemplateDirs() {

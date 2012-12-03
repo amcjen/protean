@@ -250,7 +250,7 @@ class PFSession {
 		return isset($_SESSION['form-' . $formName]) && trim($_SESSION['form-' . $formName]) != '';
 	}
 
-	public function getURL($text, $ssl='', $lang='') {
+	public function getURL($text, $ssl='') {
 		if ($ssl === true || isset($_SERVER['HTTPS'])) {
 			$fullpath = PF_URL_SECURE;
 		} else {
@@ -267,14 +267,14 @@ class PFSession {
 		return $fullpath . '/' . $text;
 	}
 
-	public function getSelfURL($ssl=false, $lang='') {
+	public function getSelfURL($ssl=false) {
 		$text = PFRequestHelper::getCurrentURIApplication() . '/' . PFRequestHelper::getCurrentURICommand();
-		return $this->getURL($text, $ssl, $lang);
+		return $this->getURL($text, $ssl);
 	}
 
-	public function getSelfURLWithVars($ssl=false, $lang='') {
+	public function getSelfURLWithVars($ssl=false) {
 		$text = PFRequestHelper::getCurrentURIApplication() . '/' . PFRequestHelper::getCurrentURICommand() . '?' . $_SERVER["QUERY_STRING"];
-		return $this->getURL($text, $ssl, $lang);
+		return $this->getURL($text, $ssl);
 	}
 
 	public function getApplicationPath($appName, $ssl=false) {

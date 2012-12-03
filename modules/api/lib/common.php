@@ -90,7 +90,6 @@ require_once 'modules' . $ds . 'registration' . $ds . 'lib' . $ds . 'userhelper.
 //ini_set('html_errors', false);
 
 // require all singletons here
-require_once 'modules' . $ds . 'api' . $ds . 'lib' . $ds . 'language.class.php';
 require_once 'modules' . $ds . 'api' . $ds . 'lib' . $ds . 'session.class.php';
 require_once 'modules' . $ds . 'api' . $ds . 'lib' . $ds . 'registry.class.php';
 require_once 'modules' . $ds . 'api' . $ds . 'lib' . $ds . 'controller.class.php';
@@ -184,26 +183,12 @@ if (PF_CACHE_ENABLED) {
 }
 
 try {
-	PFLanguage::getInstance();
 	$request = PFFactory::getInstance()->createObject('api.request');
-
-	$lang = $request->get('lang');
 	$app = $request->get('app');
-
-	if (isset($lang)) {
-		PFLanguage::getInstance()->setCurrentLocale($lang);
-	}
 
 	if (!isset($app)) {
 		$app = 'content';
 	}
-} catch (PFException $e) {
-	$e->handleException();
-}
-
-try {
-	PFLanguage::getInstance()->loadTranslationTable('api', 'global');
-	PFLanguage::getInstance()->loadTranslationTable($app, 'global');
 } catch (PFException $e) {
 	$e->handleException();
 }

@@ -94,99 +94,51 @@ class PFException extends Exception {
 	}
 
 	public function setMessage($app, $message) {
-		if ($app == '') {
-			if (is_array($message)) {
-				$this->message = sprintf($message[0], $message[1]);
-			} else {
-				$this->message = $message;
-			}
+		if (is_array($message)) {
+			$this->message = sprintf($message[0], $message[1]);
 		} else {
-			if (is_array($message)) {
-				$this->message = sprintf(PFLanguage::getInstance()->getTranslation($app, $message[0]), $message[1]);
-			} else {
-				$this->message = PFLanguage::getInstance()->getTranslation($app, $message);
-			}
+			$this->message = $message;
 		}
 	}
 
 	protected function setErrorTypes($app) {
-		if ($app == '') {
-			$this->errortype = array (
-				E_PHP5_ERROR 				=> 'Error',
-				E_UNKNOWN_ERROR			=> 'Error',
-				E_INSUFFICIENT_DATA	=> 'Warning',
-				E_ERROR           	=> 'Error',
-				E_WARNING         	=> 'Warning',
-				E_PARSE           	=> 'Error',
-				E_NOTICE          	=> 'Warning',
-				E_CORE_ERROR      	=> 'Error',
-				E_CORE_WARNING    	=> 'Warning',
-				E_COMPILE_ERROR   	=> 'Error',
-				E_COMPILE_WARNING 	=> 'Warning',
-				E_USER_FATAL	     	=> 'Fatal',
-				E_USER_ERROR      	=> 'Error',
-				E_USER_WARNING    	=> 'Warning',
-				E_USER_NOTICE     	=> 'Notice',
-				E_STRICT          	=> 'Notice'
-				);
+		$this->errortype = array (
+			E_PHP5_ERROR 				=> 'Error',
+			E_UNKNOWN_ERROR			=> 'Error',
+			E_INSUFFICIENT_DATA	=> 'Warning',
+			E_ERROR           	=> 'Error',
+			E_WARNING         	=> 'Warning',
+			E_PARSE           	=> 'Error',
+			E_NOTICE          	=> 'Warning',
+			E_CORE_ERROR      	=> 'Error',
+			E_CORE_WARNING    	=> 'Warning',
+			E_COMPILE_ERROR   	=> 'Error',
+			E_COMPILE_WARNING 	=> 'Warning',
+			E_USER_FATAL	     	=> 'Fatal',
+			E_USER_ERROR      	=> 'Error',
+			E_USER_WARNING    	=> 'Warning',
+			E_USER_NOTICE     	=> 'Notice',
+			E_STRICT          	=> 'Notice'
+			);
 
-			$this->verbose_errortype = array (
-				E_PHP5_ERROR	 			=> 'Error',
-				E_UNKNOWN_ERROR			=> 'Unknown Error',
-				E_INSUFFICIENT_DATA	=> 'Warning',
-				E_ERROR           	=> 'Error',
-				E_WARNING         	=> 'Warning',
-				E_PARSE           	=> 'Parsing Error',
-				E_NOTICE          	=> 'Notice',
-				E_CORE_ERROR      	=> 'Core Error',
-				E_CORE_WARNING    	=> 'Core Warning',
-				E_COMPILE_ERROR   	=> 'Compile Error',
-				E_COMPILE_WARNING 	=> 'Compile Warning',
-				E_USER_FATAL	     	=> 'User Fatal',
-				E_USER_ERROR      	=> 'User Error',
-				E_USER_WARNING    	=> 'User Warning',
-				E_USER_NOTICE     	=> 'User Notice',
-				E_STRICT          	=> 'Runtime Notice'
-				);
-		} else {
-			$this->errortype = array (
-				E_PHP5_ERROR 				=> PFLanguage::getInstance()->getTranslation('api','ERROR'),
-				E_UNKNOWN_ERROR 		=> PFLanguage::getInstance()->getTranslation('api','ERROR'),
-				E_INSUFFICIENT_DATA	=> PFLanguage::getInstance()->getTranslation('api','INSUFFICIENT_DATA'),
-				E_ERROR           	=> PFLanguage::getInstance()->getTranslation('api','ERROR'),
-				E_WARNING         	=> PFLanguage::getInstance()->getTranslation('api','WARNING'),
-				E_PARSE           	=> PFLanguage::getInstance()->getTranslation('api','ERROR'),
-				E_NOTICE          	=> PFLanguage::getInstance()->getTranslation('api','WARNING'),
-				E_CORE_ERROR      	=> PFLanguage::getInstance()->getTranslation('api','ERROR'),
-				E_CORE_WARNING    	=> PFLanguage::getInstance()->getTranslation('api','WARNING'),
-				E_COMPILE_ERROR   	=> PFLanguage::getInstance()->getTranslation('api','ERROR'),
-				E_COMPILE_WARNING 	=> PFLanguage::getInstance()->getTranslation('api','WARNING'),
-				E_USER_FATAL      	=> PFLanguage::getInstance()->getTranslation('api','FATAL'),
-				E_USER_ERROR      	=> PFLanguage::getInstance()->getTranslation('api','ERROR'),
-				E_USER_WARNING    	=> PFLanguage::getInstance()->getTranslation('api','WARNING'),
-				E_USER_NOTICE     	=> PFLanguage::getInstance()->getTranslation('api','NOTICE'),
-				E_STRICT          	=> PFLanguage::getInstance()->getTranslation('api','NOTICE')
-				);
-
-			$this->verbose_errortype = array (
-				E_PHP5_ERROR	 			=> PFLanguage::getInstance()->getTranslation('api','ERROR'),
-				E_UNKNOWN_ERROR 		=> PFLanguage::getInstance()->getTranslation('api','UNKNOWN_ERROR'),
-				E_INSUFFICIENT_DATA	=> PFLanguage::getInstance()->getTranslation('api','INSUFFICIENT_DATA'),
-				E_ERROR           	=> PFLanguage::getInstance()->getTranslation('api','ERROR'),
-				E_WARNING         	=> PFLanguage::getInstance()->getTranslation('api','WARNING'),
-				E_PARSE           	=> PFLanguage::getInstance()->getTranslation('api','PARSING_ERROR'),
-				E_NOTICE          	=> PFLanguage::getInstance()->getTranslation('api','NOTICE'),
-				E_CORE_ERROR      	=> PFLanguage::getInstance()->getTranslation('api','CORE_ERROR'),
-				E_CORE_WARNING    	=> PFLanguage::getInstance()->getTranslation('api','CORE_WARNING'),
-				E_COMPILE_ERROR   	=> PFLanguage::getInstance()->getTranslation('api','COMPILE_ERROR'),
-				E_COMPILE_WARNING 	=> PFLanguage::getInstance()->getTranslation('api','COMPILE_WARNING'),
-				E_USER_FATAL      	=> PFLanguage::getInstance()->getTranslation('api','USER_FATAL'),
-				E_USER_ERROR      	=> PFLanguage::getInstance()->getTranslation('api','USER_ERROR'),
-				E_USER_WARNING    	=> PFLanguage::getInstance()->getTranslation('api','USER_WARNING'),
-				E_USER_NOTICE     	=> PFLanguage::getInstance()->getTranslation('api','USER_NOTICE'),
-				E_STRICT          	=> PFLanguage::getInstance()->getTranslation('api','RUNTIME_NOTICE')
-				);
-		}
+		$this->verbose_errortype = array (
+			E_PHP5_ERROR	 			=> 'Error',
+			E_UNKNOWN_ERROR			=> 'Unknown Error',
+			E_INSUFFICIENT_DATA	=> 'Warning',
+			E_ERROR           	=> 'Error',
+			E_WARNING         	=> 'Warning',
+			E_PARSE           	=> 'Parsing Error',
+			E_NOTICE          	=> 'Notice',
+			E_CORE_ERROR      	=> 'Core Error',
+			E_CORE_WARNING    	=> 'Core Warning',
+			E_COMPILE_ERROR   	=> 'Compile Error',
+			E_COMPILE_WARNING 	=> 'Compile Warning',
+			E_USER_FATAL	     	=> 'User Fatal',
+			E_USER_ERROR      	=> 'User Error',
+			E_USER_WARNING    	=> 'User Warning',
+			E_USER_NOTICE     	=> 'User Notice',
+			E_STRICT          	=> 'Runtime Notice'
+			);
 	}
 
 	public function errorHandlerOverride($errno, $errmsg, $filename, $linenum) {	
