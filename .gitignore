@@ -1,13 +1,17 @@
 *.un~
 build/test/*.xml
 build/build.properties
+build/coverage
+build/extended
 config.php
 modules/db/conf/protean-conf.php
 modules/db/sql/sqldb.map
+modules/db/sql/schema.sql
 modules/list/misc/
 modules/db/lib/om
 modules/db/lib/map
 build/runtime-conf.xml
+build/buildtime-conf.xml
 build/schema-transformed.xml
 build/schema.xml
 build/tests

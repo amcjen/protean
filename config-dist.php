@@ -18,7 +18,7 @@ define('PF_TIMEZONE', 'America/Los_Angeles');
 
 
 // BUILD SETTINGS
-define('PF_VERSION','4.0');
+define('PF_VERSION','4.1');
 define('PF_ENVIRONMENT', 'development');
 
 
@@ -60,12 +60,8 @@ define('PF_MULTI_LANGUAGE_DEBUG', false);
 
 
 // TEMPLATE/FORM SETTINGS
-define('PF_TEMPLATE_FORCE_RECOMPILE', true);
+define('PF_TEMPLATE_FORCE_RECOMPILE', false);
 define('PF_FORM_FIELD_ERROR_HIGHLIGHTING', true);
-
-
-// CMS SETTINGS
-define('PF_CMS_ENABLED', false);
 
 
 // SESSION SETTINGS
@@ -83,11 +79,20 @@ define('PF_SESSION_PASSWORD_HASH_COST', 8);
 define('PF_CACHE_ENABLED', true);
 define('PF_CACHE_USER_TTL', 3600);
 define('PF_CACHE_CONTROLLER_MAP', false);
+define('PF_CACHE_TEMPLATES', false);
 
 define('PF_CACHE_MEMCACHE_SERVER_HOST_1', false);
 define('PF_CACHE_MEMCACHE_SERVER_HOST_2', false);
 define('PF_CACHE_MEMCACHE_SERVER_HOST_3', false);
 define('PF_CACHE_MEMCACHE_SERVER_HOST_4', false);
+
+define('PF_CDN_URL', '%%PHING_PROTEAN_URL%%');
+
+
+// JOB QUEUE SETTINGS
+define('PF_JOBQUEUE_HOST', '127.0.0.1');
+define('PF_JOBQUEUE_PORT', 11300);
+define('PF_JOBQUEUE_CONN_TIMEOUT', null);
 
 
 // MAILER SETTINGS
@@ -127,8 +132,7 @@ define('PF_SHOP_HANDLING_FEE', false);
 define('PF_SHOP_EMAIL_ADMINS', false);
 
 define('PF_SHOP_GATEWAY_DEBUG', true);
-define('PF_SHOP_GATEWAY_LOG', '%%PHING_PROTEAN_BASEDIR%%/logs/pf_authnet_gateway.log');
-define('PF_SHOP_CIM_LOG', '%%PHING_PROTEAN_BASEDIR%%/logs/pf_authnet_cim.log');
+define('PF_SHOP_GATEWAY_LOG', '%%PHING_PROTEAN_BASEDIR%%/logs/pf_gateway.log');
 
 define('PF_SHOP_GATEWAY_AUTHNET_TEST_REQUEST', true);
 define('PF_SHOP_GATEWAY_AUTHNET_LOGIN', 'abc');
@@ -140,6 +144,23 @@ define('PF_SHOP_GATEWAY_AUTHNET_CIM_HOST_TEST', 'apitest.authorize.net');
 define('PF_SHOP_GATEWAY_AUTHNET_CIM_PORT', '443');
 define('PF_SHOP_GATEWAY_AUTHNET_CIM_PATH', '/xml/v1/request.api');
 
+define('PF_SHOP_GATEWAY_STRIPE_TEST_REQUEST', true);
+define('PF_SHOP_GATEWAY_STRIPE_TEST_SECRET_KEY', 'D7bES9biF1eeGhBENJrnQO6tDVMrnt5o');
+define('PF_SHOP_GATEWAY_STRIPE_TEST_PUBLISH_KEY', 'pk_3GALjNFDV4KXTd4QPkLBibsHpXkar');
+define('PF_SHOP_GATEWAY_STRIPE_LIVE_SECRET_KEY', 'sTHNScUGnEXIhVcmiibWrSPYCevHlx1Y');
+define('PF_SHOP_GATEWAY_STRIPE_LIVE_PUBLISH_KEY', 'pk_sn1AJYs7zVjkWG6ubFBj2rpMFy9Ko');
+define('PF_SHOP_GATEWAY_STRIPE_SCRIPT', 'https://js.stripe.com/v1/');
+
+define('PF_SHOP_GATEWAY_PAYPAL_TEST_REQUEST', true);
+define('PF_SHOP_GATEWAY_PAYPAL_LOG', '/www/standard/www.missouriquiltco.com/logs/pf_paypal.log');
+define('PF_SHOP_GATEWAY_PAYPAL_SELLER_EMAIL', 'ericj_1354059916_biz@loopshot.com');
+
+define('PF_USPS_RATECALCULATOR_USERNAME', '493MISSO0374');
+
+define('PF_ES_HOST_1', 'localhost');
+define('PF_ES_HOST_2', false);
+define('PF_ES_HOST_3', false);
+define('PF_ES_HOST_4', false);
 
 // SITE SPECIFIC DEFINES
 

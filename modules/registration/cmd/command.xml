@@ -1,0 +1,159 @@
+<control>
+	
+	<uri name="/registration/forgot" verb="get">
+		<command>registration.forgot</command>
+		<viewheader>content.header</viewheader>
+		<viewfooter>content.footer</viewfooter>
+		<view>registration.forgot</view>
+	</uri>
+	
+	<uri name="/registration/forgot" verb="post">
+		<command>registration.forgot</command>
+		<viewheader>content.header</viewheader>
+		<viewfooter>content.footer</viewfooter>
+		<view>registration.forgot</view>
+		<view status="CMD_INSUFFICIENT_DATA">registration.forgot</view>
+		<status value="CMD_ERROR">
+			<forward>/registration/forgot</forward>
+		</status>
+		<status value="CMD_OK">
+			<forward>/registration/passwordresetsent</forward>
+		</status>
+	</uri>
+	
+	<uri name="/registration/passwordresetsent" verb="get">
+		<command>registration.static</command>
+		<viewheader>content.header</viewheader>
+		<viewfooter>content.footer</viewfooter>
+		<view>registration.passwordresetsent</view>
+	</uri>
+	
+	<uri name="/registration/resetpassword" verb="get">
+		<command>registration.resetpassword</command>
+		<viewheader>content.header</viewheader>
+		<viewfooter>content.footer</viewfooter>
+		<view>registration.resetpassword</view>
+	</uri>
+	
+	<uri name="/registration/resetpassword" verb="post">
+		<command>registration.resetpassword</command>
+		<viewheader>content.header</viewheader>
+		<viewfooter>content.footer</viewfooter>
+		<view>registration.resetpassword</view>
+		<view status="CMD_OK">registration.passwordreset.tpl</view>
+		<status value="CMD_ERROR">
+			<forward>/registration/forgot</forward>
+		</status>
+		<status value="CMD_INSUFFICIENT_DATA">
+			<forward>/registration/resetpassword</forward>
+		</status>
+	</uri>
+	
+	<uri name="/registration/login" verb="get">
+		<command>registration.login</command>
+		<viewheader>content.header</viewheader>
+		<viewfooter>content.footer</viewfooter>
+		<view>registration.login</view>
+		<view status="CMD_UNAUTHORIZED">registration.login</view>
+		<status value="CMD_OK">
+			<forward>/content/default</forward>
+		</status>
+	</uri>
+	
+	<uri name="/registration/login" verb="post">
+		<command>registration.login</command>
+		<viewheader>content.header</viewheader>
+		<viewfooter>content.footer</viewfooter>
+		<view>registration.login</view>
+		<view status="CMD_UNAUTHORIZED">registration.login</view>
+		<status value="CMD_OK">
+			<forward>/content/default</forward>
+		</status>
+	</uri>
+	
+	<uri name="/registration/login/:integer:" verb="post">
+		<command>registration.login</command>
+		<viewheader>content.empty</viewheader>
+		<viewfooter>content.empty</viewfooter>
+		<view>registration.empty</view>
+		<login>true</login>
+		<permissions>
+      <role>admin</role>
+    </permissions>
+		<view status="CMD_UNAUTHORIZED">registration.login</view>
+		<status value="CMD_OK">
+			<forward>/content/default</forward>
+		</status>
+	</uri>
+	
+	<uri name="/registration/apilogin" verb="post">
+		<command>registration.apilogin</command>
+		<viewheader>content.empty</viewheader>
+		<viewfooter>content.empty</viewfooter>
+		<view>content.empty</view>
+	</uri>
+	
+	<uri name="/registration/logout">
+		<command>registration.logout</command>
+		<viewheader>content.header</viewheader>
+		<viewfooter>content.footer</viewfooter>
+		<view>registration.login</view>
+		<view status="CMD_UNAUTHORIZED">registration.login</view>
+		<status value="CMD_OK">
+			<forward>/content/default</forward>
+		</status>
+	</uri>
+	
+	<uri name="/registration/unshadow">
+	  <command>registration.unshadow</command>
+		<viewheader>content.empty</viewheader>
+		<viewfooter>content.empty</viewfooter>
+		<view>content.empty</view>
+	</uri>
+	
+	<uri name="/registration/account" verb="get">
+		<command>registration.account</command>
+		<viewheader>content.header</viewheader>
+		<viewfooter>content.footer</viewfooter>
+		<view>registration.account</view>
+		<login>true</login>
+		<status value="CMD_UNAUTHORIZED">
+			<forward>/registration/login</forward>
+		</status>
+		<status value="CMD_OK">
+			<forward>/registration/account</forward>
+		</status>
+	</uri>
+	
+	<uri name="/registration/account" verb="put">
+		<command>registration.account</command>
+    <viewheader>content.empty</viewheader>
+    <viewfooter>content.empty</viewfooter>
+    <view>shop.empty</view>
+    <login>true</login>
+	</uri>
+	
+	<uri name="/registration/account/make" verb="get">
+		<command>registration.account</command>
+		<viewheader>content.header</viewheader>
+		<viewfooter>content.footer</viewfooter>
+		<view>registration.account</view>
+	</uri>
+	
+	<uri name="/registration/account" verb="post">
+		<command>registration.login</command>
+		<viewheader>content.header</viewheader>
+		<viewfooter>content.footer</viewfooter>
+		<view>registration.login</view>
+		<status value="CMD_INSUFFICIENT_DATA">
+			<forward>/registration/login</forward>
+		</status>
+		<status value="CMD_ERROR">
+			<forward>/registration/login</forward>
+		</status>
+		<status value="CMD_OK">
+			<forward>/content/default</forward>
+		</status>
+	</uri>
+	
+</control>

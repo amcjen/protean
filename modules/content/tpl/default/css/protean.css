@@ -1,0 +1,58 @@
+/* @group Universal Selectors */
+/* @end */
+
+/* @group Element Selectors */
+/* @end */
+
+/* @group Class, Attribute, and Pseudo Selectors */
+.disabled {
+	color: #999999;
+}
+.enabled {
+	color: #ff6f00;
+	font-weight: bold;
+}
+.yes {
+	color: #00ad11;
+}
+.no {
+	color: #990000;
+}
+.notice {
+	color: #968672;
+	font-weight: bold;
+	margin: 0 0 10px;
+}
+.error {
+	color: #F00;
+	font-weight: bold;
+	margin: 0 0 10px;
+}
+.errorfield {
+	background: #f3d3c7;
+	color: #333333;
+}
+.required {
+	color: #ff6f00;
+	font-weight: bold;
+}
+.left {
+	float: left;
+	text-align: left;
+}
+.right {
+	float: right;
+	text-align: right;
+}
+/* @end */
+
+/* @group ID Selectors */
+#errorstack {
+	color: #F00;
+	font-weight: bold;
+	padding: 12px 40px;
+	position: relative;
+	top: 100px;
+	width: 880px; 
+	background: url("../images/40-percent-opacity-black.png") repeat scroll 0 0 transparent; letter-spacing: .5px; }
+/* @end */
