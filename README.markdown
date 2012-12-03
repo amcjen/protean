@@ -15,14 +15,15 @@ How Protean routes: command.xml
 -------------------------------
 Very simply!  Here is a simple route that exposes the /content/hello URI.  The <command> name attribute defines what controller is called.  The view tags describe what header/footer and body views will be rendered.  This gives a lot of flexibility as you can reuse views while having them handled by different controllers if desired.  This is essentially an implementation of Martin Fowler's Front Controller design pattern from his seminal Patterns of Enterprise Application Architecture book.
 
-  <control>
-    <!-- /content/hello URL handler -->
-    <command name="content.hello">
-      <viewheader>content.header</viewheader>
-      <viewfooter>content.footer</viewfooter>
-      <view>content.hello</view>
-    </command>
-  </control>
+    <control>
+      <!-- /content/hello URL handler -->
+      <uri name="/content/hello">
+        <command>content.static</command>
+        <viewheader>content.header</viewheader>
+        <viewfooter>content.footer</viewfooter>
+        <view>content.hello</view>
+      </uri>
+    </control>
 
 The controller: hello.class.php
 -------------------------------
