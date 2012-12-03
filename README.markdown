@@ -37,8 +37,7 @@ Here is the controller for /content/hello.  We always extend the default command
         parent::doExecute($request);
 
         $user = PFFactory::getInstance()->createObject('content.userhelper');
-        $page = PFRegistry::getInstance()->getPage();
-        $page->assign('FIRSTNAME', $user->getUser(1)->getFirstName());
+        $this->page->assign('FIRSTNAME', $user->getUser(1)->getFirstName());
       }
     }
   ?>
@@ -77,11 +76,11 @@ And while Protean supports any level of helper/domain-object classes that a team
 
 FUTURE DIRECTION:
 ================
-There are so many great frameworks and platforms available five years later, it's difficult to assume Protean is better than the other options.  One very compelling framework--if somewhat immature--is Lithium, which takes the best of modern MVC frameworks such as dependency injection, IoC, and others, and implements them by leveraging the latest features of PHP 5.3.  Of course, the Ruby on Rails community is very strong and has some excellent ideas about minimizing the amount of code necessary to deploy a production project.
+There are so many great frameworks and platforms available five years later, it's difficult to assume Protean is better than the other options.  One very compelling framework--if somewhat immature--is Lithium, which takes the best of modern MVC frameworks such as dependency injection, IoC, and others, and implements them by leveraging the latest features of PHP 5.4.  Of course, the Ruby on Rails community is very strong and has some excellent ideas about minimizing the amount of code necessary to deploy a production project.
 
 Having done so much architecture in my past, I always keep a back-burner going in my mind regarding performance.  PHP5 is probably one of the most tried-and-true platforms for scaling web applications of all that are available.  Facebook runs PHP5, both interpreted and compiled, as well as very large amounts of optimizations throughout.  Facebook itself is a testament to how well a PHP5 architecture not only performs, but also how well it integrates very cleanly with other systems when it's time to scale out sub-components such as databases or caching/middleware.
 
-I don't know the total number of sites that Protean powers, but I am aware of a dozen or so that I've been involved with, including some at over 1,000,000 registered users.  Updates will likely include migrating to the Smarty 3 templating engine, introducing namespacing to the modules, as well as writing new endpoint adapters for more recent NoSQL engines such as Redis, Mongo, and Couch.
+I don't know the total number of sites that Protean powers, but I am aware of a dozen or so that I've been involved with, including some with several millions of registered users.  Updates will likely include introducing namespacing to the modules, as well as writing new endpoint adapters for more recent NoSQL engines such as Redis, Mongo, and Couch.
 
 
 REQUIREMENTS:
