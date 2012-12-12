@@ -110,7 +110,7 @@ PHPUnit 3.7.8
 
     pear channel-discover pear.phpunit.de
     pear channel-discover components.ez.no
-    pear channel-discover pear.symfony-project.com
+    pear channel-discover pear.symfony.com
     sudo pear install -a phpunit/PHPUnit-3.7.8
 	
 POST-INSTALL:
